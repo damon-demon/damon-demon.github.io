@@ -1,0 +1,2100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop-R1: Rewarding LLMs to Simulate Human Behavior in Online Shopping</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --accent: #06b6d4;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --gradient-1: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);
+            --gradient-2: linear-gradient(135deg, #06b6d4 0%, #6366f1 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        /* 3. Scroll Progress Bar */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--gradient-1);
+            z-index: 9999;
+            transition: width 0.1s ease;
+        }
+
+        /* 5. Custom Cursor */
+        .custom-cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.15s ease, background 0.15s ease;
+            mix-blend-mode: difference;
+        }
+
+        .custom-cursor.hover {
+            transform: scale(1.5);
+            background: rgba(99, 102, 241, 0.3);
+        }
+
+        .cursor-dot {
+            width: 5px;
+            height: 5px;
+            background: var(--primary);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        #networkCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #gridCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.4;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 40%, rgba(6, 182, 212, 0.06) 0%, transparent 40%);
+            animation: float 20s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(5deg); }
+            66% { transform: translate(-20px, 20px) rotate(-5deg); }
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(99, 102, 241, 0.2);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            animation: fadeInUp 0.6s ease-out 0.1s both;
+            transition: background 0.1s ease;
+            background-size: 200% 200%;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.5rem);
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+            min-height: 1.6em;
+        }
+
+        /* 4. Typewriter cursor */
+        .typewriter-cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1em;
+            background: var(--primary);
+            margin-left: 2px;
+            animation: blink 1s infinite;
+            vertical-align: text-bottom;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            margin-bottom: 2.5rem;
+            animation: fadeInUp 0.6s ease-out 0.3s both;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradient-2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.75rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: white;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(99, 102, 241, 0.5);
+        }
+
+        /* 1. Button Ripple Effect */
+        .btn-ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-indicator i {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* Sections */
+        .section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Abstract Card */
+        .abstract-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .abstract-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-1);
+        }
+
+        .abstract-card p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        /* Method Section */
+        .method-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .method-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .method-card:hover {
+            transform: translateY(-5px) rotateX(5deg) rotateY(5deg);
+            border-color: var(--primary);
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.2);
+        }
+
+        /* 2. Card Glow Border Effect */
+        .method-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 16px;
+            padding: 2px;
+            background: linear-gradient(135deg, transparent, transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s ease, background 0.3s ease;
+        }
+
+        .method-card:hover::before {
+            opacity: 1;
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent), var(--primary));
+            background-size: 300% 300%;
+            animation: glowBorder 2s ease infinite;
+        }
+
+        @keyframes glowBorder {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* 7. Card 3D Tilt */
+        .method-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            position: relative;
+        }
+
+        .method-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .method-icon i {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .method-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .method-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Figure Placeholder */
+        .figure-container {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .figure-placeholder {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .figure-placeholder i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .figure-caption {
+            margin-top: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Results Table */
+        .table-container {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-x: auto;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            position: relative;
+        }
+
+        .results-table thead {
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        .results-table th {
+            padding: 1rem 0.75rem;
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--primary);
+            position: relative;
+        }
+
+        .results-table td {
+            padding: 0.75rem;
+            text-align: center;
+            color: var(--text-secondary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .results-table td:hover {
+            color: var(--text-primary);
+        }
+
+        /* Row highlight - horizontal line through entire row */
+        .results-table tr.row-highlight td:not(.model-cell) {
+            box-shadow: inset 0 2px 0 var(--primary), inset 0 -2px 0 var(--primary);
+        }
+
+        /* Column highlight - vertical line through entire column */
+        .results-table td.col-highlight:not(.model-cell) {
+            box-shadow: inset 2px 0 0 var(--primary), inset -2px 0 0 var(--primary);
+        }
+
+        /* Intersection - both horizontal and vertical */
+        .results-table tr.row-highlight td.col-highlight:not(.model-cell) {
+            box-shadow: inset 2px 0 0 var(--primary), inset -2px 0 0 var(--primary), inset 0 2px 0 var(--primary), inset 0 -2px 0 var(--primary);
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        .results-table .model-cell {
+            font-weight: 600;
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.03);
+            text-align: left;
+            padding-left: 1rem;
+        }
+
+        .results-table .highlight-row {
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.15) 0%, rgba(236, 72, 153, 0.1) 100%);
+        }
+
+        .results-table .highlight-row td {
+            color: var(--text-primary);
+        }
+
+        .results-table .section-divider td {
+            padding: 0.25rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .table-caption {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .text-red {
+            color: #ef4444;
+        }
+
+        .text-red code {
+            color: #ef4444;
+        }
+
+        /* Task Setup Section */
+        .task-overview {
+            margin-bottom: 2rem;
+        }
+
+        .task-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .task-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .task-icon i {
+            font-size: 1.75rem;
+            color: white;
+        }
+
+        .task-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .task-card p {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .subsection-title {
+            font-size: 1.25rem;
+            margin: 2rem 0 1rem;
+            color: var(--text-primary);
+        }
+
+        .action-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .action-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .action-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .action-header i {
+            color: var(--primary);
+            font-size: 1.25rem;
+        }
+
+        .action-header span {
+            font-family: 'Fira Code', monospace;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .action-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .output-format-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .output-format-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        /* Results Section */
+        .results-highlight {
+            background: var(--gradient-1);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .results-highlight h3 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .results-highlight p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+        }
+
+        /* Team Section */
+        .affiliations {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .affiliation {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .affiliation sup {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .team-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .team-member {
+            text-align: center;
+            padding: 0.75rem 1rem;
+        }
+
+        .team-member-name {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .team-member-name a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .team-member-name a:hover {
+            color: var(--primary);
+        }
+
+        .team-member-name sup {
+            color: var(--primary);
+            font-size: 0.7rem;
+            margin-left: 2px;
+        }
+
+        .team-member-affiliation {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .team-member-note {
+            font-size: 0.75rem;
+            color: var(--primary);
+        }
+
+        /* BibTeX */
+        .bibtex-container {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .bibtex-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .bibtex-header span {
+            font-weight: 600;
+        }
+
+        .copy-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .bibtex-code {
+            padding: 1.5rem;
+            overflow-x: auto;
+        }
+
+        .bibtex-code pre {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-stats {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+    
+    <!-- Custom Cursor -->
+    <div class="custom-cursor" id="customCursor"></div>
+    <div class="cursor-dot" id="cursorDot"></div>
+    
+    <div class="bg-animation">
+        <canvas id="gridCanvas"></canvas>
+        <canvas id="networkCanvas"></canvas>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-badge">
+            <i class="fas fa-award"></i>
+            <span>ICLR 2026</span>
+        </div>
+        
+        <h1 class="hero-title" id="heroTitle">Shop-R1</h1>
+        <p class="hero-subtitle" id="heroSubtitle"></p>
+        
+        <div class="hero-stats">
+            <div class="stat">
+                <div class="stat-value" data-target="65">0</div>
+                <div class="stat-label">% Relative Improvement</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">2-Stage</div>
+                <div class="stat-label">RL Framework</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">Hierarchical</div>
+                <div class="stat-label">Reward Design</div>
+            </div>
+        </div>
+
+        <div class="hero-buttons">
+            <a href="https://arxiv.org/abs/2507.17842" class="btn btn-primary" target="_blank">
+                <i class="fas fa-file-pdf"></i> Paper
+            </a>
+            <a href="#" class="btn btn-secondary">
+                <i class="fab fa-github"></i> Code (Coming Soon)
+            </a>
+            <a href="#" class="btn btn-secondary">
+                <i class="fas fa-database"></i> Dataset
+            </a>
+        </div>
+
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- Abstract Section -->
+    <section class="section">
+        <h2 class="section-title">Abstract</h2>
+        <div class="abstract-card">
+            <p>
+                Large Language Models (LLMs) have recently demonstrated strong potential in generating "believable human-like" behavior in web environments. Prior work has explored augmenting training data with LLM-synthesized rationales and applying supervised fine-tuning (SFT) to enhance reasoning ability. However, the performance of such approaches remains inherently bounded by the reasoning capabilities of the model used to generate the rationales.
+                <br><br>
+                In this paper, we introduce <strong>Shop-R1</strong>, a novel reinforcement learning (RL) framework aimed at enhancing the reasoning ability of LLMs for simulation of real human behavior in online shopping environments. Specifically, Shop-R1 decomposes the human behavior simulation task into two stages: <em>rationale generation</em> and <em>action prediction</em>, each guided by distinct reward signals.
+                <br><br>
+                For rationale generation, we leverage internal model signals (e.g., logit distributions) to guide the reasoning process in a self-supervised manner. For action prediction, we propose a <strong>hierarchical reward structure</strong> with difficulty-aware scaling to prevent reward hacking and enable fine-grained reward assignment.
+            </p>
+        </div>
+    </section>
+
+    <!-- Task Setup Section -->
+    <section class="section">
+        <h2 class="section-title">Task Setup</h2>
+        <p class="section-subtitle">Simulating human shopping behavior on Amazon with structured action space</p>
+
+        <div class="task-overview">
+            <div class="task-card">
+                <div class="task-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <h3>Objective</h3>
+                <p>Given a shopping context and webpage state, predict the next user action with rationale explaining the decision-making process.</p>
+            </div>
+        </div>
+
+        <h3 class="subsection-title">Action Space</h3>
+        <div class="action-cards">
+            <div class="action-card">
+                <div class="action-header">
+                    <i class="fas fa-keyboard"></i>
+                    <span>type_and_submit</span>
+                </div>
+                <p>Type text into an input field and submit the form (equivalent to typing + pressing Enter)</p>
+                <pre class="code-block">{
+  "type": "type_and_submit",
+  "name": "input_name",
+  "text": "search_text"
+}</pre>
+            </div>
+            <div class="action-card">
+                <div class="action-header">
+                    <i class="fas fa-mouse-pointer"></i>
+                    <span>click</span>
+                </div>
+                <p>Click on a button or clickable element identified by name</p>
+                <pre class="code-block">{
+  "type": "click",
+  "name": "clickable_name"
+}</pre>
+            </div>
+            <div class="action-card">
+                <div class="action-header">
+                    <i class="fas fa-times-circle"></i>
+                    <span>terminate</span>
+                </div>
+                <p>Close the browser and terminate when unsatisfied with search results</p>
+                <pre class="code-block">{
+  "type": "terminate"
+}</pre>
+            </div>
+        </div>
+
+        <h3 class="subsection-title">Output Format</h3>
+        <div class="output-format-card">
+            <p>The model outputs a JSON object containing both the predicted action and a first-person rationale explaining the reasoning:</p>
+            <pre class="code-block">{
+  "rationale": "&lt;rationale&gt;",  // explains why making this action
+  "action": {
+    "type": "&lt;type&gt;",
+    ...
+  }
+}</pre>
+        </div>
+    </section>
+
+    <!-- Method Section -->
+    <section class="section">
+        <h2 class="section-title">Method Overview</h2>
+        <p class="section-subtitle">A two-stage reinforcement learning framework for human behavior simulation</p>
+        
+        <div class="figure-container">
+            <img src="project_src/shop-r1/simrl_plot.png" alt="Shop-R1 Framework Overview" style="max-width: 100%; border-radius: 12px;">
+            <p class="figure-caption">Figure 1: Overview of the Shop-R1 framework</p>
+        </div>
+
+        <div class="method-grid">
+            <div class="method-card">
+                <div class="method-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3>Stage 1: Rationale Generation</h3>
+                <p>Leverage internal model signals (e.g., logit distributions) to guide the reasoning process in a self-supervised manner, enabling the model to generate high-quality rationales.</p>
+            </div>
+            
+            <div class="method-card">
+                <div class="method-icon">
+                    <i class="fas fa-bullseye"></i>
+                </div>
+                <h3>Stage 2: Action Prediction</h3>
+                <p>Hierarchical reward structure with difficulty-aware scaling evaluates both high-level action types and fine-grained sub-action details (attributes and values).</p>
+            </div>
+            
+            <div class="method-card">
+                <div class="method-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Reward Hacking Prevention</h3>
+                <p>Difficulty-aware scaling mechanism prevents reward hacking by rewarding outputs proportionally to their difficulty, ensuring robust learning.</p>
+            </div>
+        </div>
+
+        <!-- Method Details -->
+        <div class="method-details" style="margin-top: 3rem;">
+            <h3 class="subsection-title">Reward Design Details</h3>
+            
+            <div class="reward-components" style="display: grid; gap: 1.5rem; margin-top: 1.5rem;">
+                <!-- Format Reward -->
+                <div class="detail-card" style="background: var(--bg-card); border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                        <i class="fas fa-code" style="color: var(--accent); font-size: 1.25rem;"></i>
+                        <h4 style="margin: 0; color: var(--text-primary);">Binary Format Reward</h4>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem;">
+                        Encourages the model to produce responses in a structured JSON format with two keys: <code style="color: var(--accent);">rationale</code> and <code style="color: var(--accent);">action</code>. A response earns a format reward of <strong>0.5</strong> if it is in valid JSON format; otherwise, it gains no format reward.
+                    </p>
+                </div>
+
+                <!-- Self-Certainty Reward -->
+                <div class="detail-card" style="background: var(--bg-card); border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                        <i class="fas fa-chart-line" style="color: var(--secondary); font-size: 1.25rem;"></i>
+                        <h4 style="margin: 0; color: var(--text-primary);">Self-Certainty Score (Rationale Reward)</h4>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1rem;">
+                        Quantifies the model's confidence in its generated rationale by computing the KL divergence between the model's predictive distribution and a uniform distribution:
+                    </p>
+                    <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 1rem; text-align: center; overflow-x: auto;">
+                        <span style="font-family: 'Times New Roman', serif; font-size: 1.1rem; color: var(--text-primary);">
+                            s(r | q) = (1/N|V|) Σ<sub>j</sub> Σ<sub>i</sub> p<sub>ij</sub> log(p<sub>ij</sub> / U<sub>i</sub>)
+                        </span>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.75rem;">
+                        where N is the number of tokens, p<sub>ij</sub> is the predicted probability of token i at position j, and U<sub>i</sub> = 1/|V| is the uniform distribution. Higher values indicate greater certainty.
+                    </p>
+                </div>
+
+                <!-- Hierarchical Action Reward -->
+                <div class="detail-card" style="background: var(--bg-card); border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                        <i class="fas fa-layer-group" style="color: var(--primary); font-size: 1.25rem;"></i>
+                        <h4 style="margin: 0; color: var(--text-primary);">Hierarchical Action Reward</h4>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1.5rem;">
+                        Replaces brittle binary signals with a hierarchical scheme that credits both coarse-grained action types and fine-grained sub-actions. This densifies the reward landscape, lifts the agent out of 'no-reward' plateaus, and makes reward hacking uneconomical.
+                    </p>
+                    
+                    <!-- Reward Table inside the card -->
+                    <div style="overflow-x: auto;">
+                        <table class="results-table" style="margin: 0;">
+                            <thead>
+                                <tr>
+                                    <th>Action Type</th>
+                                    <th>Type Reward</th>
+                                    <th>Sub-action Attribute Reward</th>
+                                    <th>Text-Similarity Value Reward</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="model-cell"><em>terminate</em></td>
+                                    <td>0.3</td>
+                                    <td>None</td>
+                                    <td>None</td>
+                                </tr>
+                                <tr>
+                                    <td class="model-cell"><em>click</em></td>
+                                    <td>0.3</td>
+                                    <td>+0.2 (if name ≠ ∅)</td>
+                                    <td>+DARS × ROUGE-L(name)</td>
+                                </tr>
+                                <tr>
+                                    <td class="model-cell"><em>type_and_submit</em></td>
+                                    <td>0.3</td>
+                                    <td>+0.1 (if name ≠ ∅)<br>+0.1 (if text ≠ ∅)</td>
+                                    <td>+0.1 × ROUGE-L(name)<br>+DARS × ROUGE-L(text)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 1rem; text-align: center;">
+                        Table 4: Hierarchical reward schedule with Difficulty-Aware Reward Scaling (DARS).
+                    </p>
+                </div>
+            </div>
+
+            <!-- DARS Explanation -->
+            <div class="detail-card" style="background: var(--bg-card); border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(255,255,255,0.1); margin-top: 1.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                    <i class="fas fa-balance-scale" style="color: #f59e0b; font-size: 1.25rem;"></i>
+                    <h4 style="margin: 0; color: var(--text-primary);">Difficulty-Aware Reward Scaling (DARS)</h4>
+                </div>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">
+                    Long-text sub-actions (e.g., button labels, search queries) are substantially harder since modern webpages can expose thousands of candidate elements. DARS amplifies rewards for correctly predicting these components, preventing reward hacking where the agent repeatedly selects trivial <code style="color: var(--accent);">terminate</code> actions to secure easy points.
+                </p>
+            </div>
+
+            <!-- Objective Function -->
+            <div class="detail-card" style="background: linear-gradient(135deg, rgba(99,102,241,0.1) 0%, rgba(236,72,153,0.1) 100%); border-radius: 12px; padding: 1.5rem; border: 1px solid rgba(99,102,241,0.3); margin-top: 1.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                    <i class="fas fa-function" style="color: var(--primary); font-size: 1.25rem;"></i>
+                    <h4 style="margin: 0; color: var(--text-primary);">Training Objective</h4>
+                </div>
+                <p style="color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1rem;">
+                    Shop-R1 maximizes the combined reward signal while regularizing with KL divergence to a reference policy:
+                </p>
+                <div style="background: rgba(0,0,0,0.3); border-radius: 8px; padding: 1rem; text-align: center; overflow-x: auto;">
+                    <span style="font-family: 'Times New Roman', serif; font-size: 1rem; color: var(--text-primary);">
+                        max<sub>π<sub>θ</sub></sub> 𝔼<sub>r,a~π<sub>θ</sub>(q)</sub> [ v(a) + α·s(r) − β·KL(π<sub>θ</sub>(r,a|q) ∥ π<sub>ref</sub>(r,a|q)) ]
+                    </span>
+                </div>
+                <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.75rem;">
+                    where v(a) is the action reward, s(r) is the self-certainty score, and α, β are hyperparameters controlling regularization strength.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="section">
+        <h2 class="section-title">Results</h2>
+        <p class="section-subtitle">Simulation accuracy under different fine-tuning methods across models of different sizes</p>
+        
+        <div class="table-container">
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th rowspan="2">Model</th>
+                        <th rowspan="2">Settings</th>
+                        <th colspan="1">Exact Action</th>
+                        <th colspan="2">Action Type</th>
+                    </tr>
+                    <tr>
+                        <th>Acc.</th>
+                        <th>Acc.</th>
+                        <th>F1</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="5" class="model-cell">Qwen-2.5-3B-Instruct</td>
+                        <td>Zero-shot prompting</td>
+                        <td>0.32%</td>
+                        <td>15.33%</td>
+                        <td>16.15%</td>
+                    </tr>
+                    <tr>
+                        <td>RL (Binary)</td>
+                        <td>1.01%</td>
+                        <td>6.17%</td>
+                        <td>9.92%</td>
+                    </tr>
+                    <tr>
+                        <td>SFT</td>
+                        <td>16.76%</td>
+                        <td>22.25%</td>
+                        <td>24.52%</td>
+                    </tr>
+                    <tr>
+                        <td>SFT + RL (Binary)</td>
+                        <td>16.55%</td>
+                        <td>23.74%</td>
+                        <td>28.07%</td>
+                    </tr>
+                    <tr class="highlight-row">
+                        <td><strong>Shop-R1 (Ours)</strong></td>
+                        <td><strong>27.72%</strong></td>
+                        <td><strong>36.40%</strong></td>
+                        <td><strong>31.28%</strong></td>
+                    </tr>
+                    <tr class="section-divider"><td colspan="5"></td></tr>
+                    <tr>
+                        <td rowspan="3" class="model-cell">Qwen-2.5-1.5B-Instruct</td>
+                        <td>Zero-shot prompting</td>
+                        <td>0.53%</td>
+                        <td>3.94%</td>
+                        <td>6.16%</td>
+                    </tr>
+                    <tr>
+                        <td>SFT</td>
+                        <td>10.86%</td>
+                        <td>23.58%</td>
+                        <td>29.02%</td>
+                    </tr>
+                    <tr class="highlight-row">
+                        <td><strong>Shop-R1 (Ours)</strong></td>
+                        <td><strong>24.11%</strong></td>
+                        <td><strong>34.54%</strong></td>
+                        <td><strong>29.19%</strong></td>
+                    </tr>
+                    <tr class="section-divider"><td colspan="5"></td></tr>
+                    <tr>
+                        <td rowspan="3" class="model-cell">Qwen-2.5-0.5B-Instruct</td>
+                        <td>Zero-shot prompting</td>
+                        <td>6.76%</td>
+                        <td>12.88%</td>
+                        <td>15.55%</td>
+                    </tr>
+                    <tr>
+                        <td>SFT</td>
+                        <td>9.90%</td>
+                        <td>17.72%</td>
+                        <td>21.61%</td>
+                    </tr>
+                    <tr class="highlight-row">
+                        <td><strong>Shop-R1 (Ours)</strong></td>
+                        <td><strong>27.72%</strong></td>
+                        <td><strong>31.83%</strong></td>
+                        <td><strong>21.20%</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="table-caption">Table 1: Three complementary metrics: exact action accuracy (all sub-fields must match the label); action type accuracy, and action type F1 to disentangle mistakes in coarse intent classification from those in long-text arguments.</p>
+
+        <div class="table-container" style="margin-top: 3rem;">
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th rowspan="2">Model</th>
+                        <th rowspan="2">Settings</th>
+                        <th colspan="3">Exact Action Acc. Per Action Type</th>
+                        <th colspan="3">Action Type Acc. Per Action Type</th>
+                    </tr>
+                    <tr>
+                        <th><em>click</em></th>
+                        <th><em>type_and_submit</em></th>
+                        <th><em>terminate</em></th>
+                        <th><em>click</em></th>
+                        <th><em>type_and_submit</em></th>
+                        <th><em>terminate</em></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="4" class="model-cell">Qwen-2.5-3B-Instruct</td>
+                        <td>Zero-shot prompting</td>
+                        <td>0.58%</td>
+                        <td>0.15%</td>
+                        <td>0.00%</td>
+                        <td>38.7%</td>
+                        <td>1.62%</td>
+                        <td>0.00%</td>
+                    </tr>
+                    <tr>
+                        <td>SFT</td>
+                        <td>4.93%</td>
+                        <td>3.84%</td>
+                        <td>49.80%</td>
+                        <td>8.55%</td>
+                        <td>15.36%</td>
+                        <td>49.80%</td>
+                    </tr>
+                    <tr>
+                        <td>SFT + RL (Binary)</td>
+                        <td>8.12%</td>
+                        <td>3.25%</td>
+                        <td>45.51%</td>
+                        <td>17.25%</td>
+                        <td>13.88%</td>
+                        <td>45.51%</td>
+                    </tr>
+                    <tr class="highlight-row">
+                        <td><strong>Shop-R1 (Ours)</strong></td>
+                        <td><strong>7.39%</strong></td>
+                        <td><strong>7.53%</strong></td>
+                        <td><strong>81.84%</strong></td>
+                        <td><strong>10.29%</strong></td>
+                        <td><strong>28.66%</strong></td>
+                        <td><strong>81.84%</strong></td>
+                    </tr>
+                    <tr class="section-divider"><td colspan="8"></td></tr>
+                    <tr>
+                        <td rowspan="3" class="model-cell">Qwen-2.5-1.5B-Instruct</td>
+                        <td>Zero-shot prompting</td>
+                        <td>1.01%</td>
+                        <td>0.15%</td>
+                        <td>0.39%</td>
+                        <td>10.00%</td>
+                        <td>0.44%</td>
+                        <td>0.39%</td>
+                    </tr>
+                    <tr>
+                        <td>SFT</td>
+                        <td>4.49%</td>
+                        <td>7.83%</td>
+                        <td>23.44%</td>
+                        <td>15.07%</td>
+                        <td>32.35%</td>
+                        <td>23.44%</td>
+                    </tr>
+                    <tr class="highlight-row">
+                        <td><strong>Shop-R1 (Ours)</strong></td>
+                        <td><strong>3.62%</strong></td>
+                        <td><strong>8.12%</strong></td>
+                        <td><strong>72.85%</strong></td>
+                        <td><strong>6.52%</strong></td>
+                        <td><strong>34.12%</strong></td>
+                        <td><strong>72.85%</strong></td>
+                    </tr>
+                    <tr class="section-divider"><td colspan="8"></td></tr>
+                    <tr>
+                        <td rowspan="3" class="model-cell">Qwen-2.5-0.5B-Instruct</td>
+                        <td>Zero-shot prompting</td>
+                        <td>0.43%</td>
+                        <td>0.15%</td>
+                        <td>24.02%</td>
+                        <td>12.90%</td>
+                        <td>4.43%</td>
+                        <td>24.02%</td>
+                    </tr>
+                    <tr>
+                        <td>SFT</td>
+                        <td>3.19%</td>
+                        <td>7.68%</td>
+                        <td>21.88%</td>
+                        <td>5.94%</td>
+                        <td>26.59%</td>
+                        <td>21.88%</td>
+                    </tr>
+                    <tr class="highlight-row">
+                        <td><strong>Shop-R1 (Ours)</strong></td>
+                        <td><strong>0.72%</strong></td>
+                        <td><strong>3.99%</strong></td>
+                        <td><strong>97.07%</strong></td>
+                        <td><strong>1.01%</strong></td>
+                        <td><strong>17.87%</strong></td>
+                        <td><strong>97.07%</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="table-caption">Table 2: Exact action accuracy and action type accuracy for each action type: <em>click</em>, <em>type_and_submit</em>, and <em>terminate</em>, across different models and finetuning methods.</p>
+
+        <div class="table-container" style="margin-top: 3rem;">
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th rowspan="2">Model</th>
+                        <th colspan="5">Training Scheme Components</th>
+                        <th colspan="1">Exact Action</th>
+                        <th colspan="2">Action Type</th>
+                    </tr>
+                    <tr>
+                        <th>SFT</th>
+                        <th>Format Reward</th>
+                        <th>Rationale Reward</th>
+                        <th>Reward Scale</th>
+                        <th>Action Reward</th>
+                        <th>Acc.</th>
+                        <th>Acc.</th>
+                        <th>F1</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="6" class="model-cell">Qwen-2.5-3B-Instruct</td>
+                        <td>✗</td>
+                        <td>✓</td>
+                        <td>✓</td>
+                        <td>✓</td>
+                        <td><code>hierarchical</code></td>
+                        <td>4.63%</td>
+                        <td>36.56%</td>
+                        <td>21.92%</td>
+                    </tr>
+                    <tr>
+                        <td>✓</td>
+                        <td>✗</td>
+                        <td>✓</td>
+                        <td>✓</td>
+                        <td><code>hierarchical</code></td>
+                        <td>2.87%</td>
+                        <td>3.19%</td>
+                        <td>5.04%</td>
+                    </tr>
+                    <tr>
+                        <td>✓</td>
+                        <td>✓</td>
+                        <td>✗</td>
+                        <td>✓</td>
+                        <td><code>hierarchical</code></td>
+                        <td>26.93%</td>
+                        <td>37.25%</td>
+                        <td>33.74%</td>
+                    </tr>
+                    <tr>
+                        <td>✓</td>
+                        <td>✓</td>
+                        <td>✓</td>
+                        <td>✗</td>
+                        <td><code>hierarchical</code></td>
+                        <td>27.83%</td>
+                        <td>27.20%</td>
+                        <td>11.70%</td>
+                    </tr>
+                    <tr>
+                        <td>✓</td>
+                        <td>✓</td>
+                        <td>✓</td>
+                        <td>✓</td>
+                        <td class="text-red"><code>binary</code></td>
+                        <td>27.04%</td>
+                        <td>27.46%</td>
+                        <td>12.11%</td>
+                    </tr>
+                    <tr class="highlight-row">
+                        <td>✓</td>
+                        <td>✓</td>
+                        <td>✓</td>
+                        <td>✓</td>
+                        <td><code>hierarchical</code></td>
+                        <td><strong>27.72%</strong></td>
+                        <td><strong>36.40%</strong></td>
+                        <td><strong>31.28%</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="table-caption">Table 3: Ablation study on different training component configurations, evaluated by exact match action accuracy and action type accuracy / F1.</p>
+    </section>
+
+    <!-- Team Section -->
+    <section class="section">
+        <h2 class="section-title">Team</h2>
+        
+        <div class="team-grid">
+            <div class="team-member">
+                <p class="team-member-name"><a href="https://damon-demon.github.io" target="_blank">Yimeng Zhang</a><sup>1,2</sup></p>
+            </div>
+            <div class="team-member">
+                <p class="team-member-name">Tian Wang<sup>2</sup></p>
+            </div>
+            <div class="team-member">
+                <p class="team-member-name">Jiri Gesi<sup>2</sup></p>
+            </div>
+            <div class="team-member">
+                <p class="team-member-name">Ziyi Wang<sup>3</sup></p>
+            </div>
+            <div class="team-member">
+                <p class="team-member-name">Yuxuan Lu<sup>3</sup></p>
+            </div>
+            <div class="team-member">
+                <p class="team-member-name">Jiacheng Lin<sup>4</sup></p>
+            </div>
+            <div class="team-member">
+                <p class="team-member-name">Sinong Zhan<sup>5</sup></p>
+            </div>
+            <div class="team-member">
+                <p class="team-member-name">Vianne Gao<sup>2</sup></p>
+            </div>
+            <div class="team-member">
+                <p class="team-member-name">Ruochen Jiao<sup>2</sup></p>
+            </div>
+            <div class="team-member">
+                <p class="team-member-name">Junze Liu<sup>2</sup></p>
+            </div>
+            <div class="team-member">
+                <p class="team-member-name">Kun Qian<sup>2</sup></p>
+            </div>
+            <div class="team-member">
+                <p class="team-member-name">Yuxin Tang<sup>2</sup></p>
+            </div>
+            <div class="team-member">
+                <p class="team-member-name">Ran Xue<sup>2</sup></p>
+            </div>
+            <div class="team-member">
+                <p class="team-member-name">Houyu Zhang<sup>2</sup></p>
+            </div>
+            <div class="team-member">
+                <p class="team-member-name">Qingjun Cui<sup>2</sup></p>
+            </div>
+            <div class="team-member">
+                <p class="team-member-name">Yufan Guo<sup>2</sup></p>
+            </div>
+            <div class="team-member">
+                <p class="team-member-name">Dakuo Wang<sup>3</sup></p>
+            </div>
+        </div>
+
+        <div class="affiliations">
+            <span class="affiliation"><sup>1</sup>Michigan State University</span>
+            <span class="affiliation"><sup>2</sup>Amazon</span>
+            <span class="affiliation"><sup>3</sup>Northeastern University</span>
+            <span class="affiliation"><sup>4</sup>UIUC</span>
+            <span class="affiliation"><sup>5</sup>Northwestern University</span>
+        </div>
+    </section>
+
+    <!-- BibTeX Section -->
+    <section class="section">
+        <h2 class="section-title">Citation</h2>
+        <p class="section-subtitle">If you find our work useful, please cite us</p>
+        
+        <div class="bibtex-container">
+            <div class="bibtex-header">
+                <span>BibTeX</span>
+                <button class="copy-btn" onclick="copyBibtex()">
+                    <i class="fas fa-copy"></i> Copy
+                </button>
+            </div>
+            <div class="bibtex-code">
+                <pre id="bibtex">@inproceedings{zhang2026shopr1,
+  title={Shop-R1: Rewarding LLMs to Simulate Human Behavior in Online Shopping via Reinforcement Learning},
+  author={Zhang, Yimeng and Wang, Tian and Gesi, Jiri and Wang, Ziyi and Lu, Yuxuan and Lin, Jiacheng and Zhan, Sinong and Gao, Vianne and Jiao, Ruochen and Liu, Junze and Qian, Kun and Tang, Yuxin and Xue, Ran and Zhang, Houyu and Cui, Qingjun and Guo, Yufan and Wang, Dakuo},
+  booktitle={International Conference on Learning Representations (ICLR)},
+  year={2026}
+}</pre>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 Shop-R1 Team | <a href="index.html">Back to Homepage</a></p>
+    </footer>
+
+    <script>
+        function copyBibtex() {
+            const bibtex = document.getElementById('bibtex').innerText;
+            navigator.clipboard.writeText(bibtex).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                }, 2000);
+            });
+        }
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.6s ease-out forwards';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section').forEach(section => {
+            section.style.opacity = '0';
+            observer.observe(section);
+        });
+
+        // Table crosshair highlight effect
+        document.querySelectorAll('.results-table').forEach(table => {
+            const cells = table.querySelectorAll('tbody td');
+            
+            cells.forEach(cell => {
+                cell.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    
+                    // Clear previous highlights
+                    table.querySelectorAll('.row-highlight').forEach(el => el.classList.remove('row-highlight'));
+                    table.querySelectorAll('.col-highlight').forEach(el => el.classList.remove('col-highlight'));
+                    
+                    const row = this.parentElement;
+                    const rows = Array.from(table.querySelectorAll('tbody tr'));
+                    const rowIndex = rows.indexOf(row);
+                    
+                    // Build a matrix to handle rowspan/colspan
+                    const matrix = [];
+                    rows.forEach((tr, rIdx) => {
+                        if (!matrix[rIdx]) matrix[rIdx] = [];
+                        Array.from(tr.cells).forEach(td => {
+                            // Find next available column
+                            let colIdx = 0;
+                            while (matrix[rIdx][colIdx]) colIdx++;
+                            
+                            const rowspan = parseInt(td.getAttribute('rowspan')) || 1;
+                            const colspan = parseInt(td.getAttribute('colspan')) || 1;
+                            
+                            // Mark cells in matrix
+                            for (let r = 0; r < rowspan; r++) {
+                                for (let c = 0; c < colspan; c++) {
+                                    if (!matrix[rIdx + r]) matrix[rIdx + r] = [];
+                                    matrix[rIdx + r][colIdx + c] = { td, colIdx };
+                                }
+                            }
+                        });
+                    });
+                    
+                    // Find clicked cell's column index
+                    let clickedColIdx = -1;
+                    for (let c = 0; c < matrix[rowIndex].length; c++) {
+                        if (matrix[rowIndex][c] && matrix[rowIndex][c].td === this) {
+                            clickedColIdx = matrix[rowIndex][c].colIdx;
+                            break;
+                        }
+                    }
+                    
+                    // Highlight row
+                    row.classList.add('row-highlight');
+                    
+                    // Highlight column cells (only tbody, skip header and model-cell)
+                    rows.forEach((tr, rIdx) => {
+                        if (matrix[rIdx] && matrix[rIdx][clickedColIdx]) {
+                            const td = matrix[rIdx][clickedColIdx].td;
+                            if (!td.classList.contains('model-cell')) {
+                                td.classList.add('col-highlight');
+                            }
+                        }
+                    });
+                });
+            });
+        });
+        
+        // Click outside to clear all tables
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.results-table')) {
+                document.querySelectorAll('.results-table').forEach(table => {
+                    table.querySelectorAll('.row-highlight').forEach(el => el.classList.remove('row-highlight'));
+                    table.querySelectorAll('.col-highlight').forEach(el => el.classList.remove('col-highlight'));
+                });
+            }
+        });
+
+        // 3D Perspective Grid Background
+        (function() {
+            const canvas = document.getElementById('gridCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            let width, height;
+            let offset = 0;
+            
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            
+            function drawGrid() {
+                ctx.clearRect(0, 0, width, height);
+                
+                const horizonY = height * 0.35;
+                const gridSize = 60;
+                const perspectiveStrength = 0.8;
+                
+                // Vertical lines (converging to horizon)
+                const numVerticalLines = 30;
+                const centerX = width / 2;
+                
+                for (let i = -numVerticalLines; i <= numVerticalLines; i++) {
+                    const topX = centerX + i * gridSize * 0.3;
+                    const bottomX = centerX + i * gridSize * 3;
+                    
+                    const gradient = ctx.createLinearGradient(topX, horizonY, bottomX, height);
+                    gradient.addColorStop(0, 'rgba(99, 102, 241, 0)');
+                    gradient.addColorStop(0.3, 'rgba(99, 102, 241, 0.3)');
+                    gradient.addColorStop(1, 'rgba(236, 72, 153, 0.1)');
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(topX, horizonY);
+                    ctx.lineTo(bottomX, height);
+                    ctx.strokeStyle = gradient;
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                }
+                
+                // Horizontal lines (with perspective spacing)
+                const numHorizontalLines = 20;
+                
+                for (let i = 0; i < numHorizontalLines; i++) {
+                    // Exponential spacing for perspective effect
+                    const t = i / numHorizontalLines;
+                    const y = horizonY + (height - horizonY) * Math.pow(t, perspectiveStrength);
+                    
+                    // Animated offset
+                    const animatedY = y + ((offset * (1 + t * 2)) % (gridSize * Math.pow(t + 0.1, perspectiveStrength)));
+                    
+                    if (animatedY > horizonY && animatedY < height) {
+                        // Calculate line width based on perspective
+                        const perspectiveT = (animatedY - horizonY) / (height - horizonY);
+                        const leftX = centerX - (width * 0.8) * perspectiveT;
+                        const rightX = centerX + (width * 0.8) * perspectiveT;
+                        
+                        const opacity = 0.1 + perspectiveT * 0.2;
+                        
+                        const gradient = ctx.createLinearGradient(leftX, animatedY, rightX, animatedY);
+                        gradient.addColorStop(0, `rgba(99, 102, 241, 0)`);
+                        gradient.addColorStop(0.3, `rgba(99, 102, 241, ${opacity})`);
+                        gradient.addColorStop(0.5, `rgba(6, 182, 212, ${opacity})`);
+                        gradient.addColorStop(0.7, `rgba(236, 72, 153, ${opacity})`);
+                        gradient.addColorStop(1, `rgba(236, 72, 153, 0)`);
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(leftX, animatedY);
+                        ctx.lineTo(rightX, animatedY);
+                        ctx.strokeStyle = gradient;
+                        ctx.lineWidth = 1 + perspectiveT;
+                        ctx.stroke();
+                    }
+                }
+                
+                // Horizon glow
+                const horizonGradient = ctx.createLinearGradient(0, horizonY - 50, 0, horizonY + 50);
+                horizonGradient.addColorStop(0, 'rgba(99, 102, 241, 0)');
+                horizonGradient.addColorStop(0.5, 'rgba(99, 102, 241, 0.15)');
+                horizonGradient.addColorStop(1, 'rgba(99, 102, 241, 0)');
+                
+                ctx.fillStyle = horizonGradient;
+                ctx.fillRect(0, horizonY - 50, width, 100);
+            }
+            
+            function animate() {
+                offset += 0.3;
+                drawGrid();
+                requestAnimationFrame(animate);
+            }
+            
+            resize();
+            window.addEventListener('resize', resize);
+            animate();
+        })();
+
+        // Neural Network + Shopping Particles Background
+        (function() {
+            const canvas = document.getElementById('networkCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            let width, height;
+            let particles = [];
+            let mouse = { x: null, y: null };
+            
+            // Shopping icons as Unicode/emoji
+            const shoppingIcons = [
+                '🛒', '🛍️', '⭐', '💳', '📦', '🏷️', '💰', '🎁',
+                '🔍', '❤️', '👍', '🏪', '🧾', '💵', '🪙', '📱',
+                '💻', '⌨️', '🖱️', '📊', '🤖', '🧠', '✨', '🎯'
+            ];
+            
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            
+            class Particle {
+                constructor() {
+                    this.reset();
+                }
+                
+                reset() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.vx = (Math.random() - 0.5) * 0.5;
+                    this.vy = (Math.random() - 0.5) * 0.5;
+                    this.radius = Math.random() * 2 + 1;
+                    
+                    // 30% chance to be a shopping icon
+                    this.isIcon = Math.random() < 0.3;
+                    if (this.isIcon) {
+                        this.icon = shoppingIcons[Math.floor(Math.random() * shoppingIcons.length)];
+                        this.fontSize = Math.random() * 12 + 10;
+                        this.rotation = Math.random() * Math.PI * 2;
+                        this.rotationSpeed = (Math.random() - 0.5) * 0.01;
+                    }
+                    
+                    // Color variations
+                    const colors = [
+                        'rgba(99, 102, 241, 0.6)',   // primary
+                        'rgba(236, 72, 153, 0.5)',   // secondary
+                        'rgba(6, 182, 212, 0.5)',    // accent
+                        'rgba(255, 255, 255, 0.4)'   // white
+                    ];
+                    this.color = colors[Math.floor(Math.random() * colors.length)];
+                }
+                
+                update() {
+                    // Mouse interaction
+                    if (mouse.x && mouse.y) {
+                        const dx = mouse.x - this.x;
+                        const dy = mouse.y - this.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 150) {
+                            const force = (150 - dist) / 150 * 0.02;
+                            this.vx -= dx * force * 0.1;
+                            this.vy -= dy * force * 0.1;
+                        }
+                    }
+                    
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    
+                    // Damping
+                    this.vx *= 0.99;
+                    this.vy *= 0.99;
+                    
+                    // Rotation for icons
+                    if (this.isIcon) {
+                        this.rotation += this.rotationSpeed;
+                    }
+                    
+                    // Wrap around edges
+                    if (this.x < -50) this.x = width + 50;
+                    if (this.x > width + 50) this.x = -50;
+                    if (this.y < -50) this.y = height + 50;
+                    if (this.y > height + 50) this.y = -50;
+                }
+                
+                draw() {
+                    if (this.isIcon) {
+                        ctx.save();
+                        ctx.translate(this.x, this.y);
+                        ctx.rotate(this.rotation);
+                        ctx.font = `${this.fontSize}px Arial`;
+                        ctx.globalAlpha = 0.4;
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(this.icon, 0, 0);
+                        ctx.restore();
+                    } else {
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = this.color;
+                        ctx.fill();
+                    }
+                }
+            }
+            
+            function drawConnections() {
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (dist < 120) {
+                            const opacity = (1 - dist / 120) * 0.3;
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            
+                            // Gradient line
+                            const gradient = ctx.createLinearGradient(
+                                particles[i].x, particles[i].y,
+                                particles[j].x, particles[j].y
+                            );
+                            gradient.addColorStop(0, `rgba(99, 102, 241, ${opacity})`);
+                            gradient.addColorStop(1, `rgba(236, 72, 153, ${opacity})`);
+                            
+                            ctx.strokeStyle = gradient;
+                            ctx.lineWidth = 1;
+                            ctx.stroke();
+                        }
+                    }
+                }
+                
+                // Connect to mouse
+                if (mouse.x && mouse.y) {
+                    particles.forEach(p => {
+                        const dx = mouse.x - p.x;
+                        const dy = mouse.y - p.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (dist < 150) {
+                            const opacity = (1 - dist / 150) * 0.5;
+                            ctx.beginPath();
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(mouse.x, mouse.y);
+                            ctx.strokeStyle = `rgba(6, 182, 212, ${opacity})`;
+                            ctx.lineWidth = 1;
+                            ctx.stroke();
+                        }
+                    });
+                }
+            }
+            
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                
+                drawConnections();
+                
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                
+                requestAnimationFrame(animate);
+            }
+            
+            function init() {
+                resize();
+                particles = [];
+                
+                // Adjust particle count based on screen size
+                const particleCount = Math.min(80, Math.floor((width * height) / 15000));
+                
+                for (let i = 0; i < particleCount; i++) {
+                    particles.push(new Particle());
+                }
+                
+                animate();
+            }
+            
+            // Event listeners
+            window.addEventListener('resize', () => {
+                resize();
+                // Reposition particles that are out of bounds
+                particles.forEach(p => {
+                    if (p.x > width) p.x = width * Math.random();
+                    if (p.y > height) p.y = height * Math.random();
+                });
+            });
+            
+            window.addEventListener('mousemove', (e) => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+            });
+            
+            window.addEventListener('mouseout', () => {
+                mouse.x = null;
+                mouse.y = null;
+            });
+            
+            init();
+        })();
+
+        // Hero title color follow mouse - spotlight effect
+        (function() {
+            const heroTitle = document.getElementById('heroTitle');
+            if (!heroTitle) return;
+            
+            heroTitle.addEventListener('mousemove', (e) => {
+                const rect = heroTitle.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                
+                // Radial gradient centered on mouse position
+                const gradient = `radial-gradient(
+                    circle at ${x}% ${y}%,
+                    #06b6d4 0%,
+                    #6366f1 30%,
+                    #ec4899 60%,
+                    #6366f1 100%
+                )`;
+                
+                heroTitle.style.background = gradient;
+                heroTitle.style.webkitBackgroundClip = 'text';
+                heroTitle.style.webkitTextFillColor = 'transparent';
+                heroTitle.style.backgroundClip = 'text';
+            });
+            
+            // Reset to default gradient when mouse leaves
+            heroTitle.addEventListener('mouseleave', () => {
+                heroTitle.style.background = 'linear-gradient(135deg, #6366f1 0%, #ec4899 100%)';
+                heroTitle.style.webkitBackgroundClip = 'text';
+                heroTitle.style.webkitTextFillColor = 'transparent';
+                heroTitle.style.backgroundClip = 'text';
+            });
+        })();
+
+        // 1. Button Ripple Effect
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                ripple.classList.add('btn-ripple');
+                
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = e.clientX - rect.left - size / 2 + 'px';
+                ripple.style.top = e.clientY - rect.top - size / 2 + 'px';
+                
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        // 3. Scroll Progress Bar
+        window.addEventListener('scroll', () => {
+            const scrollProgress = document.getElementById('scrollProgress');
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            scrollProgress.style.width = scrollPercent + '%';
+        });
+
+        // 4. Typewriter Effect
+        (function() {
+            const subtitle = document.getElementById('heroSubtitle');
+            const text = 'Rewarding LLMs to Simulate Human Behavior in Online Shopping via Reinforcement Learning';
+            let index = 0;
+            
+            function type() {
+                if (index < text.length) {
+                    subtitle.innerHTML = text.substring(0, index + 1) + '<span class="typewriter-cursor"></span>';
+                    index++;
+                    setTimeout(type, 30);
+                } else {
+                    subtitle.innerHTML = text;
+                }
+            }
+            
+            // Start after hero animation
+            setTimeout(type, 800);
+        })();
+
+        // 5. Custom Cursor
+        (function() {
+            const cursor = document.getElementById('customCursor');
+            const dot = document.getElementById('cursorDot');
+            
+            // Hide default cursor
+            document.body.style.cursor = 'none';
+            
+            document.addEventListener('mousemove', (e) => {
+                cursor.style.left = e.clientX - 10 + 'px';
+                cursor.style.top = e.clientY - 10 + 'px';
+                dot.style.left = e.clientX - 2.5 + 'px';
+                dot.style.top = e.clientY - 2.5 + 'px';
+            });
+            
+            // Hover effect on interactive elements
+            const interactiveElements = document.querySelectorAll('a, button, .btn, .method-card, .action-card, td');
+            interactiveElements.forEach(el => {
+                el.style.cursor = 'none';
+                el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+                el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+            });
+        })();
+
+        // 6. Number Counter Animation
+        (function() {
+            const statValues = document.querySelectorAll('.stat-value[data-target]');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const el = entry.target;
+                        const target = parseInt(el.dataset.target);
+                        let current = 0;
+                        const increment = target / 50;
+                        const timer = setInterval(() => {
+                            current += increment;
+                            if (current >= target) {
+                                el.textContent = target + '+';
+                                clearInterval(timer);
+                            } else {
+                                el.textContent = Math.floor(current);
+                            }
+                        }, 30);
+                        observer.unobserve(el);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            statValues.forEach(el => observer.observe(el));
+        })();
+
+        // 7. Card 3D Tilt Effect
+        document.querySelectorAll('.method-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 10;
+                const rotateY = (centerX - x) / 10;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>
