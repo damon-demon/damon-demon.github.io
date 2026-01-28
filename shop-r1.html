@@ -891,10 +891,10 @@
                 <i class="fas fa-file-pdf"></i> Paper
             </a>
             <a href="#" class="btn btn-secondary">
-                <i class="fab fa-github"></i> Code (Coming Soon)
+                <i class="fab fa-github"></i> Code (Under Legal Review)
             </a>
             <a href="#" class="btn btn-secondary">
-                <i class="fas fa-database"></i> Dataset
+                <i class="fas fa-database"></i> Dataset (Under Legal Review)
             </a>
         </div>
 
@@ -1230,125 +1230,6 @@
             </table>
         </div>
         <p class="table-caption">Table 1: Three complementary metrics: exact action accuracy (all sub-fields must match the label); action type accuracy, and action type F1 to disentangle mistakes in coarse intent classification from those in long-text arguments.</p>
-
-        <div class="table-container" style="margin-top: 3rem;">
-            <table class="results-table">
-                <thead>
-                    <tr>
-                        <th rowspan="2">Model</th>
-                        <th rowspan="2">Settings</th>
-                        <th colspan="3">Exact Action Acc. Per Action Type</th>
-                        <th colspan="3">Action Type Acc. Per Action Type</th>
-                    </tr>
-                    <tr>
-                        <th><em>click</em></th>
-                        <th><em>type_and_submit</em></th>
-                        <th><em>terminate</em></th>
-                        <th><em>click</em></th>
-                        <th><em>type_and_submit</em></th>
-                        <th><em>terminate</em></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td rowspan="4" class="model-cell">Qwen-2.5-3B-Instruct</td>
-                        <td>Zero-shot prompting</td>
-                        <td>0.58%</td>
-                        <td>0.15%</td>
-                        <td>0.00%</td>
-                        <td>38.7%</td>
-                        <td>1.62%</td>
-                        <td>0.00%</td>
-                    </tr>
-                    <tr>
-                        <td>SFT</td>
-                        <td>4.93%</td>
-                        <td>3.84%</td>
-                        <td>49.80%</td>
-                        <td>8.55%</td>
-                        <td>15.36%</td>
-                        <td>49.80%</td>
-                    </tr>
-                    <tr>
-                        <td>SFT + RL (Binary)</td>
-                        <td>8.12%</td>
-                        <td>3.25%</td>
-                        <td>45.51%</td>
-                        <td>17.25%</td>
-                        <td>13.88%</td>
-                        <td>45.51%</td>
-                    </tr>
-                    <tr class="highlight-row">
-                        <td><strong>Shop-R1 (Ours)</strong></td>
-                        <td><strong>7.39%</strong></td>
-                        <td><strong>7.53%</strong></td>
-                        <td><strong>81.84%</strong></td>
-                        <td><strong>10.29%</strong></td>
-                        <td><strong>28.66%</strong></td>
-                        <td><strong>81.84%</strong></td>
-                    </tr>
-                    <tr class="section-divider"><td colspan="8"></td></tr>
-                    <tr>
-                        <td rowspan="3" class="model-cell">Qwen-2.5-1.5B-Instruct</td>
-                        <td>Zero-shot prompting</td>
-                        <td>1.01%</td>
-                        <td>0.15%</td>
-                        <td>0.39%</td>
-                        <td>10.00%</td>
-                        <td>0.44%</td>
-                        <td>0.39%</td>
-                    </tr>
-                    <tr>
-                        <td>SFT</td>
-                        <td>4.49%</td>
-                        <td>7.83%</td>
-                        <td>23.44%</td>
-                        <td>15.07%</td>
-                        <td>32.35%</td>
-                        <td>23.44%</td>
-                    </tr>
-                    <tr class="highlight-row">
-                        <td><strong>Shop-R1 (Ours)</strong></td>
-                        <td><strong>3.62%</strong></td>
-                        <td><strong>8.12%</strong></td>
-                        <td><strong>72.85%</strong></td>
-                        <td><strong>6.52%</strong></td>
-                        <td><strong>34.12%</strong></td>
-                        <td><strong>72.85%</strong></td>
-                    </tr>
-                    <tr class="section-divider"><td colspan="8"></td></tr>
-                    <tr>
-                        <td rowspan="3" class="model-cell">Qwen-2.5-0.5B-Instruct</td>
-                        <td>Zero-shot prompting</td>
-                        <td>0.43%</td>
-                        <td>0.15%</td>
-                        <td>24.02%</td>
-                        <td>12.90%</td>
-                        <td>4.43%</td>
-                        <td>24.02%</td>
-                    </tr>
-                    <tr>
-                        <td>SFT</td>
-                        <td>3.19%</td>
-                        <td>7.68%</td>
-                        <td>21.88%</td>
-                        <td>5.94%</td>
-                        <td>26.59%</td>
-                        <td>21.88%</td>
-                    </tr>
-                    <tr class="highlight-row">
-                        <td><strong>Shop-R1 (Ours)</strong></td>
-                        <td><strong>0.72%</strong></td>
-                        <td><strong>3.99%</strong></td>
-                        <td><strong>97.07%</strong></td>
-                        <td><strong>1.01%</strong></td>
-                        <td><strong>17.87%</strong></td>
-                        <td><strong>97.07%</strong></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <p class="table-caption">Table 2: Exact action accuracy and action type accuracy for each action type: <em>click</em>, <em>type_and_submit</em>, and <em>terminate</em>, across different models and finetuning methods.</p>
 
         <div class="table-container" style="margin-top: 3rem;">
             <table class="results-table">
