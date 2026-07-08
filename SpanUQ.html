@@ -65,6 +65,17 @@
             66% { transform: translate(-20px, 20px) rotate(-5deg); }
         }
 
+        /* Scroll Progress Bar */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--gradient-1);
+            z-index: 9999;
+            transition: width 0.1s ease;
+        }
+
         /* Hero Section */
         .hero {
             min-height: 100vh;
@@ -75,20 +86,6 @@
             text-align: center;
             padding: 2rem;
             position: relative;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(99, 102, 241, 0.2);
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            font-size: 0.875rem;
-            color: var(--primary);
-            margin-bottom: 1.5rem;
-            animation: fadeInUp 0.6s ease-out;
         }
 
         .hero-title {
@@ -103,64 +100,582 @@
         }
 
         .hero-subtitle {
-            font-size: clamp(1rem, 2.5vw, 1.35rem);
+            font-size: clamp(1rem, 2.5vw, 1.5rem);
             color: var(--text-secondary);
             max-width: 800px;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
             animation: fadeInUp 0.6s ease-out 0.2s both;
         }
 
-        .coming-soon {
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            margin-bottom: 2.5rem;
+            animation: fadeInUp 0.6s ease-out 0.3s both;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradient-2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+        }
+
+        .btn {
             display: inline-flex;
             align-items: center;
-            gap: 0.75rem;
-            background: var(--bg-card);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 1rem 2.5rem;
-            border-radius: 16px;
-            font-size: 1.25rem;
+            gap: 0.5rem;
+            padding: 0.875rem 1.75rem;
+            border-radius: 12px;
             font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-1);
+            color: white;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 30px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
             color: var(--text-primary);
-            animation: fadeInUp 0.6s ease-out 0.3s both;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-indicator i {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* Sections */
+        .section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Abstract Card */
+        .abstract-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
             overflow: hidden;
         }
 
-        .coming-soon::before {
+        .abstract-card::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
+            height: 4px;
             background: var(--gradient-1);
         }
 
-        .coming-soon i {
+        .abstract-card p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        /* Teaser Section */
+        .teaser-container {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .teaser-query {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .teaser-response {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .teaser-row {
+            margin-bottom: 2rem;
+            padding: 1.25rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .teaser-row:last-child {
+            margin-bottom: 0;
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .teaser-label {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .teaser-label-dim {
+            color: var(--text-secondary);
+            font-weight: 400;
+            font-style: italic;
+            margin-left: 0.5rem;
+        }
+
+        .token-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+        }
+
+        .token {
+            padding: 4px 6px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .token-low { background: rgba(34, 197, 94, 0.15); }
+        .token-med { background: rgba(234, 179, 8, 0.2); }
+        .token-high { background: rgba(239, 68, 68, 0.25); }
+        .token-none { background: rgba(255, 255, 255, 0.03); }
+
+        .seq-box {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: rgba(234, 179, 8, 0.15);
+            border: 1px solid rgba(234, 179, 8, 0.3);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .seq-score {
+            margin-left: 1rem;
+            color: #eab308;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .span-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .span-highlight {
+            padding: 4px 10px;
+            border-radius: 6px;
+            position: relative;
+        }
+
+        .span-confident {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .span-uncertain {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+        }
+
+        .span-score {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 4px;
+        }
+
+        .span-score-low { color: #22c55e; }
+        .span-score-high { color: #ef4444; }
+
+        /* Architecture Pipeline */
+        .arch-pipeline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0;
+            margin: 2rem 0;
+        }
+
+        .arch-block {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            text-align: center;
+            min-width: 120px;
+            transition: all 0.3s ease;
+        }
+
+        .arch-block:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.2);
+        }
+
+        .arch-block-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .arch-block-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .arch-block-detail {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .arch-arrow {
             color: var(--primary);
+            font-size: 1.25rem;
+            margin: 0 0.25rem;
         }
 
-        /* Pulsing dot animation */
-        .pulse-dot {
-            width: 10px;
-            height: 10px;
+        /* Figure Container */
+        .figure-container {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .figure-container img {
+            max-width: 100%;
+            border-radius: 12px;
+            background: white;
+            padding: 1rem;
+        }
+
+        .figure-caption {
+            margin-top: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Method Grid */
+        .method-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .method-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .method-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.2);
+        }
+
+        .method-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .method-icon i {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .method-card h3 {
+            font-size: 1.15rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .method-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        /* Results */
+        .results-highlight {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .result-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .result-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .result-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* Table */
+        .table-container {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-x: auto;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .results-table thead {
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        .results-table th {
+            padding: 0.85rem 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--primary);
+            white-space: nowrap;
+        }
+
+        .results-table td {
+            padding: 0.65rem 0.5rem;
+            text-align: center;
+            color: var(--text-secondary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .results-table .model-cell {
+            font-weight: 600;
+            color: var(--text-primary);
+            text-align: left;
+            padding-left: 1rem;
+            white-space: nowrap;
+        }
+
+        .results-table .highlight-row {
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.15) 0%, rgba(236, 72, 153, 0.1) 100%);
+        }
+
+        .results-table .highlight-row td {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .results-table .section-divider td {
+            padding: 0.25rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .table-caption {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-top: 1rem;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Team Section */
+        .team-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem 1.5rem;
+        }
+
+        .team-member {
+            text-align: center;
+            padding: 0.5rem 0.75rem;
+        }
+
+        .team-member-name {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .team-member-name sup {
+            color: var(--primary);
+            font-size: 0.65rem;
+            margin-left: 1px;
+        }
+
+        .affiliations {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .affiliation {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .affiliation sup {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* BibTeX */
+        .bibtex-container {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 2rem;
+        }
+
+        .bibtex-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .bibtex-header span {
+            font-weight: 600;
+        }
+
+        .copy-btn {
             background: var(--primary);
-            border-radius: 50%;
-            animation: pulse 2s ease-in-out infinite;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.3); }
+        .copy-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .bibtex-code {
+            padding: 1.5rem;
+            overflow-x: auto;
+        }
+
+        .bibtex-code pre {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            white-space: pre-wrap;
+            word-break: break-all;
         }
 
         /* Footer */
         footer {
-            position: absolute;
-            bottom: 2rem;
-            left: 0;
-            right: 0;
             text-align: center;
+            padding: 3rem 2rem;
             color: var(--text-secondary);
             font-size: 0.9rem;
         }
@@ -168,11 +683,6 @@
         footer a {
             color: var(--primary);
             text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        footer a:hover {
-            color: var(--secondary);
         }
 
         /* Animations */
@@ -189,38 +699,422 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .hero {
-                padding: 1.5rem;
+            .hero-stats {
+                flex-direction: column;
+                gap: 1.5rem;
             }
 
-            .coming-soon {
-                padding: 0.875rem 2rem;
-                font-size: 1.1rem;
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .arch-pipeline {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .arch-arrow {
+                transform: rotate(90deg);
+                margin: 0.5rem auto;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
     <div class="bg-animation"></div>
 
     <!-- Hero Section -->
     <section class="hero">
-        <div class="hero-badge">
-            <i class="fas fa-flask"></i>
-            <span>Research Project</span>
-        </div>
-
         <h1 class="hero-title">SpanUQ</h1>
         <p class="hero-subtitle">Span-Level Uncertainty Quantification for Large Language Model Generation</p>
 
-        <div class="coming-soon">
-            <div class="pulse-dot"></div>
-            Coming Soon
+        <div class="hero-stats">
+            <div class="stat">
+                <div class="stat-value">0.939</div>
+                <div class="stat-label">AUROC (Span-Level)</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">10-20×</div>
+                <div class="stat-label">Faster than Sampling</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">~25M</div>
+                <div class="stat-label">Probe Parameters</div>
+            </div>
         </div>
 
-        <footer>
-            <a href="index.html">← Back to Homepage</a>
-        </footer>
+        <div class="hero-buttons">
+            <a href="https://arxiv.org/abs/2607.05721" class="btn btn-primary" target="_blank">
+                <i class="fas fa-file-pdf"></i> Paper
+            </a>
+            <a href="https://github.com/damon-demon/SpanUQ" class="btn btn-secondary" target="_blank">
+                <i class="fab fa-github"></i> Code
+            </a>
+            <a href="https://huggingface.co/DamonDemon/SpanUQ" class="btn btn-secondary" target="_blank">
+                <i class="fas fa-cube"></i> Model
+            </a>
+            <a href="https://huggingface.co/datasets/DamonDemon/SpanUQ-Benchmark" class="btn btn-secondary" target="_blank">
+                <i class="fas fa-database"></i> Dataset
+            </a>
+        </div>
+
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+        </div>
     </section>
+
+    <!-- Abstract Section -->
+    <section class="section">
+        <h2 class="section-title">Abstract</h2>
+        <div class="abstract-card">
+            <p>
+                Uncertainty estimation is essential not only for the trustworthy deployment of large language models (LLMs) but also as a foundation for self-refinement in LLM generation. However, existing approaches operate at suboptimal granularities: token-level scores lack semantic coherence, while sequence-level scores fail to localize errors.
+                <br><br>
+                We formalize <strong>Span-Level Uncertainty Estimation (SLUE)</strong>, a new task that targets the natural granularity for uncertainty: semantically coherent text spans, each conveying a single assessable unit of meaning.
+                To address this task, we introduce <strong>SpanUQ</strong>, a lightweight (~25M parameter) probe that distills the uncertainty knowledge from expensive multi-sample inference into a single forward pass over LLM hidden states.
+                <br><br>
+                SpanUQ employs a DETR-style span decoder to simultaneously detect spans and estimate their uncertainty via a Mixture of Beta distribution, trained with a principled combination of Beta NLL regression and contrastive ranking objectives.
+                We construct <strong>SpanUQ-Benchmark</strong>, the first span-level uncertainty benchmark comprising 20K prompts, ~293K annotated spans, and continuous soft labels derived from multi-sample claim verification.
+                <br><br>
+                Experiments on five LLM backbones show that SpanUQ consistently achieves the best span-level uncertainty quality (AUROC 0.908–0.944, MAE 0.110–0.129), outperforming the strongest probe baseline and all sampling-based methods while being 10–20× faster.
+                Its DETR-based span detector attains 0.910 F1, surpassing the best heuristic by 39.4%, enabling precise error localization that sequence-level methods cannot provide.
+            </p>
+        </div>
+    </section>
+
+    <!-- Teaser Section -->
+    <section class="section">
+        <h2 class="section-title">Why Span-Level?</h2>
+        <p class="section-subtitle">Comparing uncertainty estimation granularities on an LLM response with a factual error</p>
+
+        <div class="teaser-container">
+            <p class="teaser-query"><strong>Query:</strong> "Who is Marie Curie?"</p>
+            <p class="teaser-response"><strong>Response:</strong> Marie Curie was a Polish physicist who won the Nobel Prize in 1901.</p>
+
+            <!-- Token-level -->
+            <div class="teaser-row">
+                <div class="teaser-label">(a) Token-Level Uncertainty <span class="teaser-label-dim">— hard to interpret</span></div>
+                <div class="token-row">
+                    <span class="token token-low">Marie</span>
+                    <span class="token token-low">Curie</span>
+                    <span class="token token-none">was</span>
+                    <span class="token token-none">a</span>
+                    <span class="token token-low">Polish</span>
+                    <span class="token token-med">physicist</span>
+                    <span class="token token-none">who</span>
+                    <span class="token token-low">won</span>
+                    <span class="token token-none">the</span>
+                    <span class="token token-med">Nobel</span>
+                    <span class="token token-med">Prize</span>
+                    <span class="token token-none">in</span>
+                    <span class="token token-high">19</span>
+                    <span class="token token-high">01</span>
+                    <span class="token token-none">.</span>
+                </div>
+            </div>
+
+            <!-- Sequence-level -->
+            <div class="teaser-row">
+                <div class="teaser-label">(b) Sequence-Level Uncertainty <span class="teaser-label-dim">— cannot localize which part is unreliable</span></div>
+                <div>
+                    <span class="seq-box">Marie Curie was a Polish physicist who won the Nobel Prize in 1901.</span>
+                    <span class="seq-score">u = 0.52</span>
+                </div>
+            </div>
+
+            <!-- Span-level (Ours) -->
+            <div class="teaser-row">
+                <div class="teaser-label">(c) Span-Level Uncertainty (Ours) <span class="teaser-label-dim">— interpretable and localizable</span></div>
+                <div class="span-row">
+                    <span>Marie Curie was a</span>
+                    <span class="span-highlight span-confident">Polish physicist <span class="span-score span-score-low">u=0.08</span></span>
+                    <span>who won</span>
+                    <span class="span-highlight span-confident">the Nobel Prize <span class="span-score span-score-low">u=0.12</span></span>
+                    <span>in</span>
+                    <span class="span-highlight span-uncertain">1901 <span class="span-score span-score-high">u=0.81</span></span>
+                    <span>.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture Section -->
+    <section class="section">
+        <h2 class="section-title">Architecture Overview</h2>
+        <p class="section-subtitle">A lightweight probe that distills multi-sample uncertainty into a single forward pass</p>
+
+        <div class="arch-pipeline">
+            <div class="arch-block">
+                <div class="arch-block-icon">🧊</div>
+                <div class="arch-block-title">Frozen LLM</div>
+                <div class="arch-block-detail">Hidden states</div>
+            </div>
+            <span class="arch-arrow"><i class="fas fa-arrow-right"></i></span>
+            <div class="arch-block">
+                <div class="arch-block-icon">🔀</div>
+                <div class="arch-block-title">Multi-Layer Fusion</div>
+                <div class="arch-block-detail">3 layers, mean</div>
+            </div>
+            <span class="arch-arrow"><i class="fas fa-arrow-right"></i></span>
+            <div class="arch-block">
+                <div class="arch-block-icon">⚡</div>
+                <div class="arch-block-title">Token Encoder</div>
+                <div class="arch-block-detail">Project + Transformer</div>
+            </div>
+            <span class="arch-arrow"><i class="fas fa-arrow-right"></i></span>
+            <div class="arch-block">
+                <div class="arch-block-icon">🎯</div>
+                <div class="arch-block-title">DETR Decoder</div>
+                <div class="arch-block-detail">32 span queries</div>
+            </div>
+            <span class="arch-arrow"><i class="fas fa-arrow-right"></i></span>
+            <div class="arch-block">
+                <div class="arch-block-icon">📊</div>
+                <div class="arch-block-title">Prediction Heads</div>
+                <div class="arch-block-detail">Boundary + MoB</div>
+            </div>
+            <span class="arch-arrow"><i class="fas fa-arrow-right"></i></span>
+            <div class="arch-block">
+                <div class="arch-block-icon">🔄</div>
+                <div class="arch-block-title">UCIR</div>
+                <div class="arch-block-detail">Iterative refinement</div>
+            </div>
+        </div>
+
+        <!-- Figure A1 -->
+        <div class="figure-container" style="margin-top: 2rem;">
+            <img src="project_src/spanUQ/SpanUQ_A1.png" alt="SpanUQ Span Query Lifecycle: End-to-end process from initialization through token encoding, DETR decoding, prediction heads, to final output with UCIR refinement">
+            <p class="figure-caption">Figure: Span query lifecycle in SpanUQ — from initialization through token encoding, DETR decoding, prediction heads, to final output with UCIR refinement.</p>
+        </div>
+    </section>
+
+    <!-- Method Section -->
+    <section class="section">
+        <h2 class="section-title">Key Components</h2>
+        <p class="section-subtitle">Each component addresses a specific challenge in span-level uncertainty estimation</p>
+
+        <div class="method-grid">
+            <div class="method-card">
+                <div class="method-icon">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+                <h3>Multi-Layer Fusion</h3>
+                <p>Different LLM layers encode different aspects of uncertainty. We fuse hidden states from peak-zone layers (e.g., layers 22, 24, 26 of Qwen3-14B) where uncertainty information is maximized.</p>
+            </div>
+            <div class="method-card">
+                <div class="method-icon">
+                    <i class="fas fa-crosshairs"></i>
+                </div>
+                <h3>DETR-Style Span Decoder</h3>
+                <p>32 learnable span queries attend to token features via cross-attention, enabling parallel detection of overlapping spans without the limitations of BIO tagging. Achieves 0.910 F1.</p>
+            </div>
+            <div class="method-card">
+                <div class="method-icon">
+                    <i class="fas fa-chart-area"></i>
+                </div>
+                <h3>Mixture of Beta (MoB)</h3>
+                <p>Models span uncertainty with K=3 Beta components, capturing the bimodal nature of uncertainty (certain vs. hallucinated) and intermediate cases. Nearly self-calibrated (ECE = 0.020).</p>
+            </div>
+            <div class="method-card">
+                <div class="method-icon">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+                <h3>Iterative Refinement (UCIR)</h3>
+                <p>Feeds Round-1 uncertainty estimates back through the shared decoder for a second pass, correcting systematic biases with less than 15% overhead. Improves ranking correlation by 3%.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="section">
+        <h2 class="section-title">Results</h2>
+        <p class="section-subtitle">Evaluated across five LLM backbones spanning two model families and both dense and MoE architectures</p>
+
+        <div class="results-highlight">
+            <div class="result-card">
+                <div class="result-value">0.939</div>
+                <div class="result-label">AUROC (Span-Level, Qwen3-14B)</div>
+            </div>
+            <div class="result-card">
+                <div class="result-value">0.910</div>
+                <div class="result-label">Span Detection F1</div>
+            </div>
+            <div class="result-card">
+                <div class="result-value">0.110</div>
+                <div class="result-label">MAE (lowest)</div>
+            </div>
+            <div class="result-card">
+                <div class="result-value">0.948</div>
+                <div class="result-label">Seq-Level AUROC<sub>@0.3</sub></div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th colspan="3">Qwen3-14B</th>
+                        <th colspan="3">Qwen3-8B</th>
+                        <th colspan="3">Qwen3-4B</th>
+                        <th colspan="3">Qwen3-30B-A3B</th>
+                        <th colspan="3">Mistral-7B</th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th>AUROC↑</th><th>MAE↓</th><th>ρ<sub>s</sub>↑</th>
+                        <th>AUROC↑</th><th>MAE↓</th><th>ρ<sub>s</sub>↑</th>
+                        <th>AUROC↑</th><th>MAE↓</th><th>ρ<sub>s</sub>↑</th>
+                        <th>AUROC↑</th><th>MAE↓</th><th>ρ<sub>s</sub>↑</th>
+                        <th>AUROC↑</th><th>MAE↓</th><th>ρ<sub>s</sub>↑</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="model-cell">Token Entropy</td>
+                        <td>0.603</td><td>0.230</td><td>0.097</td>
+                        <td>0.580</td><td>0.226</td><td>0.111</td>
+                        <td>0.575</td><td>0.272</td><td>0.119</td>
+                        <td>0.592</td><td>0.196</td><td>0.097</td>
+                        <td>0.569</td><td>0.231</td><td>0.109</td>
+                    </tr>
+                    <tr>
+                        <td class="model-cell">MLP Probe*</td>
+                        <td>0.881</td><td>0.139</td><td>0.575</td>
+                        <td>0.884</td><td>0.149</td><td>0.612</td>
+                        <td>0.873</td><td>0.179</td><td>0.626</td>
+                        <td>0.893</td><td>0.120</td><td>0.575</td>
+                        <td>0.863</td><td>0.146</td><td>0.562</td>
+                    </tr>
+                    <tr>
+                        <td class="model-cell">Verbalized Conf.</td>
+                        <td>0.593</td><td>0.187</td><td>0.131</td>
+                        <td>0.574</td><td>0.217</td><td>0.155</td>
+                        <td>0.595</td><td>0.267</td><td>0.141</td>
+                        <td>0.598</td><td>0.167</td><td>0.117</td>
+                        <td>0.498</td><td>0.171</td><td>−0.026</td>
+                    </tr>
+                    <tr>
+                        <td class="model-cell">SelfCheckGPT-NLI</td>
+                        <td>0.808</td><td>0.158</td><td>0.471</td>
+                        <td>0.801</td><td>0.182</td><td>0.473</td>
+                        <td>0.782</td><td>0.215</td><td>0.479</td>
+                        <td>0.813</td><td>0.147</td><td>0.455</td>
+                        <td>0.816</td><td>0.154</td><td>0.499</td>
+                    </tr>
+                    <tr>
+                        <td class="model-cell">P(True)</td>
+                        <td>0.526</td><td>0.197</td><td>0.087</td>
+                        <td>0.546</td><td>0.233</td><td>0.121</td>
+                        <td>0.529</td><td>0.273</td><td>0.122</td>
+                        <td>0.541</td><td>0.194</td><td>0.123</td>
+                        <td>0.505</td><td>0.199</td><td>0.005</td>
+                    </tr>
+                    <tr>
+                        <td class="model-cell">FActScore</td>
+                        <td>0.625</td><td>0.178</td><td>0.181</td>
+                        <td>0.762</td><td>0.197</td><td>0.405</td>
+                        <td>0.714</td><td>0.233</td><td>0.390</td>
+                        <td>0.701</td><td>0.169</td><td>0.306</td>
+                        <td>0.661</td><td>0.182</td><td>0.297</td>
+                    </tr>
+                    <tr class="section-divider"><td colspan="16"></td></tr>
+                    <tr class="highlight-row">
+                        <td class="model-cell">SpanUQ (Ours)</td>
+                        <td>0.939</td><td>0.110</td><td>0.685</td>
+                        <td>0.930</td><td>0.129</td><td>0.692</td>
+                        <td>0.944</td><td>0.126</td><td>0.754</td>
+                        <td>0.936</td><td>0.110</td><td>0.647</td>
+                        <td>0.908</td><td>0.126</td><td>0.637</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="table-caption">
+                Span-level uncertainty estimation across five LLM backbones. Token-level methods aggregate token scores within each span; sequence- and claim-level methods broadcast a single score to all spans. *MLP Probe uses ground-truth span boundaries (oracle setting).
+            </p>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="section">
+        <h2 class="section-title">Authors</h2>
+
+        <div class="team-grid">
+            <div class="team-member"><span class="team-member-name">Yimeng Zhang<sup>1*</sup></span></div>
+            <div class="team-member"><span class="team-member-name">Yingying Zhuang<sup>1</sup></span></div>
+            <div class="team-member"><span class="team-member-name">Ziyi Wang<sup>2</sup></span></div>
+            <div class="team-member"><span class="team-member-name">Yuxuan Lu<sup>2</sup></span></div>
+            <div class="team-member"><span class="team-member-name">Pei Chen<sup>1</sup></span></div>
+            <div class="team-member"><span class="team-member-name">Aman Gupta<sup>1</sup></span></div>
+            <div class="team-member"><span class="team-member-name">Zhe Su<sup>1</sup></span></div>
+            <div class="team-member"><span class="team-member-name">Ming Tan<sup>1</sup></span></div>
+            <div class="team-member"><span class="team-member-name">Zhilin Zhang<sup>1</sup></span></div>
+            <div class="team-member"><span class="team-member-name">Qun Liu<sup>1</sup></span></div>
+            <div class="team-member"><span class="team-member-name">Manikandarajan Ramanathan<sup>1</sup></span></div>
+            <div class="team-member"><span class="team-member-name">Rajashekar Maragoud<sup>1</sup></span></div>
+            <div class="team-member"><span class="team-member-name">Edward Vul<sup>1</sup></span></div>
+            <div class="team-member"><span class="team-member-name">Jing Huang<sup>1</sup></span></div>
+            <div class="team-member"><span class="team-member-name">Dakuo Wang<sup>2</sup></span></div>
+        </div>
+
+        <div class="affiliations">
+            <span class="affiliation"><sup>1</sup> Amazon</span>
+            <span class="affiliation"><sup>2</sup> Northeastern University</span>
+            <span class="affiliation" style="color: var(--primary); font-size: 0.85rem;">* Corresponding author</span>
+        </div>
+
+        <!-- BibTeX -->
+        <div class="bibtex-container">
+            <div class="bibtex-header">
+                <span><i class="fas fa-quote-left"></i> BibTeX</span>
+                <button class="copy-btn" onclick="copyBibtex()"><i class="fas fa-copy"></i> Copy</button>
+            </div>
+            <div class="bibtex-code">
+                <pre id="bibtexContent">@article{zhang2025spanuq,
+  title={SpanUQ: Span-Level Uncertainty Quantification for Large Language Model Generation},
+  author={Zhang, Yimeng and Zhuang, Yingying and Wang, Ziyi and Lu, Yuxuan and Chen, Pei and Gupta, Aman and Su, Zhe and Tan, Ming and Zhang, Zhilin and Liu, Qun and Ramanathan, Manikandarajan and Maragoud, Rajashekar and Vul, Edward and Huang, Jing and Wang, Dakuo},
+  journal={arXiv preprint arXiv:2607.05721},
+  year={2025}
+}</pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>
+            <a href="index.html">← Back to Homepage</a>
+        </p>
+    </footer>
+
+    <script>
+        // Scroll Progress Bar
+        window.addEventListener('scroll', () => {
+            const scrollTop = document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const progress = (scrollTop / scrollHeight) * 100;
+            document.getElementById('scrollProgress').style.width = progress + '%';
+        });
+
+        // Copy BibTeX
+        function copyBibtex() {
+            const text = document.getElementById('bibtexContent').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+                }, 2000);
+            });
+        }
+    </script>
 </body>
 </html>
