@@ -88,6 +88,20 @@
             position: relative;
         }
 
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(99, 102, 241, 0.2);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
         .hero-title {
             font-size: clamp(2.5rem, 6vw, 4.5rem);
             font-weight: 800;
@@ -734,6 +748,11 @@
 
     <!-- Hero Section -->
     <section class="hero">
+        <div class="hero-badge">
+            <i class="fas fa-award"></i>
+            <span>NeurIPS 2026</span>
+        </div>
+
         <h1 class="hero-title">SpanUQ</h1>
         <p class="hero-subtitle">Span-Level Uncertainty Quantification for Large Language Model Generation</p>
 
