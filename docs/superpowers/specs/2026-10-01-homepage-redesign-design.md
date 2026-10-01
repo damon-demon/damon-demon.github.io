@@ -14,11 +14,10 @@ Replace the jemdoc-generated `index.html` with a hand-written, art-directed home
 | Create | `index.html` (new homepage) |
 | Create | `style.css` |
 | Create | `images/hero.jpg` (~2400px wide, ≤300KB), `images/hero-mobile.jpg` (~1200px wide), both from `happy.jpg` |
-| Delete | `projects.html` |
-| Keep | `jemdoc.css` (still used by `school_index.html`), `jemdoc.py`, `happy.jpg`, `red_2.JPG`, `links/` |
+| Keep | `projects.html`, `jemdoc.css` (used by `school_index.html` and `projects.html`), `jemdoc.py`, `happy.jpg`, `red_2.JPG`, `links/` |
 | Edit | `.gitignore`: add `.superpowers/` |
 
-`school_index.html` is an archived copy. Its only edit is removing the "Projects" menu item, because `projects.html` will no longer exist.
+`school_index.html` is an archived copy and is not edited at all. The new homepage does not link to `projects.html`, but the file stays reachable by its URL.
 
 ## Page structure (top to bottom)
 
@@ -77,6 +76,6 @@ Replace the jemdoc-generated `index.html` with a hand-written, art-directed home
 ## Verification
 
 - Open `index.html` locally in a browser at desktop width (~1440px) and mobile width (~390px), and check the layout visually.
-- A script extracts every `href` from the new `index.html`. It checks that relative paths exist on disk, and that the set of external URLs equals the set in `school_index.html`, plus the new icon links and minus `projects.html`.
+- A script extracts every `href` from the new `index.html`. It checks that relative paths exist on disk, and that the set of external URLs equals the set in `school_index.html`, plus the new icon links and minus the `projects.html` menu link.
 - Count check: the new page contains exactly 24 publication entries.
 - `school_index.html` still renders with `jemdoc.css`.
