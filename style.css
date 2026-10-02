@@ -123,6 +123,74 @@ main { max-width: calc(var(--wrap) + 2 * var(--gutter)); margin: 0 auto; padding
 .js .section { opacity: 0; transform: translateY(12px); transition: opacity .9s ease, transform .9s ease; }
 .js .section.in { opacity: 1; transform: none; }
 
+/* ---------- About: the path ---------- */
+.path { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 6px; }
+.step { position: relative; padding: 0 14px; text-align: center; }
+/* the spine, drawn per-step and clipped at the two ends */
+.step::before {
+  content: ""; position: absolute; top: 15px; left: 0; right: 0;
+  height: 1px; background: var(--faint);
+}
+.step:first-child::before { left: 50%; }
+.step:last-child::before { right: 50%; }
+.step .dot {
+  position: relative; z-index: 1; display: block;
+  width: 9px; height: 9px; margin: 11px auto 0;
+  border: 1px solid var(--muted); border-radius: 50%; background: var(--bg);
+}
+.step:last-child .dot {
+  background: var(--accent); border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(217, 163, 91, .15);
+}
+
+.step-org { display: block; text-decoration: none; }
+/* Marks are flat single-colour and transparent, but their intrinsic luma spans 8x
+   (Sheffield purple 25 -> Amazon off-white 214), so --lb normalises each one to
+   roughly --muted lightness. Values are 141 / measured-luma. */
+.step-logo {
+  display: block; margin: 20px auto 10px;
+  width: 30px; height: 30px; object-fit: contain;
+  filter: grayscale(1) brightness(var(--lb, 2.4)) opacity(.82);
+  transition: filter .35s;
+}
+/* Sheffield's crest and Columbia's crown carry far more ink than the thin MSU
+   helmet or the Amazon glyph, so equal luma still reads heavier -- they sit
+   below the 141 target. --lsat/--lbh tame the hover reveal: both brand colours
+   are vivid yet dark (#440099, #001db8), which without a lift would make
+   hovering *dim* the logo instead of revealing it. */
+.step[data-org="sheffield"] .step-logo { --lb: 4.4;  --lsat: .18; --lbh: 2.2; }
+.step[data-org="columbia"]  .step-logo { --lb: 3.3;  --lsat: .18; --lbh: 1.9; }
+.step[data-org="msu"]       .step-logo { --lb: 2.37; }
+.step[data-org="amazon"]    .step-logo { --lb: .66; }
+.step-org:hover .step-logo, .step-org:focus-visible .step-logo {
+  filter: saturate(var(--lsat, 1)) brightness(var(--lbh, 1));
+}
+.step-deg { display: block; font-size: 16px; font-weight: 500; color: var(--text); transition: color .2s; }
+.step-org:hover .step-deg { color: var(--accent); }
+/* Reserve two lines: Sheffield's field name wraps, the other three do not, and
+   without this the four year labels sit at different heights. */
+.step-fld {
+  display: block; font-style: italic; font-size: 14.5px; line-height: 1.45;
+  color: var(--muted); margin-bottom: 3px; min-height: 2.9em;
+}
+.step-name { display: block; font-size: 14px; color: var(--muted); }
+.step-yr {
+  display: block; margin-top: 7px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .14em; color: var(--accent);
+}
+.step-adv {
+  display: block; margin-top: 9px;
+  font-family: var(--mono); font-size: 11.5px; letter-spacing: .03em; line-height: 1.5;
+  color: var(--muted);
+}
+.step-adv a {
+  text-decoration: underline;
+  text-decoration-color: rgba(217, 163, 91, .5);
+  text-decoration-thickness: 1px; text-underline-offset: 3px;
+  transition: color .2s, text-decoration-color .2s, text-decoration-thickness .2s;
+}
+.step-adv a:hover { color: var(--accent); text-decoration-color: var(--accent); text-decoration-thickness: 2px; }
+
 /* Research cards */
 .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 36px; }
 .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 24px 26px; }
@@ -204,6 +272,19 @@ main { max-width: calc(var(--wrap) + 2 * var(--gutter)); margin: 0 auto; padding
       linear-gradient(to bottom, rgba(11, 11, 12, .55) 0%, transparent 12%, transparent 30%, rgba(11, 11, 12, .9) 50%, var(--bg) 57%),
       url(images/hero-mobile.jpg) 28% 0 / auto 58svh no-repeat var(--bg);
   }
+  /* Path flips from a horizontal spine to a vertical rail */
+  .path { grid-template-columns: 1fr; margin-top: 2px; }
+  .step { text-align: left; padding: 0 0 24px 30px; }
+  .step:last-child { padding-bottom: 0; }
+  .step::before {
+    top: 9px; bottom: 0; left: 4px; right: auto;
+    width: 1px; height: auto;
+  }
+  .step:first-child::before { left: 4px; }
+  .step:last-child::before { display: none; }
+  .step .dot { position: absolute; top: 5px; left: 0; margin: 0; }
+  .step-logo { margin: 0 0 8px; }
+  .step-fld { min-height: 0; }   /* stacked rows need no height reservation */
   .cards { grid-template-columns: 1fr; }
   .service li { grid-template-columns: 1fr; gap: 10px; }
   .year-group { grid-template-columns: 1fr; }
