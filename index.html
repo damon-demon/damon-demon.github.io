@@ -35,7 +35,7 @@
 <header id="top" class="hero">
   <div class="hero-inner">
     <h1>Yimeng <span class="aka">(Damon)</span> Zhang</h1>
-    <p class="hero-role">Applied Scientist · Amazon · Multimodal AI Agents</p>
+    <p class="hero-role">Applied Scientist · Amazon · LLM Agents · Tool Use · Reliability</p>
     <p class="hero-loc">Santa Clara, CA</p>
     <ul class="hero-icons">
       <li><a href="mailto:damonzym@amazon.com" aria-label="Email" title="Email"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></a></li>
@@ -99,17 +99,48 @@
 
 <section id="research" class="section">
   <p class="section-label">02 — Research</p>
-  <p>My research centers on enhancing the efficiency of machine learning from multiple perspectives, including data optimization, model architecture, and parameter-efficient fine-tuning techniques. I aim to improve both the training and inference processes by reducing computational and resource demands while maintaining or enhancing performance. A key aspect of my work also involves ensuring model safety, with a focus on robustness against adversarial attacks. By integrating efficiency and safety, my research strives to create scalable, reliable, and secure AI systems that perform effectively in diverse real-world applications.</p>
+  <p class="lede">Agents fail in boring ways. They call the wrong API, malform an argument, assert a fact they have no business being sure about — and then carry on as if nothing happened. I work on the data and rewards that make AI agents reliable enough to act on real systems, and on measuring how much of what they say can be trusted. Not by making the models bigger.</p>
   <div class="cards">
     <div class="card">
-      <h3>Deep Learning</h3>
-      <p>Generative Models (LLMs, multi-modality, diffusion models), AI Safety (adversarial attack &amp; defense)</p>
+      <h3>Agents that use tools</h3>
+      <p>Agents fail at tool calls for unglamorous reasons: malformed arguments, the wrong API, no recovery. I generate verifiable tool-call trajectories from real APIs at scale, and train on failure rather than only on success.</p>
+      <div class="card-papers">
+        <a class="pill" href="https://arxiv.org/abs/2605.17558">Firefly · NeurIPS 2026</a>
+        <a class="pill" href="https://arxiv.org/abs/2606.12908">SENTINEL</a>
+        <a class="pill" href="https://arxiv.org/abs/2601.20144">Trajectory2Task · ACL 2026</a>
+      </div>
     </div>
     <div class="card">
-      <h3>Optimization</h3>
-      <p>Zeroth-Order Optimization, Dataset/Model pruning</p>
+      <h3>Agents that simulate people</h3>
+      <p>If an agent reproduces how a real shopper browses, hesitates and buys, a product can be evaluated without running a study on humans. I train LLM and VLM agents to simulate behaviour, with rewards grounded in observed sessions.</p>
+      <div class="card-papers">
+        <a class="pill" href="shop-r1.html">Shop-R1 · ICLR 2026</a>
+        <a class="pill" href="https://arxiv.org/abs/2510.07230">Customer-R1</a>
+        <a class="pill" href="https://arxiv.org/abs/2510.19245">See, Think, Act</a>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Measuring what models hide</h3>
+      <p>Token-level confidence is noise and sequence-level confidence cannot point at the error. I estimate uncertainty over semantically coherent spans, and study what edits to a model leave behind in its outputs.</p>
+      <div class="card-papers">
+        <a class="pill" href="SpanUQ.html">SpanUQ · NeurIPS 2026</a>
+        <a class="pill" href="https://arxiv.org/abs/2506.14003">Unlearning Traces · ICLR 2026</a>
+        <a class="pill" href="https://openreview.net/forum?id=gpp7cf0xdfN">Reverse Engineering · ICLR 2022</a>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Unlearning &amp; concept erasure</h3>
+      <p>Making a generative model forget a concept is easy to claim and hard to verify. I build erasure methods that survive adversarial prompting, and the attacks and benchmarks that show when they do not.</p>
+      <div class="card-papers">
+        <a class="pill" href="https://arxiv.org/abs/2405.15234">AdvUnlearn · NeurIPS 2024</a>
+        <a class="pill" href="https://www.optml-group.com/posts/mu_attack">UnlearnDiffAtk · ECCV 2024</a>
+        <a class="pill" href="https://unlearn-canvas.netlify.app">UnlearnCanvas · NeurIPS 2024</a>
+        <a class="pill" href="https://arxiv.org/abs/2404.18239">SOUL · EMNLP 2024</a>
+        <a class="pill" href="https://arxiv.org/abs/2504.21307">Dual Power</a>
+      </div>
     </div>
   </div>
+  <p class="research-earlier"><b>Earlier work</b> — zeroth-order optimisation and memory-efficient training (<a href="https://www.optml-group.com/posts/deepzero_iclr24">DeepZero</a>, <a href="https://arxiv.org/abs/2402.11592">ZO-LLM benchmark</a>, <a href="https://openreview.net/forum?id=W9G_ImpHlQd">Black-Box Defense</a>), dataset pruning and coreset selection (<a href="https://pruning.netlify.app">Selectivity Drives Productivity</a>), and diffusion personalisation (<a href="https://byteaigc.github.io/ID-Patch/">ID-Patch · CVPR 2025</a>).</p>
 </section>
 
 <section id="service" class="section">
