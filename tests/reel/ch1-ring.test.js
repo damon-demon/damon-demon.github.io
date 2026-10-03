@@ -25,3 +25,13 @@ test('the white Golf flies over the crest, then lands', () => {
 test('the lap timer runs in the corner', () => {
   assert.ok(frameAt(ring, 480, 1).ctx.draws('art').length >= 2);
 });
+
+test('the Golf is big enough to read as a car, not a toy', () => {
+  const car = ring.build(480, 96).layers.car;
+  assert.ok(car.w >= 56 && car.h >= 30, `${car.w}x${car.h}`);
+});
+
+test('the track is named above the lap timer', () => {
+  // the sign draws four pieces of text: NÜRBURGRING, NORDSCHLEIFE, LAP and the time
+  assert.equal(frameAt(ring, 480, 1).ctx.draws('art').length, 4);
+});
