@@ -76,3 +76,9 @@ test('bandColor picks the band and dithers just above the next boundary', () => 
   assert.equal(bandColor(stops, 0.45, 0, 1), '#000000', 'odd pixel keeps the current band');
   assert.equal(bandColor(stops, 0.7, 0, 0), '#ffffff');
 });
+
+test('textRows draws 3x5 glyphs with 1px gaps, upper-casing input', async () => {
+  const { textRows } = await import('../../reel/pixels.js');
+  assert.deepEqual(textRows('i1'), ['###..#.', '.#..##.', '.#...#.', '.#...#.', '###.###']);
+  assert.deepEqual(textRows('?'), ['...', '...', '...', '...', '...'], 'unknown characters are blank');
+});
