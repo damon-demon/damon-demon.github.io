@@ -137,6 +137,25 @@ const LEGS = {
 ...OOnO......OOnOO..
 ...OOOO......OOOOO..
 `,
+  // seated on a ledge, legs dangling over its edge; two frames swing the shins
+  sitA: `
+......ppPPPPPPPP....
+......ppPPPPPPPl....
+............pPPl....
+............pPPl....
+............pPPl....
+...........OOOnO....
+...........OOOOOO...
+`,
+  sitB: `
+......ppPPPPPPPP....
+......ppPPPPPPPl....
+............pPPl....
+.............pPPl...
+.............pPPl...
+............OOOnO...
+............OOOOOO..
+`,
   stand: `
 ......ppPPPP........
 ......pp.PPl........
@@ -468,8 +487,12 @@ const MASK = [[12, 8, 'k'], [13, 8, 'k'], [14, 8, 'k'], [15, 8, 'k'], [16, 8, 'k
   [12, 10, 'k'], [13, 10, 'a'], [14, 10, 'a'], [15, 10, 'a'], [16, 10, 'E'], [17, 10, 'a'], [18, 10, 'k'],
   [12, 11, 'k'], [13, 11, 'k'], [14, 11, 'k'], [15, 11, 'k'], [16, 11, 'k'], [17, 11, 'k'], [18, 11, 'k'], [19, 11, 'k']];
 const HAND = { mid: [7, 22], fwd: [9, 22], back: [6, 22], hold: [11, 20] };
-// The walk cycle: [legs, arm, bob]. Contact frames sit 1px lower.
-const WALK = [['near', 'back', 1], ['pass', 'mid', 0], ['far', 'fwd', 1], ['pass', 'mid', 0]];
+// Poses as frame lists of [legs, arm, bob]. Walk contact frames sit 1px lower.
+const POSES = {
+  walk: [['near', 'back', 1], ['pass', 'mid', 0], ['far', 'fwd', 1], ['pass', 'mid', 0]],
+  sit: [['sitA', 'mid', 0], ['sitB', 'mid', 0]],
+};
+export const SEAT_Y = 38;             // sit pose: the outline row under the thighs rests on the ledge
 const HAIR_UNDER_HAT = new Set(['H', 'h', 'k', 'f']);
 
 // Clear hair/outline above the hat's top edge in each column, then stamp the hat.
@@ -580,9 +603,10 @@ function frame(o, [legsKey, armKey, bob]) {
   return c.rows();
 }
 
-// The 4-frame walk cycle for one outfit, plus what the engine needs to place it.
-export function heroSprite(key) {
+// One outfit in one pose ('walk': 4 frames, 'sit': 2), plus what the engine needs to place it.
+export function heroSprite(key, pose = 'walk') {
   const o = OUTFITS[key];
   if (!o) throw new Error(`unknown outfit: ${key}`);
-  return { frames: WALK.map(pose => frame(o, pose)), palette: palette(o), width: SPRITE_W, height: SPRITE_H, anchorX: ANCHOR_X, footY: FOOT_Y };
+  if (!POSES[pose]) throw new Error(`unknown pose: ${pose}`);
+  return { frames: POSES[pose].map(p => frame(o, p)), palette: palette(o), width: SPRITE_W, height: SPRITE_H, anchorX: ANCHOR_X, footY: FOOT_Y, seatY: SEAT_Y };
 }

@@ -32,3 +32,19 @@ test('sprites report where the character stands', () => {
 test('unknown outfits fail loudly', () => {
   assert.throws(() => heroSprite('tuxedo'), /unknown outfit: tuxedo/);
 });
+
+test('the sit pose has two swinging frames and a seat row', () => {
+  const s = heroSprite('trolltunga', 'sit');
+  assert.equal(s.frames.length, 2);
+  assert.equal(s.seatY, 38);
+  assert.notDeepEqual(s.frames[0], s.frames[1]);
+  assert.deepEqual([s.width, s.height, s.anchorX], [42, 50, 9]);
+  // below the seat row only the dangling shins and shoes remain
+  const below = s.frames[0].slice(s.seatY + 1).join('');
+  assert.match(below, /O/, 'the shoes hang below the seat');
+  assert.doesNotMatch(below, /[BbrTSsH]/, 'nothing but legs below the seat');
+});
+
+test('unknown poses fail loudly', () => {
+  assert.throws(() => heroSprite('work', 'cartwheel'), /unknown pose: cartwheel/);
+});
