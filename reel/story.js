@@ -1,11 +1,12 @@
 // The reel's running order. Phase 1: every chapter is a stand-in on the beach scene, so the
 // controls, captions and timeline sync can be reviewed before the real chapters exist.
 import { beach } from './beach.js';
+import { CHAPTER_1 } from './ch1/index.js';
 
 const standIn = (id, caption, duration) => ({ id, scene: beach, caption, duration });
 
 export const CHAPTERS = [
-  { name: 'Sheffield', shots: [standIn('ch1-sheffield', 'Sheffield', 4), standIn('ch1-europe', 'Europe', 4)] },
+  CHAPTER_1,
   { name: 'New York', shots: [standIn('ch2-new-york', 'New York', 6)] },
   { name: 'Michigan', shots: [standIn('ch3-michigan', 'Michigan', 6)] },
   { name: 'California', shots: [standIn('ch4-california', 'California', 8)] },
