@@ -6,7 +6,6 @@ import { gradient, ridge, label } from '../kit.js';
 
 const SEG = 200, ROAD = 620, CAM_H = 700, DEPTH = 0.8, DRAW = 80;
 const SPEED = 46 * SEG;                       // world units per second
-const HY = 36;                                // horizon row for a flat road
 const TREE_H = 2600;
 
 // the stretch of track: [segments, curve, climb]
@@ -83,15 +82,119 @@ function golfRear() {
   return p;
 }
 
+// The white Golf GTI from behind at 120 x 64: shark-fin aerial, roof spoiler with end plates and a
+// third brake light, tinted rear glass with the driver, the passenger headrest and the rear wiper,
+// body-coloured mirrors, flared rear arches, LED tail-light clusters with light bars and reverse
+// lamps, a chrome VW roundel, red GTI letters, an AW-GT 7 plate (Ahrweiler: the Ring's district),
+// parking sensors, a finned diffuser with twin pipes each side, and wide tyres.
+function golfRearBig() {
+  const W = 120, H = 64, p = new Painter(W, H);
+  const B = '#f3f4f6', b = '#dcdfe4', s = '#bfc4cc', d = '#9ea4ae', K = '#16161b', k = '#2a2a32';
+  const G0 = '#1d2531', G1 = '#26303e', G2 = '#2f3b4d', GL = '#4a5a74';
+  const R = '#d8202f', r = '#8e0c19', rr = '#5e0710', L = '#ff6b6b', C = '#cdd2da', c = '#8f95a0';
+  const px = (x, y, col) => p.px(x, y, col);
+  const hline = (x0, x1, y, col) => { for (let x = x0; x <= x1; x++) px(x, y, col); };
+
+  // tyres, under everything
+  for (const x0 of [2, 102]) for (let y = 42; y < 64; y++) for (let x = x0; x < x0 + 16; x++) {
+    const tread = (y % 3 === 0) || (x - x0) % 5 === 0;
+    px(x, y, tread ? '#24242a' : '#111115');
+  }
+  // shark-fin aerial and roof
+  hline(71, 74, 0, K); hline(70, 75, 1, K);
+  for (let y = 2; y < 8; y++) hline(38 - (y - 2), 81 + (y - 2), y, y === 2 ? '#ffffff' : y < 5 ? B : b);
+  // roof spoiler with end plates, third brake light beneath
+  for (let y = 8; y < 12; y++) hline(27, 92, y, y === 8 ? k : K);
+  for (let y = 12; y < 14; y++) { hline(27, 29, y, K); hline(90, 92, y, K); }
+  hline(50, 69, 12, R); hline(52, 67, 13, r);
+  // rear glass: tinted, defroster lines, the driver, the passenger headrest, the wiper, reflections
+  for (let y = 12; y < 28; y++) {
+    const x0 = Math.round(30 - (y - 12) * 0.28), x1 = Math.round(89 + (y - 12) * 0.28);
+    for (let x = x0; x <= x1; x++) {
+      if (y < 14 && x > 48 && x < 71) continue;                      // brake light stays visible
+      px(x, y, y < 16 ? G0 : y < 22 ? G1 : G2);
+    }
+    if (y % 3 === 1) for (let x = x0 + 3; x <= x1 - 3; x += 1) if ((x + y) % 2 === 0) px(x, y, '#222b38');
+  }
+  for (let y = 15; y < 28; y++) for (let x = 36; x < 52; x++) {          // the driver: hair and shoulders
+    const dh = Math.hypot((x - 44) / 6.5, (y - 20) / 5.5);
+    if (dh < 1) px(x, y, y < 17 ? '#3a3540' : '#17151b');
+    if (y > 24 && x > 34 && x < 54) px(x, y, '#121116');
+  }
+  px(49, 19, '#6a5f58'); px(50, 19, '#6a5f58');                          // a glint off the glasses' arm
+  for (let y = 18; y < 28; y++) for (let x = 70; x < 81; x++) {           // passenger headrest
+    const dr = Math.hypot((x - 75) / 5.5, (y - 21) / 4);
+    if (dr < 1) px(x, y, y < 19 ? '#3a3f4c' : '#262a35');
+    if (y > 24) px(x, y, '#20232c');
+  }
+  for (let i = 0; i < 18; i++) { px(60 - i, 26 - Math.round(i * 0.33), K); if (i > 2) px(60 - i, 27 - Math.round(i * 0.33), k); }   // wiper
+  px(60, 27, '#3a3a42'); px(61, 27, '#3a3a42');
+  for (let i = 0; i < 9; i++) { px(78 + i, 13 + i, GL); px(82 + i, 13 + i, GL); px(83 + i, 13 + i, '#3e4c64'); }   // reflections
+  // body-coloured mirrors sticking out beside the glass
+  for (let y = 22; y < 29; y++) { hline(15, 24, y, y === 22 ? '#ffffff' : y > 26 ? s : B); hline(95, 104, y, y === 22 ? '#ffffff' : y > 26 ? s : B); }
+  hline(15, 24, 29, K); hline(95, 104, 29, K);
+  // the tailgate and flared rear arches
+  for (let y = 28; y < 47; y++) {
+    const half = y < 31 ? 47 + (y - 28) * 3 : 56 - Math.max(0, y - 42);
+    for (let x = Math.round(60 - half); x < Math.round(60 + half); x++) {
+      const edge = Math.min(x - (60 - half), 60 + half - 1 - x);
+      px(x, y, edge < 2 ? d : edge < 5 ? s : (y === 28 || y === 29) ? b : y === 39 ? b : B);
+    }
+  }
+  // LED tail-light clusters: dark frame, red body, two light bars, a reverse lamp near the middle
+  for (let y = 30; y < 39; y++) {
+    const len = 29 - Math.round((y - 30) * 1.6);
+    for (let i = 0; i < len; i++) {
+      const frame = y === 30 || y === 38 || i === 0 || i === len - 1;
+      let col = frame ? rr : R;
+      if (!frame && (y === 32 || y === 35) && i > 2 && i < len - 3) col = L;
+      if (!frame && i > len - 6 && y > 31 && y < 37) col = '#f1eeea';     // reverse lamp
+      if (!frame && i < 3) col = r;
+      px(7 + i, y, col); px(112 - i, y, col);
+    }
+  }
+  // chrome VW roundel with the V over the W
+  for (let y = 29; y < 43; y++) for (let x = 53; x < 67; x++) {
+    const dd = Math.hypot(x - 59.5, y - 35.5);
+    if (dd < 6.6) px(x, y, dd > 5.6 ? c : dd > 4.8 ? C : '#334055');
+  }
+  const VW = ['#.......#', '.#.....#.', '.#.....#.', '..#...#..', '#..#.#..#', '.#..#..#.', '.#.#.#.#.', '..#...#..'];
+  VW.forEach((row, y) => { for (let x = 0; x < row.length; x++) if (row[x] === '#') px(55 + x, 31 + y, '#f4f6fa'); });
+  // red GTI letters on the right of the tailgate
+  const gti = label('GTI', R);
+  gti.rows.forEach((row, y) => { for (let x = 0; x < row.length; x++) if (row[x] === '#') px(86 + x, 41 + y, R); });
+  // bumper, sensors, reflectors, the fog lamp, finned diffuser, twin pipes each side
+  for (let y = 47; y < 56; y++) hline(5, 114, y, y === 47 ? b : y > 53 ? s : B);
+  for (const x of [30, 46, 73, 89]) px(x, 48, c);
+  hline(7, 13, 50, R); hline(106, 112, 50, R); hline(23, 28, 51, R);
+  for (let y = 54; y < 61; y++) for (let x = 15; x < 105; x++) px(x, y, (x - 15) % 6 === 0 && y > 55 ? k : y === 54 ? k : K);
+  for (const x0 of [19, 29, 82, 92]) for (let y = 55; y < 61; y++) for (let x = x0; x < x0 + 8; x++) {
+    const dd = Math.hypot((x - x0 - 3.5) / 4, (y - 57.8) / 3.2);
+    if (dd < 1) px(x, y, dd > 0.75 ? C : dd > 0.5 ? c : '#0c0c10');
+  }
+  // plate recess and German plate AW-GT 7 with the EU band
+  for (let y = 41; y < 52; y++) hline(42, 77, y, y === 41 ? s : b);
+  for (let y = 42; y < 51; y++) hline(44, 75, y, (y === 42 || y === 50) ? K : '#f6f6f2');
+  for (let y = 42; y < 51; y++) { px(44, y, K); px(75, y, K); hline(45, 47, y, y > 42 && y < 50 ? '#2f4fa8' : K); }
+  px(46, 44, '#f2c200'); px(45, 45, '#f2c200'); px(47, 45, '#f2c200');
+  const plate = label('AW GT7', '#16161b');
+  plate.rows.forEach((row, y) => { for (let x = 0; x < row.length; x++) if (row[x] === '#') px(50 + x, 44 + y, K); });
+  hline(52, 67, 41, '#fff6dc');                                           // plate lights
+  return p;
+}
+
 export function buildRing(W, H = 96) {
   const layers = {};
   layers.sky = gradient(W, H, [['#9fb2c6', 0], ['#b6c5d4', 0.25], ['#cfd9e2', 0.42], ['#dde5ea', 0.5]]);
+  // Wide screens get the full-size Golf; on a phone the road is too narrow for it, so the 60 x 32 one.
+  // The horizon rises with the car so the road ahead stays visible over its roof.
+  const car = W >= 300 ? golfRearBig() : golfRear(), hy = car.h > 40 ? 22 : 36;
   const hills = new Painter(W * 3, H);                              // the Eifel's forested hills on the horizon
   const h1 = ridge(W * 3, 10, [[4, 3, 0.5], [2, 7, 1.3], [1, 19, 0.2]]);
-  for (let i = 0; i < W * 3; i++) for (let j = 0; j < h1[i]; j++) hills.px(i, HY + 2 - j, j > h1[i] - 1.5 ? '#5d7a68' : '#4a6a58');
+  for (let i = 0; i < W * 3; i++) for (let j = 0; j < h1[i]; j++) hills.px(i, hy + 2 - j, j > h1[i] - 1.5 ? '#5d7a68' : '#4a6a58');
   layers.hills = hills;
-  layers.car = golfRear();
-  return { W, H, layers, track: buildTrack() };
+  layers.car = car;
+  return { W, H, hy, layers, track: buildTrack() };
 }
 
 const labels = new Map();                // text -> pixel art, so the timer does not churn objects
@@ -101,9 +204,9 @@ function text(str, ink) {
   return labels.get(k);
 }
 
-function project(p, camY, camZ, W, H) {
+function project(p, camY, camZ, W, H, hy) {
   const z = p.z - camZ, scale = DEPTH / z;
-  return { z, scale, x: Math.round(W / 2 + scale * p.x * W / 2), y: Math.round(HY - scale * (p.y - camY) * H / 2), w: Math.round(scale * ROAD * W / 2) };
+  return { z, scale, x: Math.round(W / 2 + scale * p.x * W / 2), y: Math.round(hy - scale * (p.y - camY) * H / 2), w: Math.round(scale * ROAD * W / 2) };
 }
 
 function band(ctx, y1, y2, x1, w1, x2, w2, col, f) {
@@ -129,8 +232,8 @@ export function renderRing(ctx, t, s, env) {
   for (let n = 0; n < DRAW; n++) {
     const sg = segs[(base + n) % N];
     const z1 = (base + n) * SEG, z2 = z1 + SEG;
-    const p1 = project({ x: -x, y: sg.y1, z: z1 }, camY, pos, W, H);
-    const p2 = project({ x: -x - dx, y: sg.y2, z: z2 }, camY, pos, W, H);
+    const p1 = project({ x: -x, y: sg.y1, z: z1 }, camY, pos, W, H, s.hy);
+    const p2 = project({ x: -x - dx, y: sg.y2, z: z2 }, camY, pos, W, H, s.hy);
     x += dx; dx += sg.curve;
     drawn.push({ sg, p1, clip: maxy });
     if (p1.z <= DEPTH || p2.y >= p1.y || p2.y >= maxy) continue;
@@ -161,19 +264,19 @@ export function renderRing(ctx, t, s, env) {
       }
     }
   }
-  // the car: pushed wide in the bends, bouncing, airborne over the crest
-  const ahead = segs[(base + 4) % N].curve;
+  // the car: pushed wide in the bends, bouncing, airborne over the crest; everything scales with it
+  const k = c.car.width / 60, ahead = segs[(base + 4) % N].curve;
   const air = Math.max(0, 1 - Math.abs(base + pct - crest - 2) / 5);   // airborne just past the crest
-  const lift = Math.round(Math.sin(air * Math.PI / 2) * 8 * air);
-  const cx = Math.round(W / 2 - c.car.width / 2 - ahead * 1.6), cy = H - c.car.height - 1 - lift + (Math.floor(t * 12) % 2);
+  const lift = Math.round(Math.sin(air * Math.PI / 2) * 8 * k * air);
+  const cx = Math.round(W / 2 - c.car.width / 2 - ahead * 1.6 * k), cy = H - c.car.height - 1 - lift + (Math.floor(t * 12) % 2);
   ctx.fillStyle = `rgba(16, 22, 16, ${lift > 0 ? 0.4 : 0.55})`;                                 // shadow on the asphalt
-  ctx.fillRect(cx + 4 + Math.round(lift / 2), H - 3, c.car.width - 8 - lift, 3);
+  ctx.fillRect(cx + Math.round((4 + lift / 2) * 1), H - 3, c.car.width - 8 * k - lift, 3);
   ctx.drawImage(c.car, cx, cy);
   if (Math.abs(ahead) > 2.5) {                                          // tyre smoke on the hard bends
     ctx.fillStyle = 'rgba(225, 226, 230, 0.6)';
-    for (let k = 0; k < 4; k++) {
-      const age = (t * 7 + k * 0.25) % 1;
-      ctx.fillRect(Math.round(cx + (ahead > 0 ? 2 : 50) - age * 8 * Math.sign(ahead)), Math.round(cy + 26 - age * 8), 5 + Math.round(age * 5), 3);
+    for (let n = 0; n < 4; n++) {
+      const age = (t * 7 + n * 0.25) % 1;
+      ctx.fillRect(Math.round(cx + (ahead > 0 ? 2 : 50) * k - age * 8 * k * Math.sign(ahead)), Math.round(cy + 26 * k - age * 8 * k), Math.round((5 + age * 5) * k), Math.round(3 * k));
     }
   }
   // the track sign and the lap timer under the controls; the timer runs fast

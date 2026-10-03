@@ -35,3 +35,10 @@ test('the track is named above the lap timer', () => {
   // the sign draws four pieces of text: NÜRBURGRING, NORDSCHLEIFE, LAP and the time
   assert.equal(frameAt(ring, 480, 1).ctx.draws('art').length, 4);
 });
+
+test('wide screens get the Golf at twice the size, phones keep the 60x32 one', () => {
+  const wide = ring.build(480, 96), phone = ring.build(195, 96);
+  assert.deepEqual([wide.layers.car.w, wide.layers.car.h], [120, 64]);
+  assert.deepEqual([phone.layers.car.w, phone.layers.car.h], [60, 32]);
+  assert.ok(wide.hy < phone.hy, 'the horizon rises over the big car so the road ahead stays in view');
+});
