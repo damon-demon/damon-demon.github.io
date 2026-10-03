@@ -74,7 +74,7 @@ The full loop runs about 55 s, and the timings below are targets. The caption is
 1. Sheffield: red-brick terraces and Firth Court in grey drizzle, walking with the umbrella.
 2. A train. Paris, Rome, Barcelona and the Alps flash past the window, about 1 s each. Passport stamps land in a corner of the frame faster and faster.
 3. Lisbon: riding the yellow tram up a steep street lined with tiled façades.
-4. Nürburgring: a white compact sports car takes the "Green Hell" forest corners. A small lap timer runs in a corner.
+4. Nürburgring: Yimeng's modified VW Golf GTI (lowered, aftermarket wheels, the red stripe across the grille) takes the "Green Hell" forest corners. A small lap timer runs in a corner. The body colour defaults to Tornado Red; Yimeng can name the real colour at the chapter 1 review.
 5. Trolltunga: hike up, walk out to the tip of the rock tongue and sit with legs dangling over the lake 700 m below. The camera holds here. This is the stillest moment in the film, and it comes straight after the fastest one.
 6. Iceland: Vestrahorn ("Batman Mountain"), black sand and dune grass, with an aurora rising at night.
 7. A plane takes off west.
