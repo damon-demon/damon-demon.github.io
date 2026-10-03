@@ -82,3 +82,8 @@ test('textRows draws 3x5 glyphs with 1px gaps, upper-casing input', async () => 
   assert.deepEqual(textRows('i1'), ['###..#.', '.#..##.', '.#...#.', '.#...#.', '###.###']);
   assert.deepEqual(textRows('?'), ['...', '...', '...', '...', '...'], 'unknown characters are blank');
 });
+
+test('textRows has an Ü for NÜRBURGRING', async () => {
+  const { textRows } = await import('../../reel/pixels.js');
+  assert.deepEqual(textRows('Ü'), ['#.#', '...', '#.#', '#.#', '###']);
+});
