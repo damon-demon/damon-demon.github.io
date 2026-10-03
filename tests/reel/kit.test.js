@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { tile, gradient, art, label, ridge, drawHero } from '../../reel/kit.js';
+import { tile, gradient, art, paint, label, ridge, drawHero } from '../../reel/kit.js';
 import { Recorder } from './fake-canvas.js';
 
 test('tile draws a wrapped layer twice so it always covers the view', () => {
@@ -25,6 +25,12 @@ test('art adds a generated outline ring and its colour', () => {
   assert.deepEqual(a.rows, ['.k.', 'kAk', '.k.']);
   assert.equal(a.palette.k, '#222222');
   assert.deepEqual([a.w, a.h], [3, 3]);
+});
+
+test('paint copies pixel art into an RGBA Painter, leaving gaps transparent', () => {
+  const p = paint(art('A.', { A: '#ff0000' }));
+  assert.deepEqual([p.w, p.h], [2, 1]);
+  assert.deepEqual([...p.data], [255, 0, 0, 255, 0, 0, 0, 0]);
 });
 
 test('label renders 3x5 text in one ink', () => {

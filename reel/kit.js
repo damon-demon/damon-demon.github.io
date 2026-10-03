@@ -24,6 +24,13 @@ export function art(grid, palette, outline = null) {
   return { rows: g.rows(), palette: outline ? { ...palette, k: outline } : palette, w: g.w, h: g.h };
 }
 
+// Pixel art painted into a Painter of its own size, for scenes that keep everything as layers.
+export function paint(a) {
+  const p = new Painter(a.w, a.h);
+  a.rows.forEach((row, y) => { for (let x = 0; x < row.length; x++) if (row[x] !== '.') p.px(x, y, a.palette[row[x]]); });
+  return p;
+}
+
 // One line of 3x5 text as pixel art in a single ink colour.
 export function label(str, ink) {
   const rows = textRows(str);
