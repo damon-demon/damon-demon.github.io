@@ -35,10 +35,10 @@ expect 'desktop canvas is 1440/3 native px wide' "$(canvas "$d")" 'width="480"' 
 expect 'five chapter buttons plus pause' "$d" 'aria-label="Chapter 5: To be continued"[^>]*>05<' 'class="reel-pause" aria-label="Play"'
 
 d=$(dom 1440,900 '?reel=5');  expect 'caption switches to Europe inside chapter 1' "$d" 'data-chapter="0"' '>Europe<'
-d=$(dom 1440,900 '?reel=9');  expect 'New York lights step 2' "$d" 'data-chapter="1"' '>New York<' 'class="step is-live" data-org="columbia"'
-d=$(dom 1440,900 '?reel=15'); expect 'Michigan lights step 3' "$d" 'data-chapter="2"' 'class="step is-live" data-org="msu"'
-d=$(dom 1440,900 '?reel=21'); expect 'California lights step 4' "$d" 'data-chapter="3"' 'class="step is-live" data-org="amazon"'
-d=$(dom 1440,900 '?reel=29'); expect 'To be continued keeps step 4 lit' "$d" 'data-chapter="4"' '>To be continued…<' 'class="step is-live" data-org="amazon"'
+d=$(dom 1440,900 '?reel=19'); expect 'New York lights step 2' "$d" 'data-chapter="1"' '>New York<' 'class="step is-live" data-org="columbia"'
+d=$(dom 1440,900 '?reel=25'); expect 'Michigan lights step 3' "$d" 'data-chapter="2"' 'class="step is-live" data-org="msu"'
+d=$(dom 1440,900 '?reel=31'); expect 'California lights step 4' "$d" 'data-chapter="3"' 'class="step is-live" data-org="amazon"'
+d=$(dom 1440,900 '?reel=39'); expect 'To be continued keeps step 4 lit' "$d" 'data-chapter="4"' '>To be continued…<' 'class="step is-live" data-org="amazon"'
 
 # headless Chrome will not go narrower than 500px, so the phone check runs at 500 (still 2x)
 expect 'phone-size canvas is 500/2 native px wide' "$(canvas "$(dom 500,900 '?reel=1')")" 'width="250"' 'style="[^"]*width: 500px'
@@ -46,7 +46,7 @@ expect 'wide screen switches to 4x' "$(canvas "$(dom 1920,1080 '?reel=1')")" 'wi
 
 expect 'offscreen at load: waits at t=0' "$(reel "$(dom 1440,900 '')")" 'data-state="paused"' 'data-t="0.00"'
 expect 'scrolled into view: plays' "$(reel "$(dom 1440,900 '#reel')")" 'data-state="playing"' 'data-t="(0\.[0-9]*[1-9]|[1-9])'
-expect 'shot loop debug plays that shot' "$(dom 1440,900 '?reel=ch1-europe')" 'data-state="playing"' '>Europe<'
+expect 'shot loop debug plays that shot' "$(dom 1440,900 '?reel=ch1-trolltunga')" 'data-state="playing"' '>Europe<'
 expect 'reduced motion: still poster, no autoplay' "$(dom 1440,900 '#reel' --force-prefers-reduced-motion)" \
   'data-state="paused"' '>California<' 'class="step is-live" data-org="amazon"' 'aria-label="Play"'
 
