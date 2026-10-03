@@ -134,9 +134,12 @@ The world ahead turns into an unfinished pencil sketch, and Yimeng (California o
 - **Stack:** no framework and no build step, as with the rest of the site. ES modules load with `<script type="module" src="reel/reel.js">`, which defers automatically. GitHub Pages serves the files as they are.
 - **Files:**
   - `reel/reel.js` is the engine. It mounts the reel, sizes it, runs the clock, renders, and handles the controls, IntersectionObserver, reduced motion, chapter navigation and timeline sync.
-  - `reel/pixels.js` holds the helpers: grid → canvas, generated outlines, palette remaps, the seeded PRNG, Bresenham lines, and a 3×5 pixel font for in-world digits and short words (`1/12`, the lap timer, the paper counter).
-  - `reel/cast.js` holds the character rig (head, torso, arms, legs, poses), every outfit, the dog with its outfits, and the props. Sprites are composed from parts at runtime and cached per outfit and pose.
-  - `reel/ch1-sheffield.js` through `reel/ch5-continued.js` each hold one chapter: its scene builders (background layers, landmarks, vehicles) and its shot list.
+  - `reel/pixels.js` holds the pure pixel helpers: grids with generated outlines, Bresenham lines, recolouring, the seeded PRNG, an RGBA `Painter`, banded gradients, and (from chapter 2) a 3×5 pixel font.
+  - `reel/hero.js` and `reel/dog.js` hold the cast: Yimeng's rig with every outfit, and the dog with its outfits. Sprites are composed from parts at runtime.
+  - `reel/timeline.js` holds the pure clock maths: chapters of shots become absolute times, plus `locate`, chapter starts and `?reel=` parsing.
+  - `reel/sprites.js` turns grids and Painters into canvases.
+  - `reel/story.js` holds the running order and imports one module per chapter (`reel/ch1-sheffield.js` … `reel/ch5-continued.js`) as each is built.
+  - `reel/beach.js` holds the approved beach scene, which is also the reduced-motion poster.
   - `style.css` gets a new `/* ---------- Reel ---------- */` block, plus `.step.is-live` rules.
 - **Sprite data:** palette-indexed text grids live in the JS (one character per pixel, `.` for transparent). Fill-only parts get their outlines generated. Outfits are palette remaps, part swaps and overlays on the same rig. This is the system validated in the mockups.
 - **Shots:** each chapter exports a list of shots. A shot has a duration and the layers it uses, each with a parallax factor. It has a camera speed, which can be 0 for staged moments, and actor tracks for Yimeng and the dog: outfit, action (walk, sit, ride, eat, swim and so on), screen position and props. It can also have timed events (counters, stamps, cuts) and a transition into the next shot (cut, crossfade, or a special one: caps → snow, door → colour, the pencil sketch). The engine concatenates all shots into one timeline and derives chapter boundaries from it for the caption, the buttons and the sync.
