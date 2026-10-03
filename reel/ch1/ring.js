@@ -1,98 +1,63 @@
-// Chapter 1, shot 4: the Nürburgring Nordschleife. Yimeng's modified Golf GTI (Tornado Red)
-// flies through the Eifel forest past Armco and red-white kerbs; a lap timer runs in the corner.
-import { Painter, rng } from '../pixels.js';
-import { tile, gradient, ridge, label } from '../kit.js';
+// Chapter 1, shot 4: the Nürburgring Nordschleife from a chase camera. Yimeng's white modified Golf
+// GTI attacks a stretch of the Green Hell: bend after bend, climbing and plunging, airborne over a
+// crest like Flugplatz. A pseudo-3D road (projected segments, near to far) under a lap timer.
+import { Painter } from '../pixels.js';
+import { gradient, ridge, label } from '../kit.js';
 
-const V = 300;                          // the world streams past at this many px/s
-const ROAD = 85;                        // asphalt top row; the tyres sit on it
+const SEG = 200, ROAD = 620, CAM_H = 700, DEPTH = 0.8, DRAW = 80;
+const SPEED = 46 * SEG;                       // world units per second
+const HY = 36;                                // horizon row for a flat road
+const TREE_H = 2600;
 
-function golf() {
-  // side view, facing right: rear hatch on the left, bonnet on the right; glass left transparent
-  const W = 64, H = 25, p = new Painter(W, H);
-  const R = '#c8102e', r = '#9a0c22', h = '#e8414b', K = '#1c1c22', G = '#27303d';
-  const body = (x, y) => {
-    if (y < 2) return x >= 19 && x <= 45;                                    // roof
-    if (y <= 10) {                                                             // greenhouse
-      const back = 18 - (y - 1) * 0.85, front = 46 + (y - 1) * 0.95;
-      return x >= back && x <= front;
+// the stretch of track: [segments, curve, climb]
+const TRACK = [
+  [4, 0, 0], [16, 6, 1400], [8, 0.8, 900], [10, 0, -1800], [16, -8, -2600], [8, 0, 1200],
+  [12, 7.5, 500], [12, -6.5, -900], [14, 5, 1700], [10, 0, -1300], [14, -7, 0], [30, 4, 800], [50, -3, 0],
+];
+const ease = (u) => (1 - Math.cos(u * Math.PI)) / 2;
+
+export function buildTrack() {
+  const segs = [];
+  let y = 0;
+  for (const [n, curve, climb] of TRACK) {
+    const y0 = y;
+    for (let i = 0; i < n; i++) {
+      const u0 = i / n, u1 = (i + 1) / n;
+      const c = curve * Math.sin(Math.PI * (i + 0.5) / n);         // ease into and out of each bend
+      segs.push({ index: segs.length, curve: c, y1: y0 + climb * ease(u0), y2: y0 + climb * ease(u1) });
     }
-    if (y <= 19) return x >= 3 && x <= 62 - (y < 12 ? (12 - y) * 3 : 0);
-    return false;
-  };
-  for (let y = 0; y < 20; y++) for (let x = 0; x < W; x++) {
-    if (!body(x, y)) continue;
-    let c = R;
-    if (y >= 2 && y <= 10) {
-      const pillarB = x >= 31 && x <= 32, edge = !body(x - 1, y) || !body(x + 1, y);
-      c = edge || pillarB ? K : null;                                          // glass stays transparent
-      if (c === null) continue;
-    }
-    if (y === 11) c = h;                                                       // shoulder highlight
-    if (y >= 17) c = y >= 18 ? K : r;                                          // sill and skirt
-    p.px(x, y, c);
+    y = y0 + climb;
   }
-  for (let x = 19; x <= 45; x++) p.px(x, 0, '#e8414b');
-  for (const [cx, cy] of [[15, 19], [50, 19]]) {                              // wheel arches, wheels, calipers
-    for (let j = -7; j <= 0; j++) for (let i = -7; i <= 7; i++) if (i * i + j * j <= 49) p.px(cx + i, cy + j, '#14141a');
-    for (let j = -5; j <= 5; j++) for (let i = -5; i <= 5; i++) {
-      const d = i * i + j * j;
-      if (d > 30) continue;
-      p.px(cx + i, cy + j, d > 20 ? '#1c1c22' : d < 3 ? '#8a8f98' : ((Math.atan2(j, i) * 5 / Math.PI + 10) % 2 < 1 ? '#3a3d45' : '#5a5f6a'));
-    }
-    p.px(cx + 2, cy - 3, '#e8414b'); p.px(cx + 3, cy - 2, '#e8414b');
-  }
-  p.rect(59, 12, 3, 2, '#f4f1e6');                                             // headlight
-  p.rect(62, 14, 2, 1, '#e8414b');                                             // the red grille stripe
-  p.rect(3, 12, 3, 2, '#7a0a18');                                              // tail light
-  p.rect(53, 14, 3, 1, '#d9d9df');                                             // GTI badge glint
+  const crest = segs.reduce((best, s) => (s.y2 > best.y2 ? s : best), segs[0]).index;
+  return { segs, crest };
+}
+
+function golfRear() {
+  const W = 40, H = 22, p = new Painter(W, H);
+  const B = '#f2f3f5', b = '#c9ccd3', K = '#1c1c22', G = '#2a3240', R = '#d8202f';
+  for (let y = 0; y < 3; y++) for (let x = 11 - y; x <= 28 + y; x++) p.px(x, y, y === 2 ? K : B);   // roof, spoiler lip
+  for (let y = 3; y < 9; y++) for (let x = 10 - (y - 3) * 0.4; x <= 29 + (y - 3) * 0.4; x++) p.px(Math.round(x), y, G);
+  for (let y = 5; y < 9; y++) for (let x = 12; x < 16; x++) p.px(x, y, y === 5 ? '#3b3640' : '#16141a');  // the driver
+  p.px(24, 4, '#4a5466'); p.px(25, 5, '#4a5466');                                                     // reflection
+  for (let y = 9; y < 17; y++) for (let x = 3; x <= 36; x++) p.px(x, y, y === 9 || y === 13 ? b : B);
+  for (const x0 of [3, 30]) for (let y = 9; y < 12; y++) for (let x = x0; x < x0 + 7; x++) p.px(x, y, y === 11 ? '#a8121e' : R);
+  for (let y = 10; y < 13; y++) for (let x = 19; x < 22; x++) p.px(x, y, (x === 20 && y === 11) ? B : '#5a6070');   // badge
+  p.rect(26, 14, 3, 1, R);                                                                             // GTI
+  for (let y = 17; y < 19; y++) for (let x = 6; x <= 33; x++) p.px(x, y, K);                         // diffuser
+  for (const x0 of [8, 30]) p.rect(x0, 18, 2, 1, '#9aa0aa');                                         // twin pipes
+  for (const x0 of [2, 32]) for (let y = 14; y < 22; y++) for (let x = x0; x < x0 + 6; x++) p.px(x, y, (y + x) % 3 === 0 ? '#2a2a30' : '#14141a');
   return p;
 }
 
-const SIGN = (() => {
-  const t = label('NORDSCHLEIFE', '#f4f1e6');
-  const w = t.w + 6, rows = [];
-  for (let y = 0; y < 9; y++) {
-    let row = '';
-    for (let x = 0; x < w; x++) row += (y >= 2 && y < 7 && x >= 3 && x < 3 + t.w && t.rows[y - 2][x - 3] === '#') ? 'w' : 'g';
-    rows.push(row);
-  }
-  for (let y = 0; y < 8; y++) rows.push('.'.repeat(4) + 'p' + '.'.repeat(w - 10) + 'p' + '.'.repeat(4));
-  return { rows, palette: { g: '#1f6b3a', w: '#f4f1e6', p: '#6a6f78' }, w, h: rows.length };
-})();
-
 export function buildRing(W, H = 96) {
-  const TW = W * 2, layers = {};
-  layers.sky = gradient(W, 70, [['#9fb2c6', 0], ['#b6c5d4', 0.4], ['#cfd9e2', 0.8]]);
-  const forest = (base, hgt, step, cols, seed) => {                           // conifer band, seamless
-    const p = new Painter(TW, H), r = rng(seed);
-    const fill = ridge(TW, base - 4, [[2, 3, seed], [1, 7, seed * 2]]);
-    for (let i = 0; i < TW; i++) for (let j = Math.round(fill[i]); j < base + 2; j++) p.px(i, j, cols[1]);
-    for (let x = 0; x < TW; x += step) {
-      const h = hgt * (0.7 + r() * 0.5), cx = x + r() * step;
-      for (let j = 0; j < h; j++) {
-        const w = (j / h) * (h * 0.32);
-        for (let i = -Math.round(w); i <= Math.round(w); i++) p.wpx(cx + i, base - h + j, (j % 4 === 3 && i < 0) ? cols[1] : cols[0]);
-      }
-    }
-    return p;
-  };
-  layers.hills = forest(62, 16, 7, ['#4c6a5c', '#5a7868'], 3);
-  layers.mid = forest(72, 24, 9, ['#2f5240', '#3a5f4a'], 5);
-  const track = new Painter(TW, H);                                            // Armco, asphalt, kerbs, grass
-  for (let i = 0; i < TW; i++) {
-    for (let y = 72; y < 85; y++) track.px(i, y, y < 78 ? '#2a4535' : '#33503d');      // verge behind the barrier
-    for (const y of [74, 77]) { track.px(i, y, '#c9ced6'); track.px(i, y + 1, '#8a909a'); }
-    if (i % 16 === 0) for (let y = 74; y < 82; y++) track.px(i, y, '#6a6f78');
-    for (let y = ROAD; y < 93; y++) track.px(i, y, y === ROAD ? '#f4f1e6' : (i * 7 + y * 3) % 13 === 0 ? '#4a4e56' : '#3a3d44');
-    for (let y = 93; y < 96; y++) track.px(i, y, y < 95 ? (Math.floor(i / 8) % 2 ? '#e8414b' : '#f4f1e6') : '#3f6a3a');
-  }
-  layers.track = track;
-  const near = new Painter(TW, H), rn = rng(9);                              // trunks flicking past, low grass
-  for (let x = 0; x < TW; x += 150 + Math.floor(rn() * 120)) for (let y = 0; y < H; y++) for (let k = 0; k < 4; k++) near.wpx(x + k, y, k === 0 ? '#16281e' : '#1e3a2a');
-  for (let x = 0; x < TW; x++) for (let y = 95; y < H; y++) near.px(x, y, '#2f5236');
-  layers.near = near;
-  layers.car = golf();
-  return { W, H, layers, signX: Math.round(W * 0.9) };
+  const layers = {};
+  layers.sky = gradient(W, H, [['#9fb2c6', 0], ['#b6c5d4', 0.25], ['#cfd9e2', 0.42], ['#dde5ea', 0.5]]);
+  const hills = new Painter(W * 3, H);                              // the Eifel's forested hills on the horizon
+  const h1 = ridge(W * 3, 10, [[4, 3, 0.5], [2, 7, 1.3], [1, 19, 0.2]]);
+  for (let i = 0; i < W * 3; i++) for (let j = 0; j < h1[i]; j++) hills.px(i, HY + 2 - j, j > h1[i] - 1.5 ? '#5d7a68' : '#4a6a58');
+  layers.hills = hills;
+  layers.car = golfRear();
+  return { W, H, layers, track: buildTrack() };
 }
 
 const labels = new Map();                // text -> pixel art, so the timer does not churn objects
@@ -102,46 +67,83 @@ function text(str, ink) {
   return labels.get(k);
 }
 
+function project(p, camY, camZ, W, H) {
+  const z = p.z - camZ, scale = DEPTH / z;
+  return { z, scale, x: Math.round(W / 2 + scale * p.x * W / 2), y: Math.round(HY - scale * (p.y - camY) * H / 2), w: Math.round(scale * ROAD * W / 2) };
+}
+
+function band(ctx, y1, y2, x1, w1, x2, w2, col, f) {
+  // fill a road trapezoid row by row, from the far edge (y2) down to the near edge (y1); f widens it
+  ctx.fillStyle = col;
+  for (let y = Math.max(0, y2); y < y1; y++) {
+    const u = (y - y2) / (y1 - y2), x = x2 + (x1 - x2) * u, w = (w2 + (w1 - w2) * u) * f;
+    ctx.fillRect(Math.round(x - w), y, Math.round(2 * w), 1);
+  }
+}
+
 export function renderRing(ctx, t, s, env) {
-  const { W, H, canvases: c } = s;
+  const { W, H, canvases: c } = s, { segs, crest } = s.track, N = segs.length;
+  const pos = t * SPEED, base = Math.floor(pos / SEG), pct = (pos % SEG) / SEG;
+  const here = segs[base % N], camY = here.y1 + (here.y2 - here.y1) * pct + CAM_H;
   ctx.clearRect(0, 0, W, H);
   ctx.drawImage(c.sky, 0, 0);
-  tile(ctx, c.hills, t * V * 0.06, 0);
-  tile(ctx, c.mid, t * V * 0.25, 0);
-  tile(ctx, c.track, t * V, 0);
-  const sign = env.art(SIGN);                                                    // the sign whips past behind the barrier
-  ctx.drawImage(sign, Math.round(s.signX - t * V * 0.55), 54);
-  // the car: Yimeng behind the driver's window, then the body
-  const cx = Math.round(W * 0.34) - 22, bob = Math.floor(t * 10) % 2, cy = ROAD - 24 + bob;
-  const hero = env.hero('travel');
-  ctx.save();
-  ctx.beginPath(); ctx.rect(cx + 33, cy + 2, 14, 9); ctx.clip();
-  ctx.fillStyle = '#27303d'; ctx.fillRect(cx + 20, cy, 30, 12);
-  ctx.drawImage(hero.canvases[1], cx + 22, cy - 13);
-  ctx.fillStyle = 'rgba(150, 175, 205, 0.22)'; ctx.fillRect(cx + 20, cy, 30, 12);
-  ctx.restore();
-  ctx.fillStyle = '#27303d'; ctx.fillRect(cx + 15, cy + 2, 16, 9);           // rear glass, tinted
-  ctx.drawImage(c.car, cx, cy);
-  // tyre smoke through the corner
-  if (t > 0.7 && t < 1.5) {
-    ctx.fillStyle = 'rgba(220, 222, 226, 0.55)';
-    for (let k = 0; k < 6; k++) {
-      const age = (t * 9 + k * 0.37) % 1, px = cx + 10 - age * 40, py = ROAD - 4 - age * 8;
-      ctx.fillRect(Math.round(px), Math.round(py), 4 + Math.round(age * 4), 3);
+  const turned = segs.slice(0, base).reduce((a, sg) => a + sg.curve, 0) + here.curve * pct;
+  ctx.drawImage(c.hills, -Math.round(((turned * 3) % W + W) % W) - W, 0);   // hills slide as the road turns
+
+  let x = 0, dx = -here.curve * pct, maxy = H;
+  const drawn = [];
+  for (let n = 0; n < DRAW; n++) {
+    const sg = segs[(base + n) % N];
+    const z1 = (base + n) * SEG, z2 = z1 + SEG;
+    const p1 = project({ x: -x, y: sg.y1, z: z1 }, camY, pos, W, H);
+    const p2 = project({ x: -x - dx, y: sg.y2, z: z2 }, camY, pos, W, H);
+    x += dx; dx += sg.curve;
+    drawn.push({ sg, p1, clip: maxy });
+    if (p1.z <= DEPTH || p2.y >= p1.y || p2.y >= maxy) continue;
+    const alt = Math.floor((base + n) / 2) % 2, y1 = Math.min(p1.y, maxy);
+    band(ctx, y1, p2.y, W / 2, W, W / 2, W, alt ? '#3d6b38' : '#356236', 1);                       // grass
+    band(ctx, y1, p2.y, p1.x, p1.w, p2.x, p2.w, '#8a8f98', 1.32);                                  // run-off by the Armco
+    band(ctx, y1, p2.y, p1.x, p1.w, p2.x, p2.w, alt ? '#e8414b' : '#f4f1e6', 1.14);                // kerbs
+    band(ctx, y1, p2.y, p1.x, p1.w, p2.x, p2.w, alt ? '#474a52' : '#41444c', 1);                   // asphalt
+    if (alt) {                                                                                       // white edge lines
+      for (const side of [-1, 1]) band(ctx, y1, p2.y, p1.x + side * p1.w * 0.93, p1.w * 0.03, p2.x + side * p2.w * 0.93, p2.w * 0.03, '#e9e6df', 1);
+    }
+    maxy = p2.y;
+  }
+  // trees, far to near, clipped behind crests
+  for (let n = drawn.length - 1; n >= 1; n--) {
+    const { sg, p1, clip } = drawn[n];
+    if (p1.z <= DEPTH || sg.index % 2) continue;
+    for (const side of [-1, 1]) {
+      const off = side * (1.9 + ((sg.index * 7) % 5) * 0.25);
+      const tx = p1.x + p1.scale * off * ROAD * W / 2, th = Math.round(p1.scale * TREE_H * H / 2), tw = th * 0.42;
+      if (th < 2 || tx < -tw || tx > W + tw) continue;
+      for (let j = 0; j < th; j++) {
+        const y = p1.y - th + j;
+        if (y >= clip || y < 0) continue;
+        const half = Math.max(0.5, (j / th) * tw * (j % 4 === 3 ? 0.8 : 1));
+        ctx.fillStyle = side < 0 ? '#1f3d2b' : '#24432f'; ctx.fillRect(Math.round(tx - half), y, Math.round(half * 2), 1);
+        ctx.fillStyle = '#2f5a3c'; ctx.fillRect(Math.round(tx - side * half * 0.8), y, Math.max(1, Math.round(half * 0.4)), 1);
+      }
     }
   }
-  tile(ctx, c.near, t * V * 1.6, 0);
-  // speed streaks
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
-  const rs = rng(4);
-  for (let n = 0; n < 10; n++) {
-    const y = 30 + Math.floor(rs() * 50), len = 10 + rs() * 30, x = ((rs() * W * 3 - t * V * 2.2) % (W + 60) + W + 60) % (W + 60) - 30;
-    ctx.fillRect(Math.round(x), y, Math.round(len), 1);
+  // the car: pushed wide in the bends, bouncing, airborne over the crest
+  const ahead = segs[(base + 4) % N].curve;
+  const air = Math.max(0, 1 - Math.abs(base + pct - crest - 2) / 5);   // airborne just past the crest
+  const lift = Math.round(Math.sin(air * Math.PI / 2) * 8 * air);
+  const cx = Math.round(W / 2 - c.car.width / 2 - ahead * 1.6), cy = H - c.car.height - 3 - lift + (Math.floor(t * 12) % 2);
+  if (lift > 0) { ctx.fillStyle = 'rgba(20, 30, 20, 0.45)'; ctx.fillRect(cx + 4, H - 4, c.car.width - 8, 2); }
+  ctx.drawImage(c.car, cx, cy);
+  if (Math.abs(ahead) > 2.5) {                                          // tyre smoke on the hard bends
+    ctx.fillStyle = 'rgba(225, 226, 230, 0.6)';
+    for (let k = 0; k < 4; k++) {
+      const age = (t * 7 + k * 0.25) % 1;
+      ctx.fillRect(Math.round(cx + (ahead > 0 ? 2 : 32) - age * 6 * Math.sign(ahead)), Math.round(cy + 18 - age * 6), 4 + Math.round(age * 4), 2);
+    }
   }
   // lap timer under the controls, running fast
   const secs = 474 + t * 4, m = Math.floor(secs / 60), sec = secs - m * 60;
-  const txt = `${m}:${sec.toFixed(2).padStart(5, '0')}`;
-  const lbl = env.art(text(txt, '#f4f1e6')), lap = env.art(text('LAP', '#e8b923'));
+  const lbl = env.art(text(`${m}:${sec.toFixed(2).padStart(5, '0')}`, '#f4f1e6')), lap = env.art(text('LAP', '#e8b923'));
   const bx = W - lbl.width - lap.width - 14;
   ctx.fillStyle = 'rgba(11, 11, 12, 0.7)'; ctx.fillRect(bx, 20, lbl.width + lap.width + 10, 9);
   ctx.drawImage(lap, bx + 3, 22); ctx.drawImage(lbl, bx + lap.width + 7, 22);
