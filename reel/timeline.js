@@ -25,6 +25,16 @@ export function locate(tl, t) {
   return { index, entry, local: tt - entry.start, chapter: entry.chapter, t: tt };
 }
 
+// How much of the page background covers a shot at local time t: 1 = fully dark, 0 = clear.
+// Shots opt in with fadeIn / fadeOut (seconds).
+export function fadeAlpha(shot, t) {
+  const fin = shot.fadeIn || 0, fout = shot.fadeOut || 0;
+  let a = 0;
+  if (fin > 0 && t < fin) a = 1 - t / fin;
+  if (fout > 0 && t > shot.duration - fout) a = Math.max(a, 1 - (shot.duration - t) / fout);
+  return Math.min(1, Math.max(0, a));
+}
+
 export function chapterStart(tl, n) {
   return tl.chapters[n].start;
 }

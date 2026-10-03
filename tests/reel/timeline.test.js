@@ -41,3 +41,13 @@ test('parseDebug reads ?reel= as a time or a shot id', () => {
   assert.deepEqual(parseDebug('?reel=42.5'), { time: 42.5 });
   assert.deepEqual(parseDebug('?x=1&reel=ch2-michelin'), { shot: 'ch2-michelin' });
 });
+
+test('fadeAlpha darkens the start and end of shots that ask for it', async () => {
+  const { fadeAlpha } = await import('../../reel/timeline.js');
+  const s = { duration: 4, fadeIn: 0.5, fadeOut: 1 };
+  assert.equal(fadeAlpha(s, 0), 1);
+  assert.equal(fadeAlpha(s, 0.25), 0.5);
+  assert.equal(fadeAlpha(s, 2), 0);
+  assert.equal(fadeAlpha(s, 3.5), 0.5);
+  assert.equal(fadeAlpha({ duration: 4 }, 0), 0, 'no fade unless the shot sets one');
+});

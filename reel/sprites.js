@@ -25,7 +25,8 @@ function imageCanvas(img) {
   return c;
 }
 
-// A sprite ({ frames, palette, anchorX, footY }) as canvases, ready for drawImage.
+// A sprite ({ frames, palette, ...placement such as anchorX, footY, seatY }) as canvases.
 export function spriteCanvases(sprite) {
-  return { canvases: sprite.frames.map(f => gridCanvas(f, sprite.palette)), anchorX: sprite.anchorX, footY: sprite.footY };
+  const { frames, palette, ...placement } = sprite;
+  return { ...placement, canvases: frames.map(f => gridCanvas(f, palette)) };
 }

@@ -1,9 +1,9 @@
 // The life reel: mounts on <section class="reel">, plays the story on a pixel canvas,
 // and keeps the caption, chapter buttons and About timeline in step with it.
-import { buildTimeline, locate, chapterStart, liveStep, parseDebug } from './timeline.js';
+import { buildTimeline, locate, chapterStart, liveStep, parseDebug, fadeAlpha } from './timeline.js';
 import { heroSprite } from './hero.js';
 import { dogSprite } from './dog.js';
-import { painterCanvas, spriteCanvases } from './sprites.js';
+import { painterCanvas, spriteCanvases, gridCanvas } from './sprites.js';
 import { CHAPTERS, POSTER } from './story.js';
 
 const H = 96;                         // native height; the width follows the stage
@@ -44,9 +44,13 @@ export function mountReel(section, chapters, poster) {
   let W = 0, scale = 0, raf = 0, last = null, lastDraw = -Infinity;
   let shownCaption = null, shownChapter = -1;
 
+  const heroFrames = memo(id => { const [key, pose] = id.split(':'); return spriteCanvases(heroSprite(key, pose)); });
+  const artCanvases = new WeakMap();
   const env = {
-    hero: memo(key => spriteCanvases(heroSprite(key))),
+    hero: (key, pose = 'walk') => heroFrames(key + ':' + pose),
     dog: memo(key => spriteCanvases(dogSprite(key))),
+    // A scene's own pixel art ({ rows, palette }) as a canvas, built once per object.
+    art: (a) => { if (!artCanvases.has(a)) artCanvases.set(a, gridCanvas(a.rows, a.palette)); return artCanvases.get(a); },
   };
   const scenes = new Map();           // scene definition -> built scene at the current width
   function sceneFor(def) {
@@ -86,7 +90,14 @@ export function mountReel(section, chapters, poster) {
       shot = at.entry.shot; local = at.local; chapter = soloChapter ?? at.chapter;
     }
     ctx.imageSmoothingEnabled = false;
-    shot.scene.render(ctx, local, sceneFor(shot.scene), env);
+    shot.scene.render(ctx, local, sceneFor(shot.scene), env, shot);
+    const fade = showingPoster ? 0 : fadeAlpha(shot, local);
+    if (fade > 0) {
+      ctx.globalAlpha = fade;
+      ctx.fillStyle = '#0b0b0c';
+      ctx.fillRect(0, 0, W, H);
+      ctx.globalAlpha = 1;
+    }
     setCaption(shot.caption);
     setChapter(chapter);
     section.dataset.t = (showingPoster ? 0 : t).toFixed(2);
