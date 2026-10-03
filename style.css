@@ -108,6 +108,49 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-
 .hero-icons a:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
 .hero-icons svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 
+/* ---------- Reel ---------- */
+/* Pixel canvas at native 96px tall, scaled by --reel-scale (read by reel/reel.js). Hidden
+   without JS: the section only exists for the script. */
+.reel { display: none; }
+.js .reel { display: block; position: relative; background: var(--bg); }
+.reel-stage { --reel-scale: 3; position: relative; height: calc(96px * var(--reel-scale)); overflow: hidden; }
+@media (max-width: 600px) { .reel-stage { --reel-scale: 2; } }
+@media (min-width: 1801px) { .reel-stage { --reel-scale: 4; } }
+.reel-canvas { position: absolute; top: 0; left: 0; image-rendering: crisp-edges; image-rendering: pixelated; }
+.reel-stage::before, .reel-stage::after { content: ""; position: absolute; left: 0; right: 0; z-index: 1; pointer-events: none; }
+.reel-stage::before { top: 0; height: 34%; background: linear-gradient(var(--bg), rgba(11, 11, 12, 0)); }
+.reel-stage::after { bottom: 0; height: 12%; background: linear-gradient(rgba(11, 11, 12, 0), var(--bg)); }
+/* Same grain as the hero, a touch lighter over pixels */
+.reel-grain {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+  opacity: .07; mix-blend-mode: overlay;
+}
+.reel-ui {
+  position: absolute; z-index: 3; top: 0; left: 0; right: 0;
+  max-width: calc(var(--wrap) + 2 * var(--gutter)); margin: 0 auto; padding: 18px var(--gutter) 0;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.reel-caption {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .28em; text-transform: uppercase;
+  color: var(--accent); min-height: 1em;
+}
+.reel-caption.swap { animation: reel-fade .6s ease; }
+@keyframes reel-fade { from { opacity: 0; } to { opacity: 1; } }
+.reel-nav { display: flex; align-items: center; gap: 4px; }
+.reel-nav button {
+  font: 11px/1 var(--mono); letter-spacing: .12em; color: var(--muted);
+  background: none; border: 0; padding: 6px 7px; cursor: pointer; transition: color .2s, border-color .2s;
+}
+.reel-nav button:hover, .reel-nav button[aria-current="true"] { color: var(--accent); }
+.reel-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+.reel-nav .reel-pause {
+  display: grid; place-items: center; width: 28px; height: 28px; padding: 0; margin-left: 8px;
+  border: 1px solid rgba(233, 230, 223, .22); border-radius: 50%; color: var(--text);
+}
+.reel-nav .reel-pause:hover { border-color: var(--accent); color: var(--accent); }
+.reel-pause svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
 /* ---------- Sections ---------- */
 main { max-width: calc(var(--wrap) + 2 * var(--gutter)); margin: 0 auto; padding: 0 var(--gutter); }
 .section { padding: clamp(72px, 11vw, 128px) 0 0; }
@@ -169,6 +212,9 @@ main { max-width: calc(var(--wrap) + 2 * var(--gutter)); margin: 0 auto; padding
 }
 .step-deg { display: block; font-size: 16px; font-weight: 500; color: var(--text); transition: color .2s; }
 .step-org:hover .step-deg { color: var(--accent); }
+/* The step for the reel chapter on screen lights up like its hover state. */
+.step.is-live .step-logo { filter: saturate(var(--lsat, 1)) brightness(var(--lbh, 1)); }
+.step.is-live .step-deg { color: var(--accent); }
 /* Reserve two lines: Sheffield's field name wraps, the other three do not, and
    without this the four year labels sit at different heights. */
 .step-fld {
@@ -284,6 +330,10 @@ main { max-width: calc(var(--wrap) + 2 * var(--gutter)); margin: 0 auto; padding
 /* ---------- Mobile ---------- */
 @media (max-width: 720px) {
   body { font-size: 16px; }
+  .reel-ui { padding: 12px 18px 0; }
+  .reel-caption { font-size: 10px; letter-spacing: .2em; }
+  .reel-nav button { padding: 5px 4px; font-size: 10px; }
+  .reel-nav .reel-pause { width: 24px; height: 24px; margin-left: 4px; }
   .nav-anchor { display: none; }
   .hero {
     background:
