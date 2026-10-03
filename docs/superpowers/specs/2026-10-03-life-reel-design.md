@@ -67,15 +67,15 @@ The two dive outfits use swimming poses in the reel. The other outfits walk.
 
 ## Storyboard
 
-The full loop runs about 56 s, and the timings below are targets. The caption is the place name and fades in at the top left whenever it changes.
+The full loop runs about 57 s, and the timings below are targets. The caption is the place name and fades in at the top left whenever it changes.
 
-### 1 · Sheffield → Europe (~17 s). Caption: `Sheffield`, switching to `Europe` when the train leaves
+### 1 · Sheffield → Europe (~17.5 s). Caption: `Sheffield`, switching to `Europe` when the train leaves
 
 1. Sheffield: red-brick terraces and Firth Court in grey drizzle, walking with the umbrella.
 2. Inside a train carriage: Yimeng sits by the window while Paris, Rome, Barcelona and the Alps stream past, about 1 s each, with a tunnel between cities. Passport stamps pile up on the carriage wall, faster and faster.
-3. Lisbon: riding the yellow tram up a steep street lined with tiled façades.
-4. Nürburgring: Yimeng's modified VW Golf GTI (lowered, aftermarket wheels, the red stripe across the grille) takes the "Green Hell" forest corners. A small lap timer runs in a corner. The body colour defaults to Tornado Red; Yimeng can name the real colour at the chapter 1 review.
-5. Trolltunga: hike up, walk out to the tip of the rock tongue and sit with legs dangling over the lake 700 m below. The camera holds here. This is the stillest moment in the film, and it comes straight after the fastest one.
+3. Lisbon: riding the yellow tram up a steep street of tiled façades, above a limestone retaining wall with an iron railing, azulejo panels and bougainvillea. The Tagus and the 25 de Abril bridge lie far below.
+4. Nürburgring, from a chase camera: Yimeng's white modified VW Golf GTI attacks a narrow stretch of the "Green Hell", bend after bend through the forest, climbing and plunging, and briefly airborne over a crest like Flugplatz. A small lap timer runs in a corner.
+5. Trolltunga at golden hour: a long fjord runs away to a low sun between sheer, back-lit walls with waterfalls and red boathouses far below. Yimeng walks out along the stratified rock tongue and sits at the tip, legs dangling, while the camera drifts slowly. This is the stillest moment in the film, and it comes straight after the fastest one.
 6. Iceland: Vestrahorn ("Batman Mountain"), black sand and dune grass, with an aurora rising at night.
 7. A plane climbs out under the same aurora, bound for New York.
 
