@@ -5,6 +5,7 @@ import { dining } from './dining.js';
 import { moma } from './moma.js';
 import { met } from './met.js';
 import { guggenheim } from './guggenheim.js';
+import { kusama } from './kusama.js';
 import { graduation } from './graduation.js';
 
 export const CHAPTER_2 = {
@@ -16,6 +17,7 @@ export const CHAPTER_2 = {
     { id: 'ch2-moma', scene: moma, caption: 'New York', duration: 1.1, fadeIn: 0.15, fadeOut: 0.1 },
     { id: 'ch2-met', scene: met, caption: 'New York', duration: 1.1, fadeIn: 0.1, fadeOut: 0.1 },
     { id: 'ch2-guggenheim', scene: guggenheim, caption: 'New York', duration: 1.1, fadeIn: 0.1, fadeOut: 0.1 },
+    { id: 'ch2-kusama', scene: kusama, caption: 'New York', duration: 1.1, fadeIn: 0.1, fadeOut: 0.15 },
     { id: 'ch2-graduation', scene: graduation, caption: 'New York', duration: 2.8, fadeIn: 0.2, fadeOut: 0.3 },
   ],
 };
