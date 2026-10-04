@@ -67,7 +67,7 @@ The two dive outfits use swimming poses in the reel. The other outfits walk. Yim
 
 ## Storyboard
 
-The full loop runs about 63 s, and the timings below are targets. The caption is the place name and fades in at the top left whenever it changes.
+The full loop runs about 66 s, and the timings below are targets. The caption is the place name and fades in at the top left whenever it changes.
 
 ### 1 · Sheffield → Europe (~17.5 s). Caption: `Sheffield`, switching to `Europe` when the train leaves
 
@@ -97,7 +97,7 @@ The full loop runs about 63 s, and the timings below are targets. The caption is
 5. Back on the Low Library steps in spring, in the Columbia-blue gown. Everyone hops and throws their caps. A puppy trots along College Walk, Yimeng's cap comes down on its head, and a heart pops up. From here on the dog walks along.
 6. Transition: the caps falling from the sky turn into snowflakes, and the snow thickens towards white.
 
-### 3 · Michigan (~10 s). Caption: `Michigan`. Grey, low-saturation palette: the sets are painted in muted colours, and Yimeng and the dog are drawn in a muted version of their palettes.
+### 3 · Michigan (~13.5 s). Caption: `Michigan`, then `Graduation Road Trip` for the drive. Grey, low-saturation palette: the sets are painted in muted colours, and Yimeng and the dog are drawn in a muted version of their palettes.
 
 1. Snow, flat land and Beaumont Tower. The white of the cap toss clears off a snowfield under a low grey sky, with bare trees and Michigan State's brick carillon tower, snow on its ledges. Yimeng walks on in the green puffer, the puppy trotting ahead, leaving footprints.
 2. A time-lapse of five years, 2021 to 2025, each a little quicker than the last, in one living room seen from a camera that never moves. The home gym is on the left: a pull-up stand, a bench, dumbbells and floor mats. The computer desk is on the right, with the dog's bed between them and a sofa beyond where the screen is wide enough. As in a time-lapse film, Yimeng appears at the desk and then in the gym each year, leaving a faint ghost for a moment.
@@ -105,7 +105,10 @@ The full loop runs about 63 s, and the timings below are targets. The caption is
    - The dog sleeps on its bed: a puppy the first year, then grown, in the green knit in winter, the bandana in spring and autumn, nothing in summer.
    - In the gym, Yimeng alternates dumbbell curls and pull-ups on the stand. The dumbbells get bigger every year, and from the third year on Yimeng is visibly bigger too.
 3. PhD graduation: under a spotlight on the commencement stage, the advisor lifts the doctoral hood, green and white satin with a velvet collar, over Yimeng's head and lays it on Yimeng's shoulders (the hooding ceremony). The audience claps and cameras flash. This is deliberately different from the cap toss at Columbia.
-4. Transition: in a grey corridor, Yimeng, hooded, walks with the dog to a door. It swings open on California in full colour, and the colour floods out from the doorway, as in *The Wizard of Oz*. Whatever it reaches turns to colour, Yimeng and the dog included, until it fills the frame.
+4. Transition: the Graduation Road Trip, on a map of the United States, captioned `Graduation Road Trip` the whole way. A small silver car leaves East Lansing and loops round the East first, still in Michigan's grey: through Ontario to Niagara Falls, across New York State to Vermont and the Maine coast, down by Boston, New York City and Washington to the Carolinas, and home through Tennessee, Kentucky and Ohio. Then it turns west, by Chicago, Kansas City, Denver and the Rockies, Utah and Las Vegas, to Santa Clara.
+   - Places are labelled as the car reaches them, and landmarks pop up: the Maine lighthouse, the Manhattan skyline, the Capitol, the Chicago skyline, a Utah arch, the Las Vegas sign and the Golden Gate Bridge.
+   - Once the car heads west, the colour spreads out from it, slowly at first, until the whole map is in full colour as it reaches California.
+   - A desktop shows the whole route from a still camera. On a phone, the camera follows the car.
 
 ### 4 · California (~16 s). Caption: `California`. Full colour, morning to sunset.
 
@@ -154,8 +157,8 @@ The world ahead turns into an unfinished pencil sketch, and Yimeng (California o
   - `reel/beach.js` holds the approved beach scene, which is also the reduced-motion poster.
   - `style.css` gets a new `/* ---------- Reel ---------- */` block, plus `.step.is-live` rules.
 - **Sprite data:** palette-indexed text grids live in the JS (one character per pixel, `.` for transparent). Fill-only parts get their outlines generated. Outfits are palette remaps, part swaps and overlays on the same rig. This is the system validated in the mockups.
-- **Shots:** each chapter exports a list of shots. A shot has a duration and the layers it uses, each with a parallax factor. It has a camera speed, which can be 0 for staged moments, and actor tracks for Yimeng and the dog: outfit, action (walk, sit, ride, eat, swim and so on), screen position and props. It can also have timed events (counters, stamps, cuts) and a transition into the next shot (cut, crossfade, or a special one: caps → snow, door → colour, the pencil sketch). The engine concatenates all shots into one timeline and derives chapter boundaries from it for the caption, the buttons and the sync.
-- **Rendering:** layers are pre-rendered once into offscreen canvases that tile seamlessly. They are built lazily just before a shot starts and released after it ends. Each frame composes the layers and actors onto one canvas at native resolution, about 480×96 on desktop, which the browser scales. The grey Michigan palette and the door → colour transition use palette-derived muted variants of the cast (`env.hero(key, pose, 'muted')`) and a clip that grows from the doorway, not `ctx.filter`, which Safari lacks. All layouts use a seeded PRNG, so every play looks the same.
+- **Shots:** each chapter exports a list of shots. A shot has a duration and the layers it uses, each with a parallax factor. It has a camera speed, which can be 0 for staged moments, and actor tracks for Yimeng and the dog: outfit, action (walk, sit, ride, eat, swim and so on), screen position and props. It can also have timed events (counters, stamps, cuts) and a transition into the next shot (cut, crossfade, or a special one: caps → snow, the road trip's spreading colour, the pencil sketch). The engine concatenates all shots into one timeline and derives chapter boundaries from it for the caption, the buttons and the sync.
+- **Rendering:** layers are pre-rendered once into offscreen canvases that tile seamlessly. They are built lazily just before a shot starts and released after it ends. Each frame composes the layers and actors onto one canvas at native resolution, about 480×96 on desktop, which the browser scales. The grey Michigan palette uses palette-derived muted variants of the cast (`env.hero(key, pose, 'muted')`), and the road trip draws a pre-greyed copy of the map under the coloured one, clipped to a circle that grows from the car. Neither uses `ctx.filter`, which Safari lacks. All layouts use a seeded PRNG, so every play looks the same.
 - **Debug hooks:** the URL parameter `?reel=` takes either a number or a shot id. A number such as `?reel=42.5` renders that moment paused. A shot id such as `?reel=ch2-dining` loops that one shot. Headless screenshots for review rely on these. They have no effect on normal visits.
 - **Accessibility:** the canvas has `role="img"` and an English `aria-label` summarising the journey. The chapter buttons are real `<button>`s labelled "Chapter n: Place". The pause button toggles its `aria-label` between "Pause" and "Play". Focus styles reuse the site's `:focus-visible` outline.
 

@@ -62,9 +62,9 @@ const HOOD_HELD = art(`
 `, { V: VELVET, G: GREEN, W: WHITE }, '#14161c');
 
 // Draw the hood as worn: over the shoulders and down the back of a hero sprite drawn at (x, y),
-// where x is the sprite's left edge and bob the frame's 1px dip. Used by the door shot too.
-export function drawHood(ctx, x, y, bob = 0) {
-  const sx = x + 9, top = y + 11 + 17 + bob;                                        // the character's left edge; the shoulder row
+// where x is the sprite's left edge.
+function drawHood(ctx, x, y) {
+  const sx = x + 9, top = y + 11 + 17;                                              // the character's left edge; the shoulder row
   ctx.fillStyle = VELVET; ctx.fillRect(sx + 2, top - 1, 11, 2);                    // the velvet collar over the shoulders
   ctx.fillRect(sx, top, 6, 11);                                                     // the hood down the back, edged in velvet
   ctx.fillStyle = GREEN; ctx.fillRect(sx + 1, top + 1, 4, 9);                      // its satin lining, with a white chevron
