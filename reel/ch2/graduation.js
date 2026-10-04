@@ -143,7 +143,7 @@ export function renderGraduation(ctx, t, s, env) {
       const y = ((f.y + (t - SNOW[0]) * f.v) % (H + 8)) - 4;
       flake(ctx, f.x + Math.sin(t * 2 + f.ph) * f.sway, y, f.big);
     }
-    ctx.globalAlpha = 0.45 * u * u; ctx.fillStyle = '#dfe6ee'; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1;
+    ctx.globalAlpha = 0.85 * u * u; ctx.fillStyle = '#dfe6ee'; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1;   // into Michigan's white
   }
 }
 

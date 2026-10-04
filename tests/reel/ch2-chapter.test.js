@@ -8,5 +8,5 @@ test('chapter 2 opens and closes at Columbia, 16.2 s in all', () => {
   assert.ok(CHAPTER_2.shots.every(s => s.caption === 'New York'));
   assert.equal(Math.round(CHAPTER_2.shots.reduce((a, s) => a + s.duration, 0) * 10) / 10, 16.2);
   assert.ok(CHAPTER_2.shots[0].fadeIn > 0, 'it fades in from the takeoff');
-  assert.ok(CHAPTER_2.shots.at(-1).fadeOut > 0, 'and out after the snow');
+  assert.ok(!CHAPTER_2.shots.at(-1).fadeOut, 'and hands its white snow straight to Michigan');
 });
