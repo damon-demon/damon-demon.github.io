@@ -23,7 +23,7 @@ The approved pixel designs (character rig, walk cycle, all outfits, the dog and 
 
 **Yimeng.** Seen in profile, facing right. Black hair with faded sides and volume on top, dark tortoiseshell rectangular glasses, and a 1 px silver earring on the visible ear. The walk cycle has 4 frames at about 6 fps. Steps are short, as suits a chibi figure. The legs are long enough to read clearly, the far leg is a darker shade than the near leg, the body bobs 1 px on contact frames, and the back foot lifts on passing frames.
 
-**The dog.** A slender sighthound with a slate-grey coat, thin legs, a long muzzle and folded ears, matching the dog in the hero photo. It trots at about 9 fps. It joins at the 2019 graduation as a puppy and grows up during the Michigan time-lapse, asleep by the desk.
+**The dog.** A slender sighthound with a slate-grey coat, thin legs, a long muzzle and folded ears, matching the dog in the hero photo. It trots at about 9 fps. It joins at the 2019 graduation as a puppy and grows up during the Michigan time-lapse, asleep by the desk. On the California coast it also stands and waits, wagging.
 
 ### Yimeng's wardrobe
 

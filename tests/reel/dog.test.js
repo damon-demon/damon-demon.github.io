@@ -40,3 +40,12 @@ test('the dog sleeps: two breathing frames, lying lower than it stands', () => {
   }
   assert.throws(() => dogSprite('bare', 'beg'), /unknown dog pose: beg/);
 });
+
+test('the dog waits: standing still on two frames, only the tail wagging', () => {
+  for (const key of ['lifevest', 'hikepack', 'pup']) {
+    const wait = dogSprite(key, 'wait');
+    assert.equal(wait.frames.length, 2);
+    assert.notDeepEqual(wait.frames[0], wait.frames[1], `${key} wags`);
+    assert.ok(wait.frames[0].every((r, y) => r.slice(4) === wait.frames[1][y].slice(4)), `${key} holds still but for the tail`);
+  }
+});

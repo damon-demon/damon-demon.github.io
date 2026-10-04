@@ -28,8 +28,9 @@ const ADULT = {
   poses: {
     ext: { back: [[5, 10, 2, 15], [6, 10, 4, 15]], front: [[13, 10, 16, 15], [14, 10, 17, 15]] },
     gather: { back: [[5, 10, 6, 15], [6, 10, 8, 15]], front: [[13, 10, 12, 15], [14, 10, 13, 15]] },
+    stand: { back: [[5, 10, 4, 15], [6, 10, 6, 15]], front: [[13, 10, 13, 15], [14, 10, 15, 15]] },
   },
-  eye: [16, 2], nose: [21, 3], tail: [3, 9, 0, 12], w: 24, h: 17, footY: 15,
+  eye: [16, 2], nose: [21, 3], tail: [3, 9, 0, 12], wag: [[3, 9, 0, 11], [3, 9, 1, 5]], w: 24, h: 17, footY: 15,
 };
 const PUPPY = {
   body: `
@@ -46,8 +47,9 @@ const PUPPY = {
   poses: {
     ext: { back: [[3, 9, 2, 12], [4, 9, 3, 12]], front: [[9, 9, 10, 12], [10, 9, 11, 12]] },
     gather: { back: [[3, 9, 4, 12], [4, 9, 5, 12]], front: [[9, 9, 8, 12], [10, 9, 9, 12]] },
+    stand: { back: [[3, 9, 3, 12], [4, 9, 4, 12]], front: [[9, 9, 9, 12], [10, 9, 10, 12]] },
   },
-  eye: [12, 2], nose: [16, 3], tail: [2, 7, 0, 8], w: 19, h: 14, footY: 12,
+  eye: [12, 2], nose: [16, 3], tail: [2, 7, 0, 8], wag: [[2, 7, 0, 8], [2, 7, 0, 4]], w: 19, h: 14, footY: 12,
 };
 
 const TILE = ['1123', '1132', '2311', '3211'];     // houndstooth-ish: cream with brown/dark teeth
@@ -85,7 +87,7 @@ function dress(c, outfit, bodyY) {
   for (const [x, y, col] of extra) c.set(x, y + bodyY, col);
 }
 
-function frame(spec, outfit, pose, bob) {
+function frame(spec, outfit, pose, bob, tail = spec.tail) {
   const c = new Grid(spec.w, spec.h);
   c.stamp(spec.body, 0, 1 + bob, { outline: 'k' });
   c.set(spec.eye[0], spec.eye[1] + 1 + bob, 'N');
@@ -100,7 +102,7 @@ function frame(spec, outfit, pose, bob) {
       c.set(x1 + 1, y1, col);                  // paw
     }
   }
-  const [tx0, ty0, tx1, ty1] = spec.tail;
+  const [tx0, ty0, tx1, ty1] = tail;
   line(c, tx0, ty0 + bob, tx1, ty1 + bob, 'C');
   return c;
 }
@@ -130,12 +132,14 @@ function sleepFrame(spec, outfit, rise) {
 export const DOG_KEYS = ['pup', 'bandana', 'msu_knit', 'bare', 'houndstooth', 'hikepack', 'blaze', 'lifevest'];
 
 // 'pup' is the puppy in its Columbia-blue bandana; every other key dresses the adult.
-// pose: 'trot' (4 frames) or 'sleep' (2 frames, breathing).
+// pose: 'trot' (4 frames), 'sleep' (2 frames, breathing) or 'wait' (2 frames: standing, wagging).
 export function dogSprite(key, pose = 'trot') {
   if (!DOG_KEYS.includes(key)) throw new Error(`unknown dog outfit: ${key}`);
-  if (pose !== 'trot' && pose !== 'sleep') throw new Error(`unknown dog pose: ${pose}`);
+  if (!['trot', 'sleep', 'wait'].includes(pose)) throw new Error(`unknown dog pose: ${pose}`);
   const spec = key === 'pup' ? PUPPY : ADULT, outfit = key === 'pup' ? 'bare' : key;
-  const made = pose === 'trot' ? TROT.map(([p, bob]) => [frame(spec, outfit, p, bob), 1 + bob]) : [0, 1].map(rise => sleepFrame(spec, outfit, rise));
+  const made = pose === 'trot' ? TROT.map(([p, bob]) => [frame(spec, outfit, p, bob), 1 + bob])
+    : pose === 'wait' ? spec.wag.map(tail => [frame(spec, outfit, 'stand', 0, tail), 1])
+    : [0, 1].map(rise => sleepFrame(spec, outfit, rise));
   const frames = made.map(([c, bodyY]) => {
     if (key === 'pup') for (const [x, y, col] of PUP_BANDANA) c.set(x, y + bodyY, col);
     return c.rows();
