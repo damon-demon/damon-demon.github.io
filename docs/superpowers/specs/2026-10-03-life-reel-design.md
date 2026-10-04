@@ -23,7 +23,7 @@ The approved pixel designs (character rig, walk cycle, all outfits, the dog and 
 
 **Yimeng.** Seen in profile, facing right. Black hair with faded sides and volume on top, dark tortoiseshell rectangular glasses, and a 1 px silver earring on the visible ear. The walk cycle has 4 frames at about 6 fps. Steps are short, as suits a chibi figure. The legs are long enough to read clearly, the far leg is a darker shade than the near leg, the body bobs 1 px on contact frames, and the back foot lifts on passing frames.
 
-**The dog.** A slender sighthound with a slate-grey coat, thin legs, a long muzzle and folded ears, matching the dog in the hero photo. It trots at about 9 fps. It joins at the 2019 graduation as a puppy and grows up during the Michigan time-lapse.
+**The dog.** A slender sighthound with a slate-grey coat, thin legs, a long muzzle and folded ears, matching the dog in the hero photo. It trots at about 9 fps. It joins at the 2019 graduation as a puppy and grows up during the Michigan time-lapse, asleep by the desk.
 
 ### Yimeng's wardrobe
 
@@ -49,7 +49,7 @@ The approved pixel designs (character rig, walk cycle, all outfits, the dog and 
 | 4 | Freediving and spearfishing | Kelp-camo wetsuit, long fins, snorkel, speargun |
 | 5 | To be continued | California everyday outfit |
 
-The two dive outfits use swimming poses in the reel. The other outfits walk. Yimeng also sits (on the train, at Trolltunga and in the restaurants), and at the cap toss cheers bareheaded in the gown.
+The two dive outfits use swimming poses in the reel. The other outfits walk. Yimeng also sits (on the train, at Trolltunga and in the restaurants), types at the desk, curls dumbbells in the gym, and at the cap toss cheers bareheaded in the gown.
 
 ### The dog's wardrobe
 
@@ -67,7 +67,7 @@ The two dive outfits use swimming poses in the reel. The other outfits walk. Yim
 
 ## Storyboard
 
-The full loop runs about 62 s, and the timings below are targets. The caption is the place name and fades in at the top left whenever it changes.
+The full loop runs about 63 s, and the timings below are targets. The caption is the place name and fades in at the top left whenever it changes.
 
 ### 1 · Sheffield → Europe (~17.5 s). Caption: `Sheffield`, switching to `Europe` when the train leaves
 
@@ -97,12 +97,14 @@ The full loop runs about 62 s, and the timings below are targets. The caption is
 5. Back on the Low Library steps in spring, in the Columbia-blue gown. Everyone hops and throws their caps. A puppy trots along College Walk, Yimeng's cap comes down on its head, and a heart pops up. From here on the dog walks along.
 6. Transition: the caps falling from the sky turn into snowflakes, and the snow thickens towards white.
 
-### 3 · Michigan (~9 s). Caption: `Michigan`. Grey, low-saturation palette.
+### 3 · Michigan (~10 s). Caption: `Michigan`. Grey, low-saturation palette: the sets are painted in muted colours, and Yimeng and the dog are drawn in a muted version of their palettes.
 
-1. Snow, flat land and Beaumont Tower.
-2. A time-lapse. The window cycles snow → green five times, one cycle per year. The scene cuts back and forth between the desk and the gym, and Yimeng gets visibly stronger with each gym cut. Coffee cups pile up, and a paper counter ticks upward. The dog sleeps by the desk and grows from puppy to adult, changing outfits with the seasons.
-3. PhD graduation: the advisor places the doctoral hood on Yimeng's shoulders (the hooding ceremony). This is deliberately different from the cap toss at Columbia.
-4. Transition: a door opens and colour floods in, as in *The Wizard of Oz*.
+1. Snow, flat land and Beaumont Tower. The white of the cap toss clears off a snowfield under a low grey sky, with bare trees and Michigan State's brick carillon tower, snow on its ledges. Yimeng walks on in the green puffer, the puppy trotting ahead, leaving footprints.
+2. A time-lapse of five years, 2021 to 2025, each a little quicker than the last. Each year cuts from the desk to the gym.
+   - At the desk, the window runs through winter, spring, summer and autumn, and the calendar turns over the year. Coffee cups pile up, and the paper count on the whiteboard climbs from 0 to 16, the papers of those years. The dog sleeps on its bed behind the chair: a puppy the first year, then grown, in the green knit in winter, the bandana in spring and autumn, nothing in summer.
+   - In the gym, Yimeng curls a dumbbell in front of the mirror. The plates get bigger every year, and from the third year on Yimeng is visibly bigger too.
+3. PhD graduation: under a spotlight on the commencement stage, the advisor lifts the doctoral hood, green and white satin with a velvet collar, over Yimeng's head and lays it on Yimeng's shoulders (the hooding ceremony). The audience claps and cameras flash. This is deliberately different from the cap toss at Columbia.
+4. Transition: in a grey corridor, Yimeng, hooded, walks with the dog to a door. It swings open on California in full colour, and the colour floods out from the doorway, as in *The Wizard of Oz*. Whatever it reaches turns to colour, Yimeng and the dog included, until it fills the frame.
 
 ### 4 · California (~16 s). Caption: `California`. Full colour, morning to sunset.
 
@@ -152,7 +154,7 @@ The world ahead turns into an unfinished pencil sketch, and Yimeng (California o
   - `style.css` gets a new `/* ---------- Reel ---------- */` block, plus `.step.is-live` rules.
 - **Sprite data:** palette-indexed text grids live in the JS (one character per pixel, `.` for transparent). Fill-only parts get their outlines generated. Outfits are palette remaps, part swaps and overlays on the same rig. This is the system validated in the mockups.
 - **Shots:** each chapter exports a list of shots. A shot has a duration and the layers it uses, each with a parallax factor. It has a camera speed, which can be 0 for staged moments, and actor tracks for Yimeng and the dog: outfit, action (walk, sit, ride, eat, swim and so on), screen position and props. It can also have timed events (counters, stamps, cuts) and a transition into the next shot (cut, crossfade, or a special one: caps → snow, door → colour, the pencil sketch). The engine concatenates all shots into one timeline and derives chapter boundaries from it for the caption, the buttons and the sync.
-- **Rendering:** layers are pre-rendered once into offscreen canvases that tile seamlessly. They are built lazily just before a shot starts and released after it ends. Each frame composes the layers and actors onto one canvas at native resolution, about 480×96 on desktop, which the browser scales. The grey Michigan palette and the door → colour transition use palette-derived greyscale variants and a `globalAlpha` crossfade, not `ctx.filter`, which Safari lacks. All layouts use a seeded PRNG, so every play looks the same.
+- **Rendering:** layers are pre-rendered once into offscreen canvases that tile seamlessly. They are built lazily just before a shot starts and released after it ends. Each frame composes the layers and actors onto one canvas at native resolution, about 480×96 on desktop, which the browser scales. The grey Michigan palette and the door → colour transition use palette-derived muted variants of the cast (`env.hero(key, pose, 'muted')`) and a clip that grows from the doorway, not `ctx.filter`, which Safari lacks. All layouts use a seeded PRNG, so every play looks the same.
 - **Debug hooks:** the URL parameter `?reel=` takes either a number or a shot id. A number such as `?reel=42.5` renders that moment paused. A shot id such as `?reel=ch2-dining` loops that one shot. Headless screenshots for review rely on these. They have no effect on normal visits.
 - **Accessibility:** the canvas has `role="img"` and an English `aria-label` summarising the journey. The chapter buttons are real `<button>`s labelled "Chapter n: Place". The pause button toggles its `aria-label` between "Pause" and "Play". Focus styles reuse the site's `:focus-visible` outline.
 

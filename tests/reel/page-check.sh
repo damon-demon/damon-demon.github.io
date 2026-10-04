@@ -37,8 +37,8 @@ expect 'five chapter buttons plus pause' "$d" 'aria-label="Chapter 5: To be cont
 d=$(dom 1440,900 '?reel=5');  expect 'caption switches to Europe inside chapter 1' "$d" 'data-chapter="0"' '>Europe<'
 d=$(dom 1440,900 '?reel=19'); expect 'New York lights step 2' "$d" 'data-chapter="1"' '>New York<' 'class="step is-live" data-org="columbia"'
 d=$(dom 1440,900 '?reel=35'); expect 'Michigan lights step 3' "$d" 'data-chapter="2"' 'class="step is-live" data-org="msu"'
-d=$(dom 1440,900 '?reel=43'); expect 'California lights step 4' "$d" 'data-chapter="3"' 'class="step is-live" data-org="amazon"'
-d=$(dom 1440,900 '?reel=50'); expect 'To be continued keeps step 4 lit' "$d" 'data-chapter="4"' '>To be continued…<' 'class="step is-live" data-org="amazon"'
+d=$(dom 1440,900 '?reel=47'); expect 'California lights step 4' "$d" 'data-chapter="3"' 'class="step is-live" data-org="amazon"'
+d=$(dom 1440,900 '?reel=53'); expect 'To be continued keeps step 4 lit' "$d" 'data-chapter="4"' '>To be continued…<' 'class="step is-live" data-org="amazon"'
 
 # headless Chrome will not go narrower than 500px, so the phone check runs at 500 (still 2x)
 expect 'phone-size canvas is 500/2 native px wide' "$(canvas "$(dom 500,900 '?reel=1')")" 'width="250"' 'style="[^"]*width: 500px'
