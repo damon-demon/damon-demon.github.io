@@ -51,8 +51,8 @@ Replace the jemdoc-generated `index.html` with a hand-written, art-directed home
 ## Visual system
 
 - Colors: background `#0b0b0c`, surface `#131316`, border `#222226`, text `#e9e6df`, muted `#8d8a84`, accent `#d9a35b`. The accent is the only color.
-- Type: Inter Tight (300/400/500) for headings and body; JetBrains Mono for labels, pills, and section numbers. Both load from Google Fonts with `display=swap`.
-- The hero name is large and light (300 weight) with tight tracking. Section labels use the form `01 — ABOUT` in mono uppercase amber.
+- Type: Inter Tight (300/400/500) for headings and body; JetBrains Mono for labels, pills, and section numbers. Both load from Google Fonts with `display=swap`. The hero name is handwritten in Sacramento, a fine monoline script under the SIL Open Font License. It is served from `fonts/` with its licence, using `font-display: block` so it never flashes up in the sans first.
+- The hero name is large, at the sans's old size range (54–124 px), upright and untracked, since a script's letters join. `(Damon)` is a lighter grey than `--muted`, which is too faint in so fine a stroke over the photo. Section labels use the form `01 — ABOUT` in mono uppercase amber.
 - Content max width is ~1040px.
 - Motion: sections fade and rise 12px when they scroll into view (IntersectionObserver). On hover, a publication row's background lifts and its title turns amber. All motion is disabled under `prefers-reduced-motion`.
 - Links: body links are underlined with an amber underline that thickens on hover.

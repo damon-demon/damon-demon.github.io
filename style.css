@@ -1,4 +1,11 @@
 /* Homepage — dark cinematic. Accent is the only color. */
+/* The name in the hero is handwritten: Sacramento, served from this site (SIL Open Font License,
+   fonts/Sacramento-OFL.txt). */
+@font-face {
+  font-family: 'Sacramento';
+  src: url(fonts/sacramento.woff2) format('woff2');
+  font-weight: 400; font-style: normal; font-display: block;
+}
 :root {
   --bg: #0b0b0c;
   --surface: #131316;
@@ -9,6 +16,7 @@
   --accent: #d9a35b;
   --sans: 'Inter Tight', system-ui, -apple-system, sans-serif;
   --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+  --script: 'Sacramento', 'Inter Tight', cursive;
   --wrap: 1040px;
   --gutter: clamp(20px, 5vw, 56px);
 }
@@ -85,13 +93,16 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-
   width: 100%; max-width: calc(var(--wrap) + 2 * var(--gutter));
   margin: 0 auto; padding: 0 var(--gutter) clamp(48px, 9vh, 96px);
 }
+/* A script is never tightened or slanted (its letters join), and its tall loops and long tails need
+   more room than the sans did. The second shadow keeps the thin strokes clear of the photo, and the
+   aside is a lighter grey than --muted, which is too faint in so fine a line. */
 .hero h1 {
-  font-weight: 300;
-  text-shadow: 0 2px 30px rgba(11, 11, 12, .45);
-  font-size: clamp(46px, 8.4vw, 124px);
-  line-height: .95; letter-spacing: -.045em;
+  font-family: var(--script); font-weight: 400;
+  text-shadow: 0 2px 30px rgba(11, 11, 12, .45), 0 1px 3px rgba(11, 11, 12, .6);
+  font-size: clamp(54px, 8.4vw, 124px);
+  line-height: 1.05; padding-bottom: .12em;
 }
-.hero .aka { font-style: italic; color: var(--muted); letter-spacing: -.03em; }
+.hero .aka { color: #aaa59c; }
 .hero-role {
   margin-top: 22px;
   font-family: var(--mono); font-size: clamp(10.5px, 1.1vw, 13px);
