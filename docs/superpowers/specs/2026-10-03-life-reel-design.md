@@ -49,7 +49,7 @@ The approved pixel designs (character rig, walk cycle, all outfits, the dog and 
 | 4 | Freediving and spearfishing | Kelp-camo wetsuit, long fins, snorkel, speargun |
 | 5 | To be continued | California everyday outfit |
 
-The two dive outfits use swimming poses in the reel. The other outfits walk. Yimeng also sits (on the train, at Trolltunga and in the restaurants), types at the desk, curls dumbbells in the gym, and at the cap toss cheers bareheaded in the gown.
+The two dive outfits use swimming poses in the reel. The other outfits walk. Yimeng also sits (on the train, at Trolltunga and in the restaurants), types at the desk, curls dumbbells and does pull-ups in the home gym, and at the cap toss cheers bareheaded in the gown.
 
 ### The dog's wardrobe
 
@@ -100,9 +100,10 @@ The full loop runs about 63 s, and the timings below are targets. The caption is
 ### 3 · Michigan (~10 s). Caption: `Michigan`. Grey, low-saturation palette: the sets are painted in muted colours, and Yimeng and the dog are drawn in a muted version of their palettes.
 
 1. Snow, flat land and Beaumont Tower. The white of the cap toss clears off a snowfield under a low grey sky, with bare trees and Michigan State's brick carillon tower, snow on its ledges. Yimeng walks on in the green puffer, the puppy trotting ahead, leaving footprints.
-2. A time-lapse of five years, 2021 to 2025, each a little quicker than the last. Each year cuts from the desk to the gym.
-   - At the desk, the window runs through winter, spring, summer and autumn, and the calendar turns over the year. Coffee cups pile up, and the paper count on the whiteboard climbs from 0 to 16, the papers of those years. The dog sleeps on its bed behind the chair: a puppy the first year, then grown, in the green knit in winter, the bandana in spring and autumn, nothing in summer.
-   - In the gym, Yimeng curls a dumbbell in front of the mirror. The plates get bigger every year, and from the third year on Yimeng is visibly bigger too.
+2. A time-lapse of five years, 2021 to 2025, each a little quicker than the last, in one living room seen from a camera that never moves. The home gym is on the left: a pull-up stand, a bench, dumbbells and floor mats. The computer desk is on the right, with the dog's bed between them and a sofa beyond where the screen is wide enough. As in a time-lapse film, Yimeng appears at the desk and then in the gym each year, leaving a faint ghost for a moment.
+   - At the desk, the window runs through winter, spring, summer and autumn, and the calendar turns over the year. Coffee cups pile up, and the paper count on the whiteboard climbs from 0 to 16, the papers of those years.
+   - The dog sleeps on its bed: a puppy the first year, then grown, in the green knit in winter, the bandana in spring and autumn, nothing in summer.
+   - In the gym, Yimeng alternates dumbbell curls and pull-ups on the stand. The dumbbells get bigger every year, and from the third year on Yimeng is visibly bigger too.
 3. PhD graduation: under a spotlight on the commencement stage, the advisor lifts the doctoral hood, green and white satin with a velvet collar, over Yimeng's head and lays it on Yimeng's shoulders (the hooding ceremony). The audience claps and cameras flash. This is deliberately different from the cap toss at Columbia.
 4. Transition: in a grey corridor, Yimeng, hooded, walks with the dog to a door. It swings open on California in full colour, and the colour floods out from the doorway, as in *The Wizard of Oz*. Whatever it reaches turns to colour, Yimeng and the dog included, until it fills the frame.
 
