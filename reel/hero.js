@@ -505,7 +505,8 @@ const HAND = { mid: [7, 22], fwd: [9, 22], back: [6, 22], hold: [11, 20], curlDo
 // the cap toss: feet planted, bouncing, and bareheaded, because the hat is in the air. `type` sits
 // with the hands forward on a keyboard, nodding; `curl` lifts a dumbbell from the hip to the chest.
 // `hang` is for pull-ups: the arm is left off, because the scene draws both arms up to the bar
-// behind the head; its hand is the shoulder, where those arms start.
+// behind the head; its hand is the shoulder, where those arms start. `aim` stands holding a rifle
+// to the shoulder, breathing; the scene draws the rifle from the hand.
 const POSES = {
   walk: [['near', 'back', 1], ['pass', 'mid', 0], ['far', 'fwd', 1], ['pass', 'mid', 0]],
   sit: [['sitA', 'mid', 0], ['sitB', 'mid', 0]],
@@ -513,6 +514,7 @@ const POSES = {
   type: [['sitA', 'hold', 0], ['sitA', 'hold', 1]],
   curl: [['stand', 'curlDown', 0], ['stand', 'curlUp', 0]],
   hang: [['stand', 'none', 0], ['pass', 'none', 0]],
+  aim: [['stand', 'hold', 0], ['stand', 'hold', 1]],
 };
 export const SEAT_Y = 38;             // sit pose: the outline row under the thighs rests on the ledge
 const HAIR_UNDER_HAT = new Set(['H', 'h', 'k', 'f']);

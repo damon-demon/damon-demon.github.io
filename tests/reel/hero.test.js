@@ -75,3 +75,10 @@ test('the hang pose leaves the arms to the scene: two frames, the hand at the sh
   assert.deepEqual(hang.hands, [[17, 29], [17, 29]]);
   assert.ok(skin(hang.frames[0]) < skin(walk.frames[1]), 'no arm hanging at the side');
 });
+
+test('the aim pose stands holding a rifle to the shoulder, breathing', () => {
+  const aim = heroSprite('hunt', 'aim');
+  assert.equal(aim.frames.length, 2);
+  assert.notDeepEqual(aim.frames[0], aim.frames[1]);
+  assert.deepEqual(aim.hands, [[20, 31], [20, 32]], 'the hands forward at the chest, rising and falling');
+});
