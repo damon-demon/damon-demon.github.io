@@ -122,9 +122,12 @@ The full loop runs about 68 s, and the timings below are targets. The caption is
    - Freediving and spearfishing: in the camo wetsuit and long fins, Yimeng breathes at the surface, dives down through the kelp to the reef with the speargun out in front, levels off behind a California sheephead, and fires. The scene cuts while the spear is still on its way.
 8. Surfacing at sunset: Yimeng comes up in the shallows with the sheephead on the spear, facing the rocks where the dog has been waiting in its life vest. The dog wags and hops, and a heart pops up.
 
-### 5 · To be continued (~3 s). Caption: `To be continued…`
+### 5 · To be continued (~4 s). Caption: `To be continued…`
 
-The world ahead turns into an unfinished pencil sketch, and Yimeng (California outfit) and the dog (houndstooth) walk into it. The reel then loops back to Sheffield.
+The sunset boardwalk of the beach scene fades in from the sunset before it, and the world ahead of Yimeng is an unfinished pencil sketch.
+- A ragged pencil frontier comes along the boardwalk. Yimeng (California outfit) and the dog (houndstooth) walk into it and are drawn in pencil too, half in colour while they cross.
+- Further on, the lines thin out to blank paper.
+- The shot fades out, and the reel loops back to Sheffield, which fades in.
 
 ## Page integration
 
@@ -154,12 +157,12 @@ The world ahead turns into an unfinished pencil sketch, and Yimeng (California o
   - `reel/hero.js` and `reel/dog.js` hold the cast: Yimeng's rig with every outfit, and the dog with its outfits. Sprites are composed from parts at runtime.
   - `reel/timeline.js` holds the pure clock maths: chapters of shots become absolute times, plus `locate`, chapter starts and `?reel=` parsing.
   - `reel/sprites.js` turns grids and Painters into canvases.
-  - `reel/story.js` holds the running order and imports one folder per chapter (`reel/ch1/` … `reel/ch5/`) as each is built: an `index.js` with the chapter's shots, and one module per location.
-  - `reel/beach.js` holds the approved beach scene, which is also the reduced-motion poster.
+  - `reel/story.js` holds the running order and imports one folder per chapter (`reel/ch1/` … `reel/ch5/`): an `index.js` with the chapter's shots, and one module per location.
+  - `reel/beach.js` holds the approved beach scene. It is the reduced-motion poster, and the boardwalk that chapter 5 turns into a sketch.
   - `style.css` gets a new `/* ---------- Reel ---------- */` block, plus `.step.is-live` rules.
 - **Sprite data:** palette-indexed text grids live in the JS (one character per pixel, `.` for transparent). Fill-only parts get their outlines generated. Outfits are palette remaps, part swaps and overlays on the same rig. This is the system validated in the mockups.
 - **Shots:** each chapter exports a list of shots. A shot has a duration and the layers it uses, each with a parallax factor. It has a camera speed, which can be 0 for staged moments, and actor tracks for Yimeng and the dog: outfit, action (walk, sit, ride, eat, swim and so on), screen position and props. It can also have timed events (counters, stamps, cuts) and a transition into the next shot (cut, crossfade, or a special one: caps → snow, the road trip's spreading colour, the pencil sketch). The engine concatenates all shots into one timeline and derives chapter boundaries from it for the caption, the buttons and the sync.
-- **Rendering:** layers are pre-rendered once into offscreen canvases that tile seamlessly. They are built lazily just before a shot starts and released after it ends. Each frame composes the layers and actors onto one canvas at native resolution, about 480×96 on desktop, which the browser scales. The grey Michigan palette uses palette-derived muted variants of the cast (`env.hero(key, pose, 'muted')`), and the road trip draws a pre-greyed copy of the map under the coloured one, clipped to a circle that grows from East Lansing. Neither uses `ctx.filter`, which Safari lacks. All layouts use a seeded PRNG, so every play looks the same.
+- **Rendering:** layers are pre-rendered once into offscreen canvases that tile seamlessly. Each shot's layers are built ahead, in idle time while the shot before it plays, and released once it has ended, so no more than two shots' layers are held at once. Each frame composes the layers and actors onto one canvas at native resolution, about 480×96 on desktop, which the browser scales. The grey Michigan palette uses palette-derived muted variants of the cast (`env.hero(key, pose, 'muted')`), and the road trip draws a pre-greyed copy of the map under the coloured one, clipped to a circle that grows from East Lansing. Chapter 5 draws every layer of the beach again in pencil (a graphite line wherever the tone changes, hatching in the darkest parts) and the cast in a `sketch` tone, and splits the two along the frontier by clipping. None of these uses `ctx.filter`, which Safari lacks. All layouts use a seeded PRNG, so every play looks the same.
 - **Debug hooks:** the URL parameter `?reel=` takes either a number or a shot id. A number such as `?reel=42.5` renders that moment paused. A shot id such as `?reel=ch2-dining` loops that one shot. Headless screenshots for review rely on these. They have no effect on normal visits.
 - **Accessibility:** the canvas has `role="img"` and an English `aria-label` summarising the journey. The chapter buttons are real `<button>`s labelled "Chapter n: Place". The pause button toggles its `aria-label` between "Pause" and "Play". Focus styles reuse the site's `:focus-visible` outline.
 
