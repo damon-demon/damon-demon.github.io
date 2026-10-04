@@ -29,7 +29,7 @@ export function fakeEnv() {
   const sprite = (id, n, extra) => ({ canvases: Array.from({ length: n }, (_, i) => ({ name: `${id}:${i}`, width: 42, height: 50 })), ...extra });
   const toneOf = (tone) => (tone && tone !== 'full' ? `:${tone}` : '');
   return {
-    hero: (key, pose = 'walk', tone) => sprite(`${key}:${pose}${toneOf(tone)}`, pose === 'walk' ? 4 : 2, { anchorX: 9, footY: 44, seatY: 38, hands: Array(4).fill([19, 33]) }),
+    hero: (key, pose = 'walk', tone) => sprite(`${key}:${pose}${toneOf(tone)}`, pose === 'walk' || pose === 'swim' ? 4 : 2, { anchorX: 9, footY: 44, seatY: 38, hands: Array(4).fill([19, 33]) }),
     dog: (key, pose = 'trot', tone) => sprite(`dog:${key}${pose === 'trot' ? '' : ':' + pose}${toneOf(tone)}`, pose === 'trot' ? 4 : 2, { anchorX: 0, footY: 15 }),
     art: (a) => ({ name: 'art', width: a.w, height: a.h }),
   };

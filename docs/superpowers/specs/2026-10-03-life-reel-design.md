@@ -49,7 +49,7 @@ The approved pixel designs (character rig, walk cycle, all outfits, the dog and 
 | 4 | Freediving and spearfishing | Kelp-camo wetsuit, long fins, snorkel, speargun |
 | 5 | To be continued | California everyday outfit |
 
-The two dive outfits use swimming poses in the reel. The other outfits walk. Yimeng also sits (on the train, at Trolltunga and in the restaurants), types at the desk, curls dumbbells and does pull-ups in the home gym, and at the cap toss cheers bareheaded in the gown.
+The two dive outfits swim: the body lies flat and flutter-kicks, fins trailing, with the head kept upright at the front, looking ahead. The other outfits walk. Yimeng also sits (on the train, at Trolltunga and in the restaurants), types at the desk, curls dumbbells and does pull-ups in the home gym, raises a rifle at the ranch, and at the cap toss cheers bareheaded in the gown.
 
 ### The dog's wardrobe
 

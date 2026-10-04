@@ -82,3 +82,14 @@ test('the aim pose stands holding a rifle to the shoulder, breathing', () => {
   assert.notDeepEqual(aim.frames[0], aim.frames[1]);
   assert.deepEqual(aim.hands, [[20, 31], [20, 32]], 'the hands forward at the chest, rising and falling');
 });
+
+test('the swim pose lays the rig out for the dives: four kicking frames, the head upright in front, fins behind', () => {
+  const swim = heroSprite('freedive', 'swim'), scuba = heroSprite('scuba', 'swim');
+  const span = (f, re) => { const xs = f.flatMap(r => [...r].flatMap((ch, x) => (re.test(ch) ? [x] : []))); return [Math.min(...xs), Math.max(...xs)]; };
+  assert.equal(swim.frames.length, 4);
+  assert.notDeepEqual(swim.frames[0], swim.frames[2], 'a flutter kick');
+  assert.deepEqual([swim.width, swim.height, swim.anchorX, swim.footY, swim.hands[0]], [48, 42, 14, 18, [29, 23]]);
+  assert.ok(span(swim.frames[0], /F/)[1] < swim.anchorX + 2, 'the fins trail behind the feet');
+  assert.ok(span(swim.frames[0], /S/)[0] > swim.width / 2, 'the face is at the front');
+  assert.ok(scuba.frames[0].findIndex(r => r.includes('V')) < scuba.footY, 'the tank rides on the back');
+});

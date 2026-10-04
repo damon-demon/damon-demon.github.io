@@ -506,7 +506,8 @@ const HAND = { mid: [7, 22], fwd: [9, 22], back: [6, 22], hold: [11, 20], curlDo
 // with the hands forward on a keyboard, nodding; `curl` lifts a dumbbell from the hip to the chest.
 // `hang` is for pull-ups: the arm is left off, because the scene draws both arms up to the bar
 // behind the head; its hand is the shoulder, where those arms start. `aim` stands holding a rifle
-// to the shoulder, breathing; the scene draws the rifle from the hand.
+// to the shoulder, breathing; the scene draws the rifle from the hand. `swim` is built apart: see
+// swimFrame().
 const POSES = {
   walk: [['near', 'back', 1], ['pass', 'mid', 0], ['far', 'fwd', 1], ['pass', 'mid', 0]],
   sit: [['sitA', 'mid', 0], ['sitB', 'mid', 0]],
@@ -515,6 +516,7 @@ const POSES = {
   curl: [['stand', 'curlDown', 0], ['stand', 'curlUp', 0]],
   hang: [['stand', 'none', 0], ['pass', 'none', 0]],
   aim: [['stand', 'hold', 0], ['stand', 'hold', 1]],
+  swim: [['near', 'mid', 0], ['pass', 'mid', 0], ['far', 'mid', 0], ['pass', 'mid', 0]],
 };
 export const SEAT_Y = 38;             // sit pose: the outline row under the thighs rests on the ledge
 const HAIR_UNDER_HAT = new Set(['H', 'h', 'k', 'f']);
@@ -631,12 +633,38 @@ function frame(o, [legsKey, armKey, bob, bare = false]) {
   return c.rows();
 }
 
-// One outfit in one pose ('walk': 4 frames, the others 2), plus what the engine needs to place it.
+// The swimmer, for the dives: the body turned a quarter clockwise, back up, with the head kept
+// upright at the front, looking ahead. The walking legs make a flutter kick, the arms lie along the
+// body, and the fins trail from the feet. The speargun is left to the scene.
+const NECK = OY + 17;                    // the torso's first row; the chin's outline above it is dropped
+const SWIM_HEAD = [9, -4];               // where the upright head goes, from where it was
+function swimFrame(o, pose) {
+  const rows = frame({ ...o, stand: false, hold: false, fins: 0, props: (o.props || []).filter(([kind]) => kind !== 'gun') }, pose);
+  const fins = o.fins || 0, [hx, hy] = SWIM_HEAD, c = new Grid(fins + 39, SPRITE_W);
+  for (let y = NECK; y < SPRITE_H; y++) for (let x = 0; x < SPRITE_W; x++) if (rows[y][x] !== '.') c.set(fins + SPRITE_H - 1 - y, x, rows[y][x]);
+  for (let y = 0; y < NECK - 1; y++) for (let x = 0; x < SPRITE_W; x++) if (rows[y][x] !== '.') c.set(fins + hx + x, hy + y, rows[y][x]);
+  for (let y = 0; y < c.h; y++) {                                                  // a fin from each shoe, back past the toes
+    let x = 0;
+    while (x < c.w && c.px[y][x] === '.') x++;
+    if (fins && (c.get(x + 1, y) === 'O' || c.get(x + 1, y) === 'n')) for (let k = 0; k <= fins; k++) c.set(x - k, y, 'F');
+  }
+  c.outlineAll('k');
+  return c.rows();
+}
+
+// One outfit in one pose ('walk' and 'swim': 4 frames, the others 2), plus what the engine needs to
+// place it. For 'swim', anchorX is the column of the feet, footY the swimmer's centre line, and
+// hands the point just under the chin where a scene can start an arm reaching forward.
 // hands: per frame, the [x, y] in the sprite where props such as a dumbbell are held.
 export function heroSprite(key, pose = 'walk') {
   const o = OUTFITS[key];
   if (!o) throw new Error(`unknown outfit: ${key}`);
   if (!POSES[pose]) throw new Error(`unknown pose: ${pose}`);
+  if (pose === 'swim') {
+    const fins = o.fins || 0;
+    return { frames: POSES.swim.map(p => swimFrame(o, p)), palette: palette(o), width: fins + 39, height: SPRITE_W,
+      anchorX: fins + SPRITE_H - 1 - FOOT_Y, footY: ANCHOR_X + 9, hands: POSES.swim.map(() => [fins + SPRITE_H - 1 - (OY + 18), NECK - 1 + SWIM_HEAD[1]]) };
+  }
   const hands = POSES[pose].map(([, arm, bob]) => {
     const a = o.hold ? 'hold' : o.stand ? 'mid' : arm;
     return [OX + HAND[a][0], OY + HAND[a][1] + bob];
