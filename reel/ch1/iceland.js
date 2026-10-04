@@ -24,6 +24,57 @@ function aurora(ctx, W, t, yBase) {
   ctx.globalAlpha = 1;
 }
 
+// Vestrahorn as seen from Stokksnes, by its height above the shore at each point across the view: the
+// "Batman Mountain". Two pointed peaks stand close together in the middle like a bat's ears, and on
+// either side jagged ridges spread out like wings, scalloped between their spires, tapering away.
+const RIDGE = [[0, 5], [0.04, 7], [0.08, 11], [0.11, 14], [0.14, 18], [0.16, 16], [0.18, 23], [0.195, 20],
+  [0.215, 27], [0.23, 24], [0.255, 33], [0.27, 29], [0.29, 36], [0.305, 33], [0.325, 44], [0.335, 40],
+  [0.35, 46], [0.362, 39], [0.38, 36], [0.4, 35], [0.42, 38], [0.437, 42], [0.452, 47], [0.463, 55],
+  [0.472, 47], [0.482, 44], [0.492, 49], [0.503, 57], [0.515, 48], [0.53, 42], [0.55, 37], [0.57, 36],
+  [0.59, 38], [0.61, 45], [0.622, 40], [0.64, 43], [0.655, 36], [0.675, 33], [0.69, 35], [0.71, 29],
+  [0.73, 31], [0.75, 24], [0.775, 22], [0.8, 17], [0.84, 13], [0.88, 9], [0.93, 6], [1, 4]];
+const SHORE = 71;                                                    // the row where the mountain meets the wet sand
+
+function ridgeAt(u) {
+  let i = 1;
+  while (i < RIDGE.length - 1 && RIDGE[i][0] < u) i++;
+  const [u0, h0] = RIDGE[i - 1], [u1, h1] = RIDGE[i];
+  return h0 + (h1 - h0) * Math.min(1, Math.max(0, (u - u0) / (u1 - u0)));
+}
+
+// The mountain, dark against the aurora: its ridge edge catches the light, snow lies in the gullies
+// that run down from the notches between spires, smooth scree aprons spread at its foot, and a
+// fainter ridge stands behind for depth.
+function vestrahorn(W, H) {
+  const p = new Painter(W, H);
+  const h = Array.from({ length: W }, (_, x) => Math.max(1, Math.round(ridgeAt(x / W) + Math.sin(x * 1.7) * 0.6 + Math.sin(x * 0.53 + 1) * 0.9)));
+  const back = Array.from({ length: W }, (_, x) => Math.round(10 + 5 * Math.sin(x / W * 7 + 0.5) + 3 * Math.sin(x / W * 19 + 2)));
+  const apron = h.map((_, x) => { let sum = 0, n = 0; for (let k = -12; k <= 12; k++) if (h[x + k] !== undefined) { sum += h[x + k]; n++; } return Math.min(13, 0.3 * sum / n + 1.5 * Math.sin(x * 0.15)); });
+  for (let x = 0; x < W; x++) {
+    for (let j = 0; j < back[x]; j++) p.px(x, SHORE - j, j === back[x] - 1 ? '#2a3a5c' : '#16203a');   // the far ridge
+    const top = h[x], lit = (h[x - 1] ?? top) < top;                  // a face turned to the light
+    for (let j = 0; j < top; j++) {
+      const d = top - 1 - j;
+      const c = d === 0 ? (lit ? '#6f8fb8' : '#34466a')               // the edge, caught by the aurora
+        : j < apron[x] ? ((x * 3 + j * 5) % 7 === 0 ? '#1f2737' : '#161d2a')   // scree
+        : d < 3 && lit ? '#1e293e' : '#0c111b';
+      p.px(x, SHORE - j, c);
+    }
+  }
+  for (let x = 2, dir = 1; x < W - 2; x++) {                          // snow down the gullies below each deep notch
+    const notch = h[x] < h[x - 1] && h[x] <= h[x + 1];
+    const left = Math.max(...h.slice(Math.max(0, x - 6), x)), right = Math.max(...h.slice(x + 1, x + 7));
+    if (!notch || Math.min(left, right) - h[x] < 3) continue;
+    for (let k = 1; k < 16; k++) {
+      const gx = x + dir * Math.round(k * 0.45), j = h[x] - 1 - k;
+      if (j <= apron[gx] || gx < 0 || gx >= W) break;
+      p.px(gx, SHORE - j, k % 4 === 3 ? '#2c3a56' : '#4a5c80');
+    }
+    dir = -dir;
+  }
+  return p;
+}
+
 function drawStars(ctx, list, t) {
   for (const [x, y, b] of list) {
     if (Math.sin(t * 3 + b * 40) < -0.6) continue;               // twinkle
@@ -35,21 +86,7 @@ function drawStars(ctx, list, t) {
 export function buildIceland(W, H = 96) {
   const layers = {};
   layers.sky = gradient(W, H, NIGHT);
-  const mtn = new Painter(W, H);                                     // Vestrahorn: a black massif of sharp spires
-  const massif = (x) => {
-    const u = x / W;                                                 // 0..1 across the view
-    const body = 4 + 30 * Math.exp(-Math.pow((u - 0.45) / 0.2, 2));
-    let spikes = 0;
-    for (const [c, h, w] of [[0.22, 30, 0.035], [0.3, 40, 0.03], [0.36, 48, 0.028], [0.42, 43, 0.022], [0.48, 50, 0.03], [0.55, 41, 0.026], [0.62, 33, 0.03], [0.7, 23, 0.035]]) {
-      spikes = Math.max(spikes, h * Math.max(0, 1 - Math.abs(u - c) / w));
-    }
-    return Math.round(Math.max(body, spikes));
-  };
-  for (let i = 0; i < W; i++) {
-    const h = massif(i), lit = massif(i + 1) > h;                    // the side facing the aurora catches light
-    for (let j = 0; j < h; j++) mtn.px(i, 71 - j, j > h - 2 ? (lit ? '#6d8bc0' : '#3a4f78') : j > h - 5 && lit ? '#23304a' : '#0a0e16');
-  }
-  layers.mtn = mtn;
+  layers.mtn = vestrahorn(W, H);
   const dunes = new Painter(W * 2, H), rd = rng(44);                 // black sand dunes and grass tufts
   const hump = ridge(W * 2, 10, [[4, 3, 0.4], [2, 9, 1.3]]);
   for (let i = 0; i < W * 2; i++) for (let j = 0; j < hump[i]; j++) dunes.px(i, 95 - j, j > hump[i] - 1.5 ? '#2a2c34' : '#17181e');

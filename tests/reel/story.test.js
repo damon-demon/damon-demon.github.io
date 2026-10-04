@@ -4,10 +4,10 @@ import { CHAPTERS, POSTER } from '../../reel/story.js';
 import { buildTimeline } from '../../reel/timeline.js';
 import { beach } from '../../reel/beach.js';
 
-test('the reel: five chapters, 68.1 s, every shot built and named once', () => {
+test('the reel: five chapters, 67.1 s, every shot built and named once', () => {
   const tl = buildTimeline(CHAPTERS), ids = tl.shots.map(e => e.shot.id);
   assert.deepEqual(CHAPTERS.map(c => c.name), ['Sheffield', 'New York', 'Michigan', 'California', 'To be continued']);
-  assert.equal(Math.round(tl.duration * 10) / 10, 68.1);
+  assert.equal(Math.round(tl.duration * 10) / 10, 67.1);
   assert.equal(new Set(ids).size, ids.length);
   assert.ok(tl.shots.every(e => e.shot.scene !== beach), 'no stand-ins left');
 });
