@@ -67,11 +67,11 @@ The two dive outfits swim: the body lies flat and flutter-kicks, fins trailing, 
 
 ## Storyboard
 
-The full loop runs about 67 s, and the timings below are targets. The caption is the place name and fades in at the top left whenever it changes.
+The full loop runs about 66 s, and the timings below are targets. The caption is the place name and fades in at the top left whenever it changes.
 
-### 1 · Sheffield → Europe (~16.5 s). Caption: `Sheffield`, switching to `Europe` when the train leaves
+### 1 · Sheffield → Europe (~15.7 s). Caption: `Sheffield`, switching to `Europe` when the train leaves
 
-1. Sheffield (2 s): red-brick terraces and Firth Court in grey drizzle, walking with the umbrella.
+1. Sheffield (1.2 s): red-brick terraces and Firth Court in grey drizzle, walking with the umbrella.
 2. Inside a train carriage: Yimeng sits by the window while Paris, Rome, Barcelona and the Alps stream past, about 1 s each, with a tunnel between cities. Passport stamps pile up on the carriage wall, faster and faster.
 3. Lisbon: riding the yellow tram up a steep street of tiled façades, above a limestone retaining wall with an iron railing, azulejo panels and bougainvillea. The Tagus and the 25 de Abril bridge lie far below.
 4. Nürburgring, from a chase camera: Yimeng's white modified VW Golf GTI attacks a narrow stretch of the "Green Hell", bend after bend through the forest, climbing and plunging, and briefly airborne over a crest like Flugplatz. On desktop the Golf is a detailed 120 × 64 sprite, about two thirds of the banner's height; it carries the driver behind the rear glass, LED tail lights, a VW roundel, red GTI letters and an `AW GT7` plate (AW is the Ring's district). On phones, where the road is narrower, it is 60 × 32 and fills the lower third. A sign in the top corner names the track, `NÜRBURGRING` over `NORDSCHLEIFE` in green, above a fast-running lap timer.
