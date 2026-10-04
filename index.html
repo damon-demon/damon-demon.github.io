@@ -48,6 +48,19 @@
   </div>
 </header>
 
+<section id="reel" class="reel" aria-label="Life reel">
+  <div class="reel-stage">
+    <canvas class="reel-canvas" role="img" aria-label="Pixel-art animation: a small Yimeng walks to the right through five chapters of life: Sheffield and travels across Europe; New York and Columbia; a PhD in Michigan and a road trip across America; and California, from the office to a ranch, the woods and the sea. A dog walks alongside from 2019. To be continued, in pencil."></canvas>
+    <div class="reel-grain" aria-hidden="true"></div>
+  </div>
+  <div class="reel-ui">
+    <p class="reel-caption"></p>
+    <div class="reel-nav">
+      <button type="button" class="reel-pause" aria-label="Pause"></button>
+    </div>
+  </div>
+</section>
+
 <main>
 
 <section id="about" class="section">
@@ -334,5 +347,6 @@
   sections.forEach(function (s) { io.observe(s); });
 })();
 </script>
+<script type="module" src="reel/reel.js"></script>
 </body>
 </html>
