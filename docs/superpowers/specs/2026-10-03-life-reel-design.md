@@ -49,7 +49,7 @@ The approved pixel designs (character rig, walk cycle, all outfits, the dog and 
 | 4 | Freediving and spearfishing | Kelp-camo wetsuit, long fins, snorkel, speargun |
 | 5 | To be continued | California everyday outfit |
 
-The two dive outfits use swimming poses in the reel. The other outfits walk.
+The two dive outfits use swimming poses in the reel. The other outfits walk. Yimeng also sits (on the train, at Trolltunga and at dinner), and at the cap toss cheers bareheaded in the gown.
 
 ### The dog's wardrobe
 
@@ -79,14 +79,14 @@ The full loop runs about 57 s, and the timings below are targets. The caption is
 6. Iceland: Vestrahorn ("Batman Mountain"), black sand and dune grass, with an aurora rising at night.
 7. A plane climbs out under the same aurora, bound for New York.
 
-### 2 · New York (~11 s). Caption: `New York`. The chapter opens and closes at Columbia.
+### 2 · New York (~11.7 s). Caption: `New York`. The chapter opens and closes at Columbia.
 
-1. Arriving at Low Library and the Alma Mater statue.
-2. Night in Manhattan, in black and gold with Art Deco styling.
-3. Michelin dinner: three stars light up above the door. Inside are white tablecloths, candles and a chandelier. A waiter lifts a silver cloche to reveal one tiny bite on a huge plate. A course counter runs from `1/12` to `12/12`, then comes a champagne tower, and the bill unrolls down to the floor.
-4. MoMA: Yimeng stops in front of *The Starry Night*.
-5. Back on the Low Library steps in the Columbia-blue gown. Everyone throws their caps. Yimeng's cap comes down on a puppy's head, and from here on the dog walks along.
-6. Transition: the caps falling from the sky turn into snowflakes.
+1. Arriving at Low Library on an autumn day: the dome, ten Ionic columns and the Low Steps, with Alma Mater on her pedestal. Leaves drift down over College Walk, whose lamp posts fly Columbia-blue banners. Yimeng walks in and stops to look up.
+2. Night in Manhattan, in black and gold with Art Deco styling. The shot opens on the lit crowns of the Chrysler and Empire State buildings, with a gold sunburst behind the skyline and searchlights sweeping. Then it tilts down to the street, where Yimeng walks up to a black-and-gold restaurant. Three stars light up above the door one by one, and Yimeng steps into its light.
+3. Michelin dinner, in a gold-and-burgundy room with the skyline in its windows: white tablecloths, candles and a crystal chandelier. Yimeng sits at the table. A waiter lifts a silver cloche to reveal one tiny bite on a huge plate. A course counter runs from `1/12` to `12/12` as the candle burns down. Then the sommelier fills a champagne tower, and the bill unrolls down to the floor and across it.
+4. MoMA: past Warhol's soup cans, Yimeng stops in front of *The Starry Night*, whose sky slowly turns. On wide screens Monet's *Water Lilies* hang further along.
+5. Back on the Low Library steps in spring, in the Columbia-blue gown. Everyone hops and throws their caps. A puppy trots along College Walk, Yimeng's cap comes down on its head, and a heart pops up. From here on the dog walks along.
+6. Transition: the caps falling from the sky turn into snowflakes, and the snow thickens towards white.
 
 ### 3 · Michigan (~9 s). Caption: `Michigan`. Grey, low-saturation palette.
 
@@ -138,7 +138,7 @@ The world ahead turns into an unfinished pencil sketch, and Yimeng (California o
   - `reel/hero.js` and `reel/dog.js` hold the cast: Yimeng's rig with every outfit, and the dog with its outfits. Sprites are composed from parts at runtime.
   - `reel/timeline.js` holds the pure clock maths: chapters of shots become absolute times, plus `locate`, chapter starts and `?reel=` parsing.
   - `reel/sprites.js` turns grids and Painters into canvases.
-  - `reel/story.js` holds the running order and imports one module per chapter (`reel/ch1-sheffield.js` … `reel/ch5-continued.js`) as each is built.
+  - `reel/story.js` holds the running order and imports one folder per chapter (`reel/ch1/` … `reel/ch5/`) as each is built: an `index.js` with the chapter's shots, and one module per location.
   - `reel/beach.js` holds the approved beach scene, which is also the reduced-motion poster.
   - `style.css` gets a new `/* ---------- Reel ---------- */` block, plus `.step.is-live` rules.
 - **Sprite data:** palette-indexed text grids live in the JS (one character per pixel, `.` for transparent). Fill-only parts get their outlines generated. Outfits are palette remaps, part swaps and overlays on the same rig. This is the system validated in the mockups.
