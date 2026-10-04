@@ -104,6 +104,14 @@ export function mute(hex, amount) {
   return '#' + [r, g, b].map(c => Math.round(c + (l - c) * amount).toString(16).padStart(2, '0')).join('');
 }
 
+// A colour as drawn in pencil on paper, for chapter 5's sketch: the dark tones become graphite and the
+// rest paper, a little greyer the darker they were.
+export function pencil(hex) {
+  const [r, g, b] = hexToRgb(hex), l = 0.3 * r + 0.59 * g + 0.11 * b;
+  const v = Math.round(l < 70 ? 64 + l * 0.5 : 242 - (255 - l) * 0.14);
+  return '#' + [v, v - 3, v - 10].map(c => c.toString(16).padStart(2, '0')).join('');
+}
+
 // Rows + palette -> rows of hex colours ('.' stays '.'); what a sprite actually looks like.
 export function resolve(rows, palette) {
   return rows.map(r => [...r].map(ch => (ch === '.' ? '.' : palette[ch])));

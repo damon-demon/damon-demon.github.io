@@ -95,3 +95,11 @@ test('mute pulls a colour towards its own grey', async () => {
   const [r, g, b] = hexToRgb(mute('#3a8fd8', 0.6));
   assert.ok(Math.max(r, g, b) - Math.min(r, g, b) < (0xd8 - 0x3a) / 2, 'less than half as saturated');
 });
+
+test('pencil turns a colour into graphite or paper, as drawn on a page', async () => {
+  const { pencil } = await import('../../reel/pixels.js');
+  assert.equal(pencil('#000000'), '#403d36', 'black is graphite');
+  assert.equal(pencil('#ffffff'), '#f2efe8', 'white is paper');
+  const [r] = hexToRgb(pencil('#6c4fb6')), [k] = hexToRgb(pencil('#22202a'));
+  assert.ok(r > 200 && k < 100, 'a purple hoodie goes pale, an outline stays dark');
+});

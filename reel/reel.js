@@ -4,7 +4,7 @@ import { buildTimeline, locate, nearShots, chapterStart, liveStep, parseDebug, f
 import { heroSprite } from './hero.js';
 import { dogSprite } from './dog.js';
 import { painterCanvas, spriteCanvases, gridCanvas } from './sprites.js';
-import { mute } from './pixels.js';
+import { mute, pencil } from './pixels.js';
 import { CHAPTERS, POSTER } from './story.js';
 
 const H = 96;                         // native height; the width follows the stage
@@ -15,11 +15,14 @@ const ICON = {
 };
 
 const MUTE = 0.6;                     // how grey the cast goes in Michigan's 'muted' tone
+const TONES = { muted: (c) => mute(c, MUTE), sketch: pencil };
 
-// A sprite in a tone: 'full' as drawn, or 'muted' with every colour pulled towards grey.
+// A sprite in a tone: 'full' as drawn, 'muted' with every colour pulled towards grey, or 'sketch' in
+// pencil on paper.
 function toned(sprite, tone) {
-  if (tone !== 'muted') return sprite;
-  return { ...sprite, palette: Object.fromEntries(Object.entries(sprite.palette).map(([k, v]) => [k, mute(v, MUTE)])) };
+  const f = TONES[tone];
+  if (!f) return sprite;
+  return { ...sprite, palette: Object.fromEntries(Object.entries(sprite.palette).map(([k, v]) => [k, f(v)])) };
 }
 
 function memo(fn) {
