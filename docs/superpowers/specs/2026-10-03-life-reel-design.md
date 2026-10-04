@@ -33,8 +33,8 @@ The approved pixel designs (character rig, walk cycle, all outfits, the dog and 
 | 1 | Europe, travel (train, Lisbon, Nürburgring) | Denim jacket, white tee, khaki trousers, camera |
 | 1 | Trolltunga | Red hiking shell, large trekking pack, hiking boots |
 | 1 | Iceland | Navy puffer, mustard beanie |
-| 2 | New York, day to day (Columbia, night walk, MoMA) | Camel long coat, scarf |
-| 2 | Michelin dinner | Burgundy blazer and black tee (the hero outfit) |
+| 2 | New York, day to day (Columbia, night walk, museums) | Camel long coat, scarf |
+| 2 | Fine dining (four restaurants) | Burgundy blazer and black tee (the hero outfit) |
 | 2 | Columbia graduation | Columbia-blue master's gown and mortarboard |
 | 3 | Michigan winter | MSU-green puffer, white beanie with pompom |
 | 3 | Research | Grey hoodie, headphones |
@@ -49,7 +49,7 @@ The approved pixel designs (character rig, walk cycle, all outfits, the dog and 
 | 4 | Freediving and spearfishing | Kelp-camo wetsuit, long fins, snorkel, speargun |
 | 5 | To be continued | California everyday outfit |
 
-The two dive outfits use swimming poses in the reel. The other outfits walk. Yimeng also sits (on the train, at Trolltunga and at dinner), and at the cap toss cheers bareheaded in the gown.
+The two dive outfits use swimming poses in the reel. The other outfits walk. Yimeng also sits (on the train, at Trolltunga and in the restaurants), and at the cap toss cheers bareheaded in the gown.
 
 ### The dog's wardrobe
 
@@ -67,7 +67,7 @@ The two dive outfits use swimming poses in the reel. The other outfits walk. Yim
 
 ## Storyboard
 
-The full loop runs about 57 s, and the timings below are targets. The caption is the place name and fades in at the top left whenever it changes.
+The full loop runs about 62 s, and the timings below are targets. The caption is the place name and fades in at the top left whenever it changes.
 
 ### 1 · Sheffield → Europe (~17.5 s). Caption: `Sheffield`, switching to `Europe` when the train leaves
 
@@ -79,12 +79,21 @@ The full loop runs about 57 s, and the timings below are targets. The caption is
 6. Iceland: Vestrahorn ("Batman Mountain"), black sand and dune grass, with an aurora rising at night.
 7. A plane climbs out under the same aurora, bound for New York.
 
-### 2 · New York (~11.7 s). Caption: `New York`. The chapter opens and closes at Columbia.
+### 2 · New York (~16 s). Caption: `New York`. The chapter opens and closes at Columbia.
 
 1. Arriving at Low Library on an autumn day: the dome, ten Ionic columns and the Low Steps, with Alma Mater on her pedestal. Leaves drift down over College Walk, whose lamp posts fly Columbia-blue banners. Yimeng walks in and stops to look up.
-2. Night in Manhattan, in black and gold with Art Deco styling. The shot opens on the lit crowns of the Chrysler and Empire State buildings, with a gold sunburst behind the skyline and searchlights sweeping. Then it tilts down to the street, where Yimeng walks up to a black-and-gold restaurant. Three stars light up above the door one by one, and Yimeng steps into its light.
-3. Michelin dinner, in a gold-and-burgundy room with the skyline in its windows: white tablecloths, candles and a crystal chandelier. Yimeng sits at the table. A waiter lifts a silver cloche to reveal one tiny bite on a huge plate. A course counter runs from `1/12` to `12/12` as the candle burns down. Then the sommelier fills a champagne tower, and the bill unrolls down to the floor and across it.
-4. MoMA: past Warhol's soup cans, Yimeng stops in front of *The Starry Night*, whose sky slowly turns. On wide screens Monet's *Water Lilies* hang further along.
+2. Night in Manhattan, in black and gold with Art Deco styling. The shot opens on the lit crowns of the Chrysler and Empire State buildings, with a gold sunburst behind the skyline and searchlights sweeping. Then it tilts down to the street, where Yimeng walks up to a black-and-gold restaurant with a gilt fan over its door, and steps into its light.
+3. Fine dining, eaten from left to right: one long shot through four restaurants side by side, each in its own style. Yimeng sits down at each, eats its signature dish, and dashes on to the next, leaving an empty plate behind. On a desktop all four are in view at once; on a phone the camera follows Yimeng.
+   - French, in gold and burgundy under a crystal chandelier: the waiter lifts a silver cloche on one tiny bite in the middle of a huge plate.
+   - Japanese omakase, at a hinoki counter under a paper lantern, with a noren and a round window: the itamae lays three nigiri on the board one by one.
+   - Italian, among warm plaster and a wine rack: the waiter shaves white truffle over a nest of tagliolini.
+   - Chinese, in red lacquer under red lanterns: the chef carves Peking duck while the lazy susan turns.
+   - After the last course the bill unrolls down to the floor and runs back under all four restaurants.
+4. Four exhibitions, one short shot each:
+   - MoMA: past Warhol's soup cans, Yimeng stops in front of *The Starry Night*, whose sky slowly turns. On wide screens Monet's *Water Lilies* hang further along.
+   - The Met: the Temple of Dendur and its gateway on their platform in the Sackler Wing, mirrored in the pool, with Central Park through the glass wall behind.
+   - The Guggenheim, looking up the rotunda: the white turns of the ramp ring the skylight, with paintings and visitors on every level, while Yimeng walks up the lowest turn.
+   - Yayoi Kusama's Infinity Mirror Room: in the dark, lamps come on at every depth and slowly change colour, doubled in the black pool on the floor.
 5. Back on the Low Library steps in spring, in the Columbia-blue gown. Everyone hops and throws their caps. A puppy trots along College Walk, Yimeng's cap comes down on its head, and a heart pops up. From here on the dog walks along.
 6. Transition: the caps falling from the sky turn into snowflakes, and the snow thickens towards white.
 
@@ -144,7 +153,7 @@ The world ahead turns into an unfinished pencil sketch, and Yimeng (California o
 - **Sprite data:** palette-indexed text grids live in the JS (one character per pixel, `.` for transparent). Fill-only parts get their outlines generated. Outfits are palette remaps, part swaps and overlays on the same rig. This is the system validated in the mockups.
 - **Shots:** each chapter exports a list of shots. A shot has a duration and the layers it uses, each with a parallax factor. It has a camera speed, which can be 0 for staged moments, and actor tracks for Yimeng and the dog: outfit, action (walk, sit, ride, eat, swim and so on), screen position and props. It can also have timed events (counters, stamps, cuts) and a transition into the next shot (cut, crossfade, or a special one: caps → snow, door → colour, the pencil sketch). The engine concatenates all shots into one timeline and derives chapter boundaries from it for the caption, the buttons and the sync.
 - **Rendering:** layers are pre-rendered once into offscreen canvases that tile seamlessly. They are built lazily just before a shot starts and released after it ends. Each frame composes the layers and actors onto one canvas at native resolution, about 480×96 on desktop, which the browser scales. The grey Michigan palette and the door → colour transition use palette-derived greyscale variants and a `globalAlpha` crossfade, not `ctx.filter`, which Safari lacks. All layouts use a seeded PRNG, so every play looks the same.
-- **Debug hooks:** the URL parameter `?reel=` takes either a number or a shot id. A number such as `?reel=42.5` renders that moment paused. A shot id such as `?reel=ch2-michelin` loops that one shot. Headless screenshots for review rely on these. They have no effect on normal visits.
+- **Debug hooks:** the URL parameter `?reel=` takes either a number or a shot id. A number such as `?reel=42.5` renders that moment paused. A shot id such as `?reel=ch2-dining` loops that one shot. Headless screenshots for review rely on these. They have no effect on normal visits.
 - **Accessibility:** the canvas has `role="img"` and an English `aria-label` summarising the journey. The chapter buttons are real `<button>`s labelled "Chapter n: Place". The pause button toggles its `aria-label` between "Pause" and "Play". Focus styles reuse the site's `:focus-visible` outline.
 
 ## Delivery
