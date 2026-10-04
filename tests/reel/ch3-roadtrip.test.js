@@ -1,5 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { sceneContract, frameAt } from './fake-canvas.js';
 import { roadtrip, tripAt, floodAt, toMap, LEGS } from '../../reel/ch3/roadtrip.js';
 
@@ -55,4 +56,9 @@ test('road trip: on a desktop the map holds still; on a phone the camera follows
   const mapX = (W, t) => frameAt(roadtrip, W, t).ctx.draws('colour')[0][0];
   assert.equal(mapX(480, 1.5), mapX(480, 4.5));
   assert.ok(mapX(195, 4.5) > mapX(195, 1.5), 'the map slides right as the car drives west');
+});
+
+test('road trip: the map is painted exactly as approved, pixel for pixel', () => {
+  const s = roadtrip.build(480, 96), sha = (p) => createHash('sha256').update(p.data).digest('hex').slice(0, 16);
+  assert.deepEqual([sha(s.layers.colour), sha(s.layers.grey)], ['7bf1e42f20b08159', '8ced6214334516e9']);
 });

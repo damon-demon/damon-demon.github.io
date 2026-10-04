@@ -69,8 +69,9 @@ const STATE_LINES = [[[-124.2, 42], [-111.05, 42]], [[-120, 42], [-120, 39], [-1
 
 // The land's colour by longitude: forest green in the East, farmland, the plains' yellow-green, the
 // browns of the Rockies and the plateau, desert tan, and California's dry gold.
-const TINTS = [[-125, '#a8ac68'], [-119, '#c4a870'], [-112, '#caa66e'], [-106, '#a88e66'], [-101, '#b8b46a'], [-95, '#9cb064'], [-88, '#86a660'], [-80, '#78985c'], [-66, '#6e8e58']];
-const mix = (a, b, u) => '#' + hexToRgb(a).map((v, i) => Math.round(v + (hexToRgb(b)[i] - v) * u).toString(16).padStart(2, '0')).join('');
+// Colours here are [r, g, b], so the map's 150,000 pixels never go through a hex string.
+const TINTS = [[-125, '#a8ac68'], [-119, '#c4a870'], [-112, '#caa66e'], [-106, '#a88e66'], [-101, '#b8b46a'], [-95, '#9cb064'], [-88, '#86a660'], [-80, '#78985c'], [-66, '#6e8e58']].map(([lon, hex]) => [lon, hexToRgb(hex)]);
+const mix = (a, b, u) => a.map((v, i) => Math.round(v + (b[i] - v) * u));
 function landTint(lon) {
   if (lon <= TINTS[0][0]) return TINTS[0][1];
   for (let i = 1; i < TINTS.length; i++) if (lon <= TINTS[i][0]) return mix(TINTS[i - 1][1], TINTS[i][1], (lon - TINTS[i - 1][0]) / (TINTS[i][0] - TINTS[i - 1][0]));
@@ -114,27 +115,29 @@ function colourMap() {
   const p = new Painter(MAP_W, MAP_H), water = new Uint8Array(MAP_W * MAP_H), r = rng(54);
   fillPoly(water, PACIFIC, 1); fillPoly(water, ATLANTIC, 1);
   for (const lake of [...LAKES, BAY, CHESAPEAKE]) fillPoly(water, lake, 1);
-  const ranges = RANGES.map(line => line.map(toMap));
-  const nearRange = (x, y) => {
+  const segs = RANGES.map(line => line.map(toMap)).flatMap(m => m.slice(1).map((b, i) => [m[i], b]))
+    .map(([[ax, ay], [bx, by]]) => ({ ax, ay, dx: bx - ax, dy: by - ay, x0: Math.min(ax, bx) - 4, x1: Math.max(ax, bx) + 4, y0: Math.min(ay, by) - 4, y1: Math.max(ay, by) + 4 }));
+  const nearRange = (x, y) => {                                                    // distance to the nearest range, if within 4 px
     let best = 99;
-    for (const line of ranges) for (let i = 1; i < line.length; i++) {
-      const [ax, ay] = line[i - 1], [bx, by] = line[i], dx = bx - ax, dy = by - ay;
-      const u = Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / (dx * dx + dy * dy)));
-      best = Math.min(best, Math.hypot(x - ax - u * dx, y - ay - u * dy));
+    for (const g of segs) {
+      if (x < g.x0 || x > g.x1 || y < g.y0 || y > g.y1) continue;
+      const u = Math.max(0, Math.min(1, ((x - g.ax) * g.dx + (y - g.ay) * g.dy) / (g.dx * g.dx + g.dy * g.dy)));
+      best = Math.min(best, Math.hypot(x - g.ax - u * g.dx, y - g.ay - u * g.dy));
     }
     return best;
   };
+  const put = (x, y, [rr, gg, bb]) => { const k = (y * MAP_W + x) * 4; p.data[k] = rr; p.data[k + 1] = gg; p.data[k + 2] = bb; p.data[k + 3] = 255; };
+  const CANADA_TINT = hexToRgb('#c4d0b0'), MEXICO_TINT = hexToRgb('#e0c89a'), SHADE = [0, 0, 0];
   for (let y = 0; y < MAP_H; y++) for (let x = 0; x < MAP_W; x++) {
     const lon = x / KX + LON0, lat = LAT0 - y / S, v = r();
     if (water[y * MAP_W + x]) { p.px(x, y, (x * 7 + y * 3) % 23 === 0 ? '#4a8ac8' : '#3a76b8'); continue; }
     let c = landTint(lon + (r() - 0.5) * 3);                                       // dithered from region to region
-    if (lat > latAt(CANADA, lon)) c = mix(c, '#c4d0b0', 0.35);
-    if (lat < latAt(MEXICO, lon)) c = mix(c, '#e0c89a', 0.4);
+    if (lat > latAt(CANADA, lon)) c = mix(c, CANADA_TINT, 0.35);
+    if (lat < latAt(MEXICO, lon)) c = mix(c, MEXICO_TINT, 0.4);
     const d = nearRange(x, y);
-    if (lon > -86 && d < 3) c = v < 0.5 ? '#5e7e4a' : '#6a8a54';                  // the green Appalachians
-    else if (lon < -100 && d < 3.5) c = d < 1.6 && v < 0.3 ? '#efefe9' : v < 0.5 ? '#8e765a' : '#9a8262';   // the western ranges, snow on the crest
-    else if (v < 0.05) c = mix(c, '#000000', 0.12);
-    p.px(x, y, c);
+    if (lon > -86 && d < 3) p.px(x, y, v < 0.5 ? '#5e7e4a' : '#6a8a54');           // the green Appalachians
+    else if (lon < -100 && d < 3.5) p.px(x, y, d < 1.6 && v < 0.3 ? '#efefe9' : v < 0.5 ? '#8e765a' : '#9a8262');   // the western ranges, snow on the crest
+    else put(x, y, v < 0.05 ? mix(c, SHADE, 0.12) : c);
   }
   for (const line of RIVERS) polyline(p, line, '#4a86c4');
   polyline(p, CANADA, '#4a4a40', 4); polyline(p, MEXICO, '#4a4a40', 4);
