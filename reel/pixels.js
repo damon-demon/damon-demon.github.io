@@ -98,6 +98,12 @@ export function hexToRgb(hex) {
   return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
 }
 
+// A colour pulled towards its own grey by `amount` (0 keeps it, 1 is fully grey): Michigan's palette.
+export function mute(hex, amount) {
+  const [r, g, b] = hexToRgb(hex), l = 0.3 * r + 0.59 * g + 0.11 * b;
+  return '#' + [r, g, b].map(c => Math.round(c + (l - c) * amount).toString(16).padStart(2, '0')).join('');
+}
+
 // Rows + palette -> rows of hex colours ('.' stays '.'); what a sprite actually looks like.
 export function resolve(rows, palette) {
   return rows.map(r => [...r].map(ch => (ch === '.' ? '.' : palette[ch])));

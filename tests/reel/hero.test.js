@@ -58,3 +58,12 @@ test('the cheer pose throws the cap: two bouncing frames, bareheaded', () => {
   assert.notDeepEqual(cheer.frames[0], cheer.frames[1]);
   assert.deepEqual([cheer.width, cheer.height, cheer.anchorX, cheer.footY], [42, 50, 9, 44]);
 });
+
+test('the type and curl poses: two frames each, and hands where props are held', () => {
+  const type = heroSprite('lab', 'type'), curl = heroSprite('gym5', 'curl');
+  assert.deepEqual([type.frames.length, curl.frames.length], [2, 2]);
+  assert.notDeepEqual(curl.frames[0], curl.frames[1]);
+  assert.deepEqual(curl.hands, [[16, 33], [19, 29]], 'the dumbbell comes up from the hip to the chest');
+  assert.ok(type.hands.every(([, y]) => y < type.seatY), 'hands on the desk, above the lap');
+  assert.equal(heroSprite('work').hands.length, 4, 'every pose reports its hands');
+});

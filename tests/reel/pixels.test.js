@@ -87,3 +87,11 @@ test('textRows has an Ü for NÜRBURGRING', async () => {
   const { textRows } = await import('../../reel/pixels.js');
   assert.deepEqual(textRows('Ü'), ['#.#', '...', '#.#', '#.#', '###']);
 });
+
+test('mute pulls a colour towards its own grey', async () => {
+  const { mute } = await import('../../reel/pixels.js');
+  assert.equal(mute('#ff0000', 0), '#ff0000');
+  assert.equal(mute('#ff0000', 1), '#4d4d4d');
+  const [r, g, b] = hexToRgb(mute('#3a8fd8', 0.6));
+  assert.ok(Math.max(r, g, b) - Math.min(r, g, b) < (0xd8 - 0x3a) / 2, 'less than half as saturated');
+});

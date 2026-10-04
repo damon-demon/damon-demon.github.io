@@ -4,6 +4,7 @@ import { buildTimeline, locate, chapterStart, liveStep, parseDebug, fadeAlpha } 
 import { heroSprite } from './hero.js';
 import { dogSprite } from './dog.js';
 import { painterCanvas, spriteCanvases, gridCanvas } from './sprites.js';
+import { mute } from './pixels.js';
 import { CHAPTERS, POSTER } from './story.js';
 
 const H = 96;                         // native height; the width follows the stage
@@ -12,6 +13,14 @@ const ICON = {
   pause: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg>',
   play: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>',
 };
+
+const MUTE = 0.6;                     // how grey the cast goes in Michigan's 'muted' tone
+
+// A sprite in a tone: 'full' as drawn, or 'muted' with every colour pulled towards grey.
+function toned(sprite, tone) {
+  if (tone !== 'muted') return sprite;
+  return { ...sprite, palette: Object.fromEntries(Object.entries(sprite.palette).map(([k, v]) => [k, mute(v, MUTE)])) };
+}
 
 function memo(fn) {
   const m = new Map();
@@ -44,11 +53,12 @@ export function mountReel(section, chapters, poster) {
   let W = 0, scale = 0, raf = 0, last = null, lastDraw = -Infinity;
   let shownCaption = null, shownChapter = -1;
 
-  const heroFrames = memo(id => { const [key, pose] = id.split(':'); return spriteCanvases(heroSprite(key, pose)); });
+  const heroFrames = memo(id => { const [key, pose, tone] = id.split(':'); return spriteCanvases(toned(heroSprite(key, pose), tone)); });
+  const dogFrames = memo(id => { const [key, pose, tone] = id.split(':'); return spriteCanvases(toned(dogSprite(key, pose), tone)); });
   const artCanvases = new WeakMap();
   const env = {
-    hero: (key, pose = 'walk') => heroFrames(key + ':' + pose),
-    dog: memo(key => spriteCanvases(dogSprite(key))),
+    hero: (key, pose = 'walk', tone = 'full') => heroFrames(`${key}:${pose}:${tone}`),
+    dog: (key, pose = 'trot', tone = 'full') => dogFrames(`${key}:${pose}:${tone}`),
     // A scene's own pixel art ({ rows, palette }) as a canvas, built once per object.
     art: (a) => { if (!artCanvases.has(a)) artCanvases.set(a, gridCanvas(a.rows, a.palette)); return artCanvases.get(a); },
   };

@@ -78,6 +78,13 @@ const ARMS = {
 ......SS............
 `,
 };
+ARMS.curlDown = ARMS.mid;             // a dumbbell curl: the arm hangs, then the forearm comes up
+ARMS.curlUp = `
+.......BB.SS........
+.......BBBr.........
+.......BBBr.........
+.......BBB..........
+`;
 const ARM_HOLD = `
 .......BB...........
 .......BBr..........
@@ -106,6 +113,13 @@ const ARM_BIG = {
 ......SS............
 `,
 };
+ARM_BIG.curlDown = ARM_BIG.mid;
+ARM_BIG.curlUp = `
+.....SSSS.SSS.......
+.....SSSSSSSSs......
+.....sSSSSSSs.......
+......sSSSs.........
+`;
 const LEGS = {
   pass: `
 ......ppPPPP........
@@ -486,13 +500,16 @@ const MASK = [[12, 8, 'k'], [13, 8, 'k'], [14, 8, 'k'], [15, 8, 'k'], [16, 8, 'k
   [12, 9, 'k'], [13, 9, 'g'], [14, 9, 'a'], [15, 9, 'a'], [16, 9, 'E'], [17, 9, 'a'], [18, 9, 'k'],
   [12, 10, 'k'], [13, 10, 'a'], [14, 10, 'a'], [15, 10, 'a'], [16, 10, 'E'], [17, 10, 'a'], [18, 10, 'k'],
   [12, 11, 'k'], [13, 11, 'k'], [14, 11, 'k'], [15, 11, 'k'], [16, 11, 'k'], [17, 11, 'k'], [18, 11, 'k'], [19, 11, 'k']];
-const HAND = { mid: [7, 22], fwd: [9, 22], back: [6, 22], hold: [11, 20] };
+const HAND = { mid: [7, 22], fwd: [9, 22], back: [6, 22], hold: [11, 20], curlDown: [7, 22], curlUp: [10, 18] };
 // Poses as frame lists of [legs, arm, bob, bare]. Walk contact frames sit 1px lower. `cheer` is
-// the cap toss: feet planted, bouncing, and bareheaded, because the hat is in the air.
+// the cap toss: feet planted, bouncing, and bareheaded, because the hat is in the air. `type` sits
+// with the hands forward on a keyboard, nodding; `curl` lifts a dumbbell from the hip to the chest.
 const POSES = {
   walk: [['near', 'back', 1], ['pass', 'mid', 0], ['far', 'fwd', 1], ['pass', 'mid', 0]],
   sit: [['sitA', 'mid', 0], ['sitB', 'mid', 0]],
   cheer: [['stand', 'fwd', 1, true], ['stand', 'mid', 0, true]],
+  type: [['sitA', 'hold', 0], ['sitA', 'hold', 1]],
+  curl: [['stand', 'curlDown', 0], ['stand', 'curlUp', 0]],
 };
 export const SEAT_Y = 38;             // sit pose: the outline row under the thighs rests on the ledge
 const HAIR_UNDER_HAT = new Set(['H', 'h', 'k', 'f']);
@@ -607,10 +624,15 @@ function frame(o, [legsKey, armKey, bob, bare = false]) {
   return c.rows();
 }
 
-// One outfit in one pose ('walk': 4 frames, 'sit' and 'cheer': 2), plus what the engine needs to place it.
+// One outfit in one pose ('walk': 4 frames, the others 2), plus what the engine needs to place it.
+// hands: per frame, the [x, y] in the sprite where props such as a dumbbell are held.
 export function heroSprite(key, pose = 'walk') {
   const o = OUTFITS[key];
   if (!o) throw new Error(`unknown outfit: ${key}`);
   if (!POSES[pose]) throw new Error(`unknown pose: ${pose}`);
-  return { frames: POSES[pose].map(p => frame(o, p)), palette: palette(o), width: SPRITE_W, height: SPRITE_H, anchorX: ANCHOR_X, footY: FOOT_Y, seatY: SEAT_Y };
+  const hands = POSES[pose].map(([, arm, bob]) => {
+    const a = o.hold ? 'hold' : o.stand ? 'mid' : arm;
+    return [OX + HAND[a][0], OY + HAND[a][1] + bob];
+  });
+  return { frames: POSES[pose].map(p => frame(o, p)), palette: palette(o), width: SPRITE_W, height: SPRITE_H, anchorX: ANCHOR_X, footY: FOOT_Y, seatY: SEAT_Y, hands };
 }

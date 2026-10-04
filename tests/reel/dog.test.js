@@ -28,3 +28,15 @@ test('adult and puppy report their size and foot row', () => {
 test('unknown dog outfits fail loudly', () => {
   assert.throws(() => dogSprite('tutu'), /unknown dog outfit: tutu/);
 });
+
+test('the dog sleeps: two breathing frames, lying lower than it stands', () => {
+  const top = (f) => f.findIndex(r => /[^.]/.test(r)), bottom = (f) => Math.max(...f.map((r, y) => (/[^.]/.test(r) ? y : -1)));
+  for (const key of ['pup', 'msu_knit', 'bandana', 'bare']) {
+    const s = dogSprite(key, 'sleep');
+    assert.equal(s.frames.length, 2);
+    assert.notDeepEqual(s.frames[0], s.frames[1], `${key} breathes`);
+    assert.ok(top(s.frames[0]) > top(dogSprite(key).frames[0]), `${key} lies down`);
+    assert.ok(bottom(s.frames[0]) <= s.footY + 1, `${key} rests on the floor`);
+  }
+  assert.throws(() => dogSprite('bare', 'beg'), /unknown dog pose: beg/);
+});
