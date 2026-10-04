@@ -4,10 +4,10 @@ import { createHash } from 'node:crypto';
 import { sceneContract, frameAt } from './fake-canvas.js';
 import { moma } from '../../reel/ch2/moma.js';
 
-sceneContract('ch2 MoMA', moma, 1.5);
+sceneContract('ch2 MoMA', moma, 1.1);
 
 test('MoMA: Yimeng walks in and stops just left of The Starry Night', () => {
-  const s = moma.build(480, 96), { ctx } = frameAt(moma, 480, 1.2);
+  const s = moma.build(480, 96), { ctx } = frameAt(moma, 480, 0.6);
   assert.deepEqual(ctx.draws('nyc:walk:1'), [[s.hx - 9, 88 - 44]]);
   const [[px]] = ctx.calls.filter(c => /^starry\d$/.test(c[1])).map(c => [c[2]]);
   assert.ok(px > s.hx + 20, "the painting hangs just past Yimeng's face");

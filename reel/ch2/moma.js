@@ -3,7 +3,7 @@
 import { Painter, rng, textRows } from '../pixels.js';
 
 const FLOOR = 88;                            // the row Yimeng's shoes rest on
-const STOP = 0.85;                           // walking in until here, then standing still
+const STOP = 0.55;                           // walking in until here, then standing still
 const STARRY = { w: 40, h: 32, x: 28, y: 28 };   // the painting; x is its left edge relative to Yimeng's stop
 const FRAMES = 4;                            // the sky's swirl, cycled
 
