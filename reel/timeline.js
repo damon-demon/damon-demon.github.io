@@ -35,6 +35,12 @@ export function fadeAlpha(shot, t) {
   return Math.min(1, Math.max(0, a));
 }
 
+// The shots whose scenes should be ready at t: the one on screen, and the one after it.
+export function nearShots(tl, t) {
+  const { index } = locate(tl, t);
+  return [tl.shots[index].shot, tl.shots[(index + 1) % tl.shots.length].shot];
+}
+
 export function chapterStart(tl, n) {
   return tl.chapters[n].start;
 }

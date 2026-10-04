@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildTimeline, locate, chapterStart, liveStep, parseDebug } from '../../reel/timeline.js';
+import { buildTimeline, locate, nearShots, chapterStart, liveStep, parseDebug } from '../../reel/timeline.js';
 
 const shot = (id, duration, caption) => ({ id, duration, caption });
 const CH = [
@@ -50,4 +50,11 @@ test('fadeAlpha darkens the start and end of shots that ask for it', async () =>
   assert.equal(fadeAlpha(s, 2), 0);
   assert.equal(fadeAlpha(s, 3.5), 0.5);
   assert.equal(fadeAlpha({ duration: 4 }, 0), 0, 'no fade unless the shot sets one');
+});
+
+test('nearShots gives the shot on screen and the next one, wrapping at the end of the loop', () => {
+  const tl = buildTimeline(CH), ids = (t) => nearShots(tl, t).map(s => s.id);
+  assert.deepEqual(ids(1), ['a', 'b']);
+  assert.deepEqual(ids(9), ['c', 'd']);
+  assert.deepEqual(ids(15), ['d', 'a']);
 });

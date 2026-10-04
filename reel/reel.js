@@ -1,6 +1,6 @@
 // The life reel: mounts on <section class="reel">, plays the story on a pixel canvas,
 // and keeps the caption, chapter buttons and About timeline in step with it.
-import { buildTimeline, locate, chapterStart, liveStep, parseDebug, fadeAlpha } from './timeline.js';
+import { buildTimeline, locate, nearShots, chapterStart, liveStep, parseDebug, fadeAlpha } from './timeline.js';
 import { heroSprite } from './hero.js';
 import { dogSprite } from './dog.js';
 import { painterCanvas, spriteCanvases, gridCanvas } from './sprites.js';
@@ -62,7 +62,10 @@ export function mountReel(section, chapters, poster) {
     // A scene's own pixel art ({ rows, palette }) as a canvas, built once per object.
     art: (a) => { if (!artCanvases.has(a)) artCanvases.set(a, gridCanvas(a.rows, a.palette)); return artCanvases.get(a); },
   };
-  const scenes = new Map();           // scene definition -> built scene at the current width
+  // Scenes built at the current width: the one on screen and the next, which is built ahead in idle
+  // time so its first frame is on time. Any other is dropped, so memory holds two shots at most.
+  const scenes = new Map();
+  let ahead = null;
   function sceneFor(def) {
     if (!scenes.has(def)) {
       const s = def.build(W, H);
@@ -70,6 +73,12 @@ export function mountReel(section, chapters, poster) {
       scenes.set(def, s);
     }
     return scenes.get(def);
+  }
+  function upkeep(current, next) {
+    for (const def of scenes.keys()) if (def !== current && def !== next) scenes.delete(def);
+    if (!next || scenes.has(next) || ahead === next) return;
+    ahead = next;
+    (window.requestIdleCallback || ((f) => setTimeout(f, 30)))(() => { if (ahead === next) { ahead = null; if (W) sceneFor(next); } });
   }
 
   function setCaption(text) {
@@ -92,15 +101,16 @@ export function mountReel(section, chapters, poster) {
 
   function draw() {
     if (!W) return;
-    let shot, local, chapter;
+    let shot, local, chapter, next = null;
     if (showingPoster) {
       shot = poster; local = 0; chapter = poster.chapter;
     } else {
       const at = locate(tl, t);
-      shot = at.entry.shot; local = at.local; chapter = soloChapter ?? at.chapter;
+      shot = at.entry.shot; local = at.local; chapter = soloChapter ?? at.chapter; next = nearShots(tl, t)[1];
     }
     ctx.imageSmoothingEnabled = false;
     shot.scene.render(ctx, local, sceneFor(shot.scene), env, shot);
+    upkeep(shot.scene, next && next.scene);
     const fade = showingPoster ? 0 : fadeAlpha(shot, local);
     if (fade > 0) {
       ctx.globalAlpha = fade;
