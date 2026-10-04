@@ -48,3 +48,13 @@ test('the sit pose has two swinging frames and a seat row', () => {
 test('unknown poses fail loudly', () => {
   assert.throws(() => heroSprite('work', 'cartwheel'), /unknown pose: cartwheel/);
 });
+
+test('the cheer pose throws the cap: two bouncing frames, bareheaded', () => {
+  const cheer = heroSprite('columbia', 'cheer'), worn = heroSprite('columbia');
+  const capPixels = (f) => f.join('').replace(/[^Jj]/g, '').length;          // the mortarboard's colours
+  assert.equal(cheer.frames.length, 2);
+  assert.ok(capPixels(worn.frames[1]) > 20, 'the walking gown wears the mortarboard');
+  assert.deepEqual(cheer.frames.map(capPixels), [0, 0]);
+  assert.notDeepEqual(cheer.frames[0], cheer.frames[1]);
+  assert.deepEqual([cheer.width, cheer.height, cheer.anchorX, cheer.footY], [42, 50, 9, 44]);
+});

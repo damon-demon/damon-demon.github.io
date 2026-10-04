@@ -27,7 +27,7 @@ export function fakeCanvases(scene) {
 export function fakeEnv() {
   const sprite = (id, n, extra) => ({ canvases: Array.from({ length: n }, (_, i) => ({ name: `${id}:${i}`, width: 42, height: 50 })), ...extra });
   return {
-    hero: (key, pose = 'walk') => sprite(`${key}:${pose}`, pose === 'sit' ? 2 : 4, { anchorX: 9, footY: 44, seatY: 38 }),
+    hero: (key, pose = 'walk') => sprite(`${key}:${pose}`, pose === 'walk' ? 4 : 2, { anchorX: 9, footY: 44, seatY: 38 }),
     dog: (key) => sprite(`dog:${key}`, 4, { anchorX: 0, footY: 15 }),
     art: (a) => ({ name: 'art', width: a.w, height: a.h }),
   };

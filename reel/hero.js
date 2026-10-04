@@ -487,10 +487,12 @@ const MASK = [[12, 8, 'k'], [13, 8, 'k'], [14, 8, 'k'], [15, 8, 'k'], [16, 8, 'k
   [12, 10, 'k'], [13, 10, 'a'], [14, 10, 'a'], [15, 10, 'a'], [16, 10, 'E'], [17, 10, 'a'], [18, 10, 'k'],
   [12, 11, 'k'], [13, 11, 'k'], [14, 11, 'k'], [15, 11, 'k'], [16, 11, 'k'], [17, 11, 'k'], [18, 11, 'k'], [19, 11, 'k']];
 const HAND = { mid: [7, 22], fwd: [9, 22], back: [6, 22], hold: [11, 20] };
-// Poses as frame lists of [legs, arm, bob]. Walk contact frames sit 1px lower.
+// Poses as frame lists of [legs, arm, bob, bare]. Walk contact frames sit 1px lower. `cheer` is
+// the cap toss: feet planted, bouncing, and bareheaded, because the hat is in the air.
 const POSES = {
   walk: [['near', 'back', 1], ['pass', 'mid', 0], ['far', 'fwd', 1], ['pass', 'mid', 0]],
   sit: [['sitA', 'mid', 0], ['sitB', 'mid', 0]],
+  cheer: [['stand', 'fwd', 1, true], ['stand', 'mid', 0, true]],
 };
 export const SEAT_Y = 38;             // sit pose: the outline row under the thighs rests on the ledge
 const HAIR_UNDER_HAT = new Set(['H', 'h', 'k', 'f']);
@@ -516,7 +518,7 @@ function palette(o) {
   return pal;
 }
 
-function frame(o, [legsKey, armKey, bob]) {
+function frame(o, [legsKey, armKey, bob, bare = false]) {
   if (o.stand) { legsKey = 'pass'; armKey = 'mid'; }
   if (o.hold) armKey = 'hold';
   const props = o.props || [];
@@ -592,9 +594,11 @@ function frame(o, [legsKey, armKey, bob]) {
     for (let y = -4; y < 3; y++) c.set(X + 5, Y + 1 + y + bob, 'x');
     c.set(X + 6, Y + 1 - 4 + bob, 'x');
   }
-  for (const hat of o.hats || []) stampHat(c, HAT[hat], X, Y + bob - (hat === 'mortar' || hat === 'tam' ? 1 : 0));
-  if (o.pom) c.stamp(POM, X, Y - 2 + bob);
-  if (o.tassel) for (let y = 0; y < 6; y++) c.set(X + 16, Y + y + bob, o.tassel);
+  if (!bare) {
+    for (const hat of o.hats || []) stampHat(c, HAT[hat], X, Y + bob - (hat === 'mortar' || hat === 'tam' ? 1 : 0));
+    if (o.pom) c.stamp(POM, X, Y - 2 + bob);
+    if (o.tassel) for (let y = 0; y < 6; y++) c.set(X + 16, Y + y + bob, o.tassel);
+  }
   if (o.phones) {
     headphones(c, X, Y + 1 + bob);
     c.stamp('NNN\nNNN\nNNN\nNNN', X + 4, Y + 1 + 8 + bob, { outline: 'k', over: true });
@@ -603,7 +607,7 @@ function frame(o, [legsKey, armKey, bob]) {
   return c.rows();
 }
 
-// One outfit in one pose ('walk': 4 frames, 'sit': 2), plus what the engine needs to place it.
+// One outfit in one pose ('walk': 4 frames, 'sit' and 'cheer': 2), plus what the engine needs to place it.
 export function heroSprite(key, pose = 'walk') {
   const o = OUTFITS[key];
   if (!o) throw new Error(`unknown outfit: ${key}`);
