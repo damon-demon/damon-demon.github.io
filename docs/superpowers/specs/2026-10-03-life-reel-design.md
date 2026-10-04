@@ -67,7 +67,7 @@ The two dive outfits swim: the body lies flat and flutter-kicks, fins trailing, 
 
 ## Storyboard
 
-The full loop runs about 66 s, and the timings below are targets. The caption is the place name and fades in at the top left whenever it changes.
+The full loop runs about 68 s, and the timings below are targets. The caption is the place name and fades in at the top left whenever it changes.
 
 ### 1 · Sheffield → Europe (~17.5 s). Caption: `Sheffield`, switching to `Europe` when the train leaves
 
@@ -109,16 +109,18 @@ The full loop runs about 66 s, and the timings below are targets. The caption is
    - Places are labelled as the car reaches them, and landmarks pop up: the Maine lighthouse, the Manhattan skyline, the Capitol, the Chicago skyline, a Utah arch, the Las Vegas sign and the Golden Gate Bridge.
    - On a desktop the route's whole width is in view, and the camera only follows the car up and down. On a phone, it follows the car both ways.
 
-### 4 · California (~16 s). Caption: `California`. Full colour, morning to sunset.
+### 4 · California (~17 s). Caption: `California`. Full colour, morning to sunset.
 
 1. Yimeng's silver-grey Mercedes-AMG GLC 63 rolls along a palm-lined street of white stucco and red tile, golden hills behind, and stops. Through the window, the dog stands at the steering wheel in its houndstooth turtleneck, as in the hero photo above, with Yimeng in the passenger seat.
 2. The office: a bright open-plan floor with California through the glass wall. Yimeng, in the purple hoodie, works at a desk with two monitors and a phone in hand. A bubble blows up the phone's screen, where a candlestick chart climbs candle by candle, and the second monitor shows it too. The dog naps under the desk.
 3. Ranch: golden hills, oaks and fences. An ATV kicks up dust on the ranch track in the foreground, the dog in its blaze vest on the rear rack, while a herd of deer, a buck leading the does, runs along the hills in the background. Parallax makes it read as a chase, but the ATV never leaves the track. Yimeng stops, gets off and raises the rifle. Cut to the scope view: the doe in the crosshairs turns its head and looks straight back, and the scene hard-cuts away. No shot is fired. (Yimeng never aims from the vehicle: California forbids shooting from vehicles and herding game with them.)
-4. Forest under oaks, picking mushrooms. The dog wears its backpack.
-5. Fishing from the rocks.
-6. Low tide: picking up sea urchins and digging for fat innkeeper worms (海肠).
-7. Into the sea: scuba, then freediving, then spearfishing in a kelp forest.
-8. Surfacing at sunset. The dog is waiting on the rocks in its life vest.
+4. Mushrooms under the oaks: dappled light in a coast live oak wood, the limbs hung with lace lichen, sword ferns along the path. Yimeng walks in with the basket and stops at a cluster of golden chanterelles. The dog, in its little backpack, turns back and wags while they hop into the basket one by one, and the two walk on.
+5. Fishing from the rocks: a dark outcrop over the Pacific, a cypress headland and sea stacks behind. The float bobs, ducks under, and a rockfish comes up out of the sea on the line. The dog, in its life vest, hops behind Yimeng.
+6. Low tide: wet sand shining with the sky, rocks hung with weed and mussels. A purple sea urchin hops from a tide pool into Yimeng's bucket. Then sand spurts from a burrow, a fat pink innkeeper worm (海肠) pops out, and the dog jumps back. The worm goes in the bucket too.
+7. Into the sea, in a kelp forest: golden kelp rising to the bright surface, light slanting down between the stalks.
+   - Scuba: Yimeng swims through in the black wetsuit with the tank, bubbles going up, past a school of blacksmith and a bright orange garibaldi.
+   - Freediving and spearfishing: in the camo wetsuit and long fins, Yimeng breathes at the surface, dives down through the kelp to the reef with the speargun out in front, levels off behind a California sheephead, and fires. The scene cuts while the spear is still on its way.
+8. Surfacing at sunset: Yimeng comes up in the shallows with the sheephead on the spear, facing the rocks where the dog has been waiting in its life vest. The dog wags and hops, and a heart pops up.
 
 ### 5 · To be continued (~3 s). Caption: `To be continued…`
 
