@@ -67,3 +67,11 @@ test('the type and curl poses: two frames each, and hands where props are held',
   assert.ok(type.hands.every(([, y]) => y < type.seatY), 'hands on the desk, above the lap');
   assert.equal(heroSprite('work').hands.length, 4, 'every pose reports its hands');
 });
+
+test('the hang pose leaves the arms to the scene: two frames, the hand at the shoulder', () => {
+  const hang = heroSprite('gym5', 'hang'), walk = heroSprite('gym5');
+  const skin = (f) => f.slice(28, 36).join('').replace(/[^Ss]/g, '').length;          // bare skin below the head
+  assert.equal(hang.frames.length, 2);
+  assert.deepEqual(hang.hands, [[17, 29], [17, 29]]);
+  assert.ok(skin(hang.frames[0]) < skin(walk.frames[1]), 'no arm hanging at the side');
+});
