@@ -112,9 +112,9 @@ The full loop runs about 66 s, and the timings below are targets. The caption is
 
 ### 4 · California (~16 s). Caption: `California`. Full colour, morning to sunset.
 
-1. A car rolls in with the dog standing at the steering wheel, as in the hero photo above.
-2. Office, with a stock chart on the phone.
-3. Ranch: golden hills, oaks and fences. An ATV kicks up dust on the ranch track in the foreground while a herd of deer runs along the hills in the background. Parallax makes it read as a chase, but the ATV never leaves the track. Yimeng stops, gets off and raises the rifle. Cut to the scope view, the deer looks back, and the scene hard-cuts away. No shot is fired. (Yimeng never aims from the vehicle: California forbids shooting from vehicles and herding game with them.)
+1. Yimeng's silver-grey Mercedes-AMG GLC 63 rolls along a palm-lined street of white stucco and red tile, golden hills behind, and stops. Through the window, the dog stands at the steering wheel in its houndstooth turtleneck, as in the hero photo above, with Yimeng in the passenger seat.
+2. The office: a bright open-plan floor with California through the glass wall. Yimeng, in the purple hoodie, works at a desk with two monitors and a phone in hand. A bubble blows up the phone's screen, where a candlestick chart climbs candle by candle, and the second monitor shows it too. The dog naps under the desk.
+3. Ranch: golden hills, oaks and fences. An ATV kicks up dust on the ranch track in the foreground, the dog in its blaze vest on the rear rack, while a herd of deer, a buck leading the does, runs along the hills in the background. Parallax makes it read as a chase, but the ATV never leaves the track. Yimeng stops, gets off and raises the rifle. Cut to the scope view: the doe in the crosshairs turns its head and looks straight back, and the scene hard-cuts away. No shot is fired. (Yimeng never aims from the vehicle: California forbids shooting from vehicles and herding game with them.)
 4. Forest under oaks, picking mushrooms. The dog wears its backpack.
 5. Fishing from the rocks.
 6. Low tide: picking up sea urchins and digging for fat innkeeper worms (海肠).
