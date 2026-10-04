@@ -1,22 +1,19 @@
 // Chapter 2, shot 2: Manhattan by night, in black and gold. The camera opens on the Art Deco crowns
 // of the Chrysler and Empire State buildings, a sunburst and sweeping searchlights, then tilts down
-// to the street, where Yimeng walks up to a black-and-gold restaurant. Three stars light up above its
-// door, one by one, and in Yimeng goes.
+// to the street, where Yimeng walks up to a black-and-gold restaurant and steps into its light.
 import { Painter, rng } from '../pixels.js';
-import { gradient, art } from '../kit.js';
+import { gradient } from '../kit.js';
 
 const V = 26;                                // walk speed, px/s
-const STOP = [1.15, 1.5];                    // the camera slows over this span and stops; Yimeng walks on
-const TILT = [0.3, 1.25];                    // the tilt down from the crowns to the street
+const STOP = [0.95, 1.3];                    // the camera slows over this span and stops; Yimeng walks on
+const TILT = [0.25, 1.05];                   // the tilt down from the crowns to the street
 const SIDEWALK = 87;                         // the row Yimeng's shoes rest on
-const STARS_AT = [1.5, 1.66, 1.82];          // each Michelin star lights up
-const ENTER = 1.95;                          // Yimeng steps into the door's light
+const ENTER = 1.55;                          // Yimeng steps into the door's light
 
 const SKY = [['#060609', 0], ['#0a0b12', 0.3], ['#10121d', 0.6], ['#1a1a24', 0.85], ['#262218', 0.97]];
 const GOLD = '#d9b44a', DEEP = '#9c7c2c', LIT = '#f2d27a', WARM = '#ffe6a6', BLACK = '#0c0c11';
 
 const ease = (u) => (u <= 0 ? 0 : u >= 1 ? 1 : (1 - Math.cos(u * Math.PI)) / 2);
-export const starsLit = (t) => STARS_AT.filter(at => t >= at).length;
 const tiltAt = (t) => ease((t - TILT[0]) / (TILT[1] - TILT[0]));
 
 // How far the camera has tracked Yimeng: walking pace, then easing to a stop.
@@ -24,17 +21,6 @@ export function camAt(t) {
   const [a, b] = STOP, u = Math.min(Math.max(t, a), b) - a;
   return V * Math.min(t, a) + V * (u - (u * u) / (2 * (b - a)));
 }
-
-const STAR = art(`
-...#...
-..###..
-#######
-.#####.
-..###..
-.##.##.
-.#...#.
-`, { '#': '#ffd75e' });
-const STAR_OFF = { ...STAR, palette: { '#': '#3b3322' } };
 
 // ---------- the skyline ----------
 // Every tall layer is drawn in street-view coordinates: row 0 of a Painter sits `top` rows above
@@ -150,7 +136,7 @@ function facade(p, x, w, top, r, kind) {
 }
 
 function restaurant(p, x) {
-  // black marble, gold-edged; a double door full of warm light under the star sign
+  // black marble, gold-edged; a double door full of warm light under a gilt Art Deco fan
   const w = 64, top = 40;
   for (let y = top; y < 84; y++) for (let i = x; i < x + w; i++) p.px(i, y, (i * 3 + y * 7) % 23 === 0 ? '#24242c' : '#101014');
   for (let i = x; i < x + w; i++) { p.px(i, top, GOLD); p.px(i, top + 1, DEEP); }
@@ -160,13 +146,17 @@ function restaurant(p, x) {
   p.rect(dx, 60, 6, 24, WARM); p.rect(dx + 8, 60, 6, 24, WARM);                  // glass doors
   for (const gx of [dx + 6, dx + 7]) for (let y = 60; y < 84; y++) p.px(gx, y, DEEP);
   for (const [i, y] of [[dx + 4, 71], [dx + 9, 71]]) p.rect(i, y, 1, 3, DEEP);   // handles
-  p.rect(dx - 6, 44, 26, 11, GOLD); p.rect(dx - 5, 45, 24, 9, '#0b0b0e');        // the star sign
+  for (let k = 0; k < 9; k++) {                                                  // the fan over the door
+    const a = Math.PI * (k + 0.5) / 9;
+    for (let q = 3; q < 12; q++) p.px(Math.round(dx + 7 + Math.cos(a) * q * 1.25), Math.round(57 - Math.sin(a) * q), q > 9 ? LIT : GOLD);
+  }
+  for (let i = dx - 8; i < dx + 23; i++) p.px(i, 57, GOLD);
   for (const tx of [x + 6, x + w - 12]) {                                        // topiaries in gold planters
     p.rect(tx, 77, 6, 7, GOLD); p.rect(tx + 1, 78, 4, 6, DEEP);
     for (let j = -4; j <= 4; j++) for (let i = -4; i <= 4; i++) if (i * i + j * j <= 16) p.px(tx + 3 + i, 71 + j, (i + j) % 3 ? '#1f3a26' : '#2e5236');
   }
   for (let i = dx - 4; i < dx + 18; i++) for (let y = 84; y < 88; y++) p.px(i, y, y === 84 ? '#a8203a' : '#8a1830');   // red carpet
-  return { door: dx + 7, sign: dx - 5 };
+  return { door: dx + 7 };
 }
 
 export function buildNight(W, H = 96) {
@@ -175,7 +165,7 @@ export function buildNight(W, H = 96) {
   const rx = Math.round(hx + V * ENTER + 9) - 32;                                // so the door's centre is where Yimeng's middle is at ENTER
   let x = -8;
   for (let n = 0; x < rx - 4; n++) { const w = Math.min(46 + Math.floor(r() * 20), rx - 4 - x); if (w > 20) facade(st, x, w, 46 + Math.floor(r() * 8), r, n % 3); x += w + 4; }
-  const { door, sign } = restaurant(st, rx);
+  const { door } = restaurant(st, rx);
   x = rx + 68;
   for (let n = 1; x < run; n++) { facade(st, x, 50, 44 + (n % 2) * 6, r, n % 3); x += 54; }
   for (let lx = 30; lx < run; lx += 86) {                                         // Art Deco lamp posts
@@ -190,7 +180,7 @@ export function buildNight(W, H = 96) {
     st.px(i, y, c);
   }
   return {
-    W, H, hx, door, sign, layers: { sky: gradient(W, H, SKY), burst: sunburst(W, H), far: buildFar(W), mid: buildMid(W), street: st },
+    W, H, hx, door, layers: { sky: gradient(W, H, SKY), burst: sunburst(W, H), far: buildFar(W), mid: buildMid(W), street: st },
     manhole: rx - 40,
   };
 }
@@ -216,17 +206,6 @@ export function renderNight(ctx, t, s, env) {
   ctx.drawImage(c.mid, Math.round(-cam * 0.45) - 20, Math.round(yMid));
   ctx.drawImage(c.street, -Math.round(cam), Math.round(yStreet));
   const sx = (x) => Math.round(x - cam), sy = (y) => Math.round(y + yStreet);
-  // the three stars over the door
-  STARS_AT.forEach((at, i) => {
-    const on = i < starsLit(t), x = sx(s.sign + 1 + i * 8), y = sy(46);
-    ctx.drawImage(env.art(on ? STAR : STAR_OFF), x, y);
-    const flash = 1 - (t - at) / 0.2;
-    if (on && flash > 0) {
-      ctx.globalAlpha = flash; ctx.fillStyle = '#fff6d8';
-      ctx.fillRect(x + 3, y - 3, 1, 13); ctx.fillRect(x - 3, y + 3, 13, 1);
-      ctx.globalAlpha = 1;
-    }
-  });
   // steam rising from a manhole
   for (let k = 0; k < 5; k++) {
     const age = (t * 0.9 + k / 5) % 1, rad = 3 + age * 7;

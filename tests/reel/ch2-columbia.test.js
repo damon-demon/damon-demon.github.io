@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { sceneContract, frameAt } from './fake-canvas.js';
 import { columbia } from '../../reel/ch2/columbia.js';
 
-sceneContract('ch2 Columbia', columbia, 2);
+sceneContract('ch2 Columbia', columbia, 1.8);
 
 test('Columbia: Low Library and Alma Mater stand ahead of Yimeng', () => {
   const s = columbia.build(480, 96);
@@ -16,5 +16,5 @@ test('Columbia: Yimeng walks in along College Walk, then stops and looks up', ()
   assert.deepEqual(frameAt(columbia, 480, 1.6).ctx.draws('nyc:walk:1'), [[s.hx - 9, 90 - 44]]);
   const x = (t) => frameAt(columbia, 480, t).ctx.calls.find(c => String(c[1]).startsWith('nyc:walk'))[2];
   assert.ok(x(0.2) < x(1), 'walking right');
-  assert.equal(x(1.5), x(1.9), 'then standing still');
+  assert.equal(x(1.15), x(1.7), 'then standing still');
 });

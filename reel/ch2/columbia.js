@@ -172,7 +172,7 @@ export function renderColumbia(ctx, t, s, env) {
     ctx.fillStyle = l.c;
     ctx.fillRect(lx, ly, 2, 1); ctx.fillRect(lx + (flip ? 1 : 0), ly + 1, 1, 1);
   }
-  const hero = env.hero('nyc'), stopAt = 1.2;                                    // walks in, stops, looks up
+  const hero = env.hero('nyc'), stopAt = 1.1;                                    // walks in, stops, looks up
   const x = s.hx - Math.max(0, stopAt - t) * 26;
   ctx.drawImage(hero.canvases[t < stopAt ? Math.floor(t * 6) % 4 : 1], Math.round(x) - hero.anchorX, WALK - hero.footY);
 }
