@@ -185,6 +185,7 @@ Work happens on the `life-reel` branch. A push to `main` deploys to GitHub Pages
 - **No JS:** with JavaScript off, the section is hidden and no empty band remains.
 - **Links and console:** a script compares every `href` in `index.html` before and after, and all of them must be unchanged. The console shows no errors.
 - **Layout:** the page height and positions do not shift when the reel script loads.
+- **QA sweep:** `tests/reel/qa.mjs` checks the last three in headless Chrome. It plays every shot looking for console errors, loads the page without JavaScript, and measures About before and after the reel mounts.
 
 ## Out of scope
 
