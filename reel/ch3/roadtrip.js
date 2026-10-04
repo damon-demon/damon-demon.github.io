@@ -1,8 +1,9 @@
-// Chapter 3, shot 4: the Graduation Road Trip, on a map. From East Lansing the car loops round the
-// East: through Ontario to Niagara, across New York to Vermont and the Maine coast, down by Boston,
-// New York and Washington to the Carolinas, and home through Tennessee, Kentucky and Ohio, all in
-// Michigan's grey. Then it turns west, by Chicago, Kansas City, Denver and the Rockies, Utah and
-// Las Vegas, to Santa Clara, and the colour spreads out from the car until the map is all colour.
+// Chapter 3, shot 4: the Graduation Road Trip, on a map. The map comes up in Michigan's grey, and as
+// the car sets off the colour floods out from East Lansing, as through the door in The Wizard of Oz.
+// From there the car loops round the East: through Ontario to Niagara, across New York to Vermont
+// and the Maine coast, down by Boston, New York and Washington to the Carolinas, and home through
+// Tennessee, Kentucky and Ohio. Then it turns west, by Chicago, Kansas City, Denver and the Rockies,
+// Utah and Las Vegas, to Santa Clara.
 import { Painter, rng, hexToRgb } from '../pixels.js';
 import { art, label } from '../kit.js';
 
@@ -10,6 +11,7 @@ const S = 8, LON0 = -160, LAT0 = 51, KX = Math.cos(38 * Math.PI / 180) * S;     
 export const toMap = ([lon, lat]) => [(lon - LON0) * KX, (LAT0 - lat) * S];
 const MAP_W = Math.round((-40 - LON0) * KX), MAP_H = Math.round((LAT0 - 26) * S);
 export const LEGS = { east: [0.15, 2.45], west: [2.55, 4.6] };       // when the car drives each loop
+const FLOOD = [0.15, 0.95];                                           // the colour floods out as the car sets off
 
 // The drive, as [lon, lat] waypoints along the roads it took.
 const EAST = [[-84.48, 42.73], [-83.05, 42.33], [-81.25, 42.98], [-79.07, 43.09], [-77.6, 43.16], [-76.15, 43.05],
@@ -232,13 +234,16 @@ function along(rt, d) {
 }
 const legU = ([a, b], t) => Math.max(0, Math.min(1, (t - a) / (b - a)));
 
-// Where the car is at time t, on which leg, and how far the colour has spread (0 until it turns west).
+// Where the car is at time t, and on which leg.
 export function tripAt(t) {
   const e = legU(LEGS.east, t), w = legU(LEGS.west, t);
   const leg = t < LEGS.west[0] ? 'east' : 'west', rt = leg === 'east' ? R_EAST : R_WEST;
-  const pos = along(rt, (leg === 'east' ? e : w) * rt.len);
-  return { leg, ...pos, colour: leg === 'west' ? Math.pow(w, 1.6) * (MAP_W + 100) + (t > LEGS.west[1] ? 2000 : 0) : 0 };
+  return { leg, ...along(rt, (leg === 'east' ? e : w) * rt.len) };
 }
+
+// How far the colour has flooded out from East Lansing (map px): slowly at first, then across the
+// whole map, and past every corner once it is done.
+export const floodAt = (t) => (t >= FLOOD[1] ? 2000 : Math.pow(legU(FLOOD, t), 1.6) * (MAP_W * 0.7));
 const R_EAST = route(EAST), R_WEST = route(WEST);
 function reachAt(pt, leg) {
   const rt = leg ? R_WEST : R_EAST, [px, py] = toMap(pt);
@@ -297,20 +302,21 @@ function layerAt(ctx, img, t, s, env, cam) {
 }
 
 export function renderRoadtrip(ctx, t, s, env) {
-  const { W, H, canvases: c } = s, trip = tripAt(t);
+  const { W, H, canvases: c } = s, trip = tripAt(t), r = floodAt(t);
   const camX = W >= MAP_W * 0.62 ? toMap([-96.5, 0])[0] - W / 2 : Math.min(Math.max(trip.x - W * 0.5, 0), MAP_W - W);
   const cam = { x: camX, y: Math.min(Math.max(trip.y - 56, 0), MAP_H - H) };
   ctx.clearRect(0, 0, W, H);
-  layerAt(ctx, c.grey, t, s, env, cam);
-  if (trip.colour > 0) {                                                            // the colour spreads out from the car
-    const cx = trip.x - cam.x, cy = trip.y - cam.y, r = trip.colour;
-    ctx.save(); ctx.beginPath();
-    for (let y = 0; y < H; y++) { const d = r * r - (y - cy) * (y - cy); if (d > 0) { const hw = Math.sqrt(d); ctx.rect(Math.round(cx - hw), y, Math.round(2 * hw), 1); } }
-    ctx.clip();
-    layerAt(ctx, c.colour, t, s, env, cam);
-    ctx.restore();
-    if (r < W * 2) {
-      ctx.fillStyle = '#fff6d0';
+  if (r >= 2000) layerAt(ctx, c.colour, t, s, env, cam);                              // all colour once the flood is done
+  else {
+    layerAt(ctx, c.grey, t, s, env, cam);
+    if (r > 0) {                                                                     // the colour floods out from East Lansing
+      const [hx, hy] = toMap(EAST[0]), cx = hx - cam.x, cy = hy - cam.y;
+      ctx.save(); ctx.beginPath();
+      for (let y = 0; y < H; y++) { const d = r * r - (y - cy) * (y - cy); if (d > 0) { const hw = Math.sqrt(d); ctx.rect(Math.round(cx - hw), y, Math.round(2 * hw), 1); } }
+      ctx.clip();
+      layerAt(ctx, c.colour, t, s, env, cam);
+      ctx.restore();
+      ctx.fillStyle = '#fff6d0';                                                     // its glittering edge
       for (let a = 0; a < Math.PI * 2; a += 2 / Math.max(8, r)) if ((Math.floor(a * r) + Math.floor(t * 30)) % 3) ctx.fillRect(Math.round(cx + Math.cos(a) * r), Math.round(cy + Math.sin(a) * r), 1, 1);
     }
   }

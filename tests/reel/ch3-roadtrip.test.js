@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { sceneContract, frameAt } from './fake-canvas.js';
-import { roadtrip, tripAt, toMap, LEGS } from '../../reel/ch3/roadtrip.js';
+import { roadtrip, tripAt, floodAt, toMap, LEGS } from '../../reel/ch3/roadtrip.js';
 
 sceneContract('ch3 roadtrip', roadtrip, 5);
 
@@ -33,22 +33,26 @@ test('road trip: then it turns west, by Chicago, Denver and Las Vegas to Santa C
   assert.equal(tripAt(3.5).dir, -1, 'facing west');
 });
 
-test('road trip: the East loop stays grey; once the car turns west the colour spreads out from it until the map is all colour', () => {
-  assert.equal(tripAt(LEGS.east[1]).colour, 0);
-  assert.equal(tripAt(LEGS.west[0]).colour, 0);
-  const r = [3, 3.6, 4.2].map(t => tripAt(t).colour);
+test('road trip: the map comes up grey, and as the car sets off the colour floods out from East Lansing, ahead of it', () => {
+  assert.equal(floodAt(0.1), 0);
+  const r = [0.3, 0.5, 0.7].map(floodAt);
   assert.ok(r[0] > 0 && r[1] > r[0] && r[2] > r[1]);
-  assert.ok(tripAt(4.8).colour > 2000, 'all colour once it has arrived');
+  for (const place of [[-70.26, 43.66], [-74.0, 40.71]]) {
+    const [x, y] = toMap(place), [hx, hy] = toMap([-84.48, 42.73]);
+    assert.ok(floodAt(passes('east', place).t) > Math.hypot(x - hx, y - hy), 'Maine and New York are in colour before the car gets there');
+  }
+  assert.ok(floodAt(1) >= 2000, 'and then the whole map');
 });
 
-test('road trip: the grey map alone on the East loop, the colour map over it once the car turns west', () => {
-  const east = frameAt(roadtrip, 480, 1.5).ctx, west = frameAt(roadtrip, 480, 3.5).ctx;
-  assert.deepEqual([east.draws('grey').length, east.draws('colour').length], [1, 0]);
-  assert.deepEqual([west.draws('grey').length, west.draws('colour').length], [1, 1]);
+test('road trip: the grey map alone at first, the colour clipped over it while it floods, then the colour alone', () => {
+  const layers = (t) => { const c = frameAt(roadtrip, 480, t).ctx; return [c.draws('grey').length, c.draws('colour').length]; };
+  assert.deepEqual(layers(0.1), [1, 0]);
+  assert.deepEqual(layers(0.5), [1, 1]);
+  assert.deepEqual(layers(3.5), [0, 1]);
 });
 
 test('road trip: on a desktop the map holds still; on a phone the camera follows the car', () => {
-  const mapX = (W, t) => frameAt(roadtrip, W, t).ctx.draws('grey')[0][0];
-  assert.equal(mapX(480, 0.5), mapX(480, 4.5));
-  assert.ok(mapX(195, 4.5) > mapX(195, 0.5), 'the map slides right as the car drives west');
+  const mapX = (W, t) => frameAt(roadtrip, W, t).ctx.draws('colour')[0][0];
+  assert.equal(mapX(480, 1.5), mapX(480, 4.5));
+  assert.ok(mapX(195, 4.5) > mapX(195, 1.5), 'the map slides right as the car drives west');
 });
