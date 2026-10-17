@@ -26,10 +26,10 @@ export const HITS = {
   snare: { type: 'bandpass', freq: 2400, q: 0.6, gain: 0.1, attack: 0.008, decay: 0.16 },
   shaker: { type: 'highpass', freq: 6500, q: 0.7, gain: 0.045, attack: 0.012, decay: 0.05 },
   rain: { type: 'bandpass', freq: 3000, q: 0.4, gain: 0.035, hold: true },
-  vinyl: { type: 'highpass', freq: 900, q: 0.5, gain: 0.5, hold: true, crackle: true },
+  vinyl: { type: 'highpass', freq: 900, q: 0.5, gain: 0.3, hold: true, crackle: true },
 };
 
-const WOBBLE = { rate: 0.55, cents: 6 };  // the tape's slow drift in pitch
+const WOBBLE = { rate: 0.55, cents: 3.5 };  // the tape's slow drift in pitch
 
 export function createSynth(ctx, destination = ctx.destination) {
   const master = ctx.createGain();

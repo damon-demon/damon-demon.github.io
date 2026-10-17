@@ -33,7 +33,7 @@ All voices are synthesised with Web Audio. There are no samples.
   - textures: rain, and vinyl crackle;
   - later, the sound effects.
 
-A slow 0.55 Hz LFO detunes every pitched carrier by up to 6 cents, like old tape. Notes carry a velocity. The score's `human()` helper nudges every note's timing and velocity a little, the same way on every play.
+A slow 0.55 Hz LFO detunes every pitched carrier by up to 3.5 cents, like old tape. Notes carry a velocity. The score's `human()` helper nudges every note's timing and velocity a little, the same way on every play.
 
 All voices go through one tone stage: a low-pass filter plus a send to a reverb, a generated 2.4 s noise-decay impulse in a `ConvolverNode`, darkened at 4.5 kHz. Then come a master gain and a limiter (`DynamicsCompressorNode`).
 
