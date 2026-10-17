@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { midi, seq, cat, repeat, rest, up, minor, arp, chord, voicing, comp, human } from '../../reel/audio/notation.js';
+import { midi, seq, cat, repeat, rest, up, minor, arp, chord, voicing, comp, human, hole } from '../../reel/audio/notation.js';
 
 test('midi reads note names', () => {
   assert.equal(midi('A4'), 69);
@@ -70,4 +70,10 @@ test('human nudges timing and touch, the same way every time', () => {
     assert.ok(Math.abs(n.beat - l.notes[i].beat) <= 0.03 && n.beat >= 0);
     assert.ok(n.vel >= 0.68 && n.vel <= 0.92);
   });
+});
+
+test('hole cuts a break into a line', () => {
+  const l = hole(seq('C4:2 D4 E4 F4:2'), 2.5, 4);
+  assert.equal(l.beats, 6);
+  assert.deepEqual(l.notes.map(n => [n.beat, n.len, n.pitch, n.cut]), [[0, 2, 60, undefined], [2, 0.5, 62, true], [4, 2, 65, undefined]]);
 });

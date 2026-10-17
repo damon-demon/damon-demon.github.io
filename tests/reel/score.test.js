@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import { buildTimeline } from '../../reel/timeline.js';
 import { CHAPTERS } from '../../reel/story.js';
 import { planScore } from '../../reel/audio/schedule.js';
-import { SCORE } from '../../reel/audio/score.js';
+import { SCORE, ROAD_PINGS } from '../../reel/audio/score.js';
+import { landmarkTimes } from '../../reel/ch3/roadtrip.js';
 import { TONES, VOICES, HITS } from '../../reel/audio/synth.js';
 
 const tl = buildTimeline(CHAPTERS);
@@ -30,4 +31,11 @@ test('every event uses a voice, hit and tone the synth has, in a playable range'
     assert.ok(e.pitch >= 24 && e.pitch <= 108, `pitch ${e.pitch}`);
     assert.ok(e.dur > 0);
   }
+});
+
+test('on the road trip, the music box pings as each landmark pops up', () => {
+  const c = plan.cues.find(c => c.cue.id === 'road-trip');
+  const shot = tl.shots.find(e => e.shot.id === 'ch3-roadtrip');
+  assert.equal(c.start, shot.start);
+  landmarkTimes().forEach((l, i) => assert.ok(Math.abs(ROAD_PINGS[i] * c.spb - l.t) <= c.spb / 8, `${l.key} at ${l.t.toFixed(2)} s`));
 });

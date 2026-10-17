@@ -9,7 +9,7 @@ const TL = buildTimeline([{ name: 'A', shots: [shot('a', 2), shot('b', 2)] }, { 
 const SCORE = {
   cues: [
     { id: 'one', shots: ['a', 'b'], beats: 8, tone: 'soft', voices: [['p1', seq('C4:4 D4:4')]] },
-    { id: 'two', shots: ['c'], beats: 4, tone: 'dark', sweep: 'soft', voices: [['p1', seq('E4@.5 - G4:2')], ['noise', seq('hat')]] },
+    { id: 'two', shots: ['c'], beats: 4, tone: 'dark', tones: [[1, 'bright', 2]], voices: [['p1', seq('E4@.5 - G4:2')], ['noise', seq('hat')]] },
   ],
 };
 
@@ -25,8 +25,7 @@ test('planScore turns notes and tones into sorted, timed events', () => {
   assert.deepEqual(notes.map(e => [e.voice, e.time, e.dur, e.pitch ?? e.hit]), [['p1', 0, 2, 60], ['p1', 2, 2, 62], ['p1', 4, 1, 64], ['noise', 4, 1, 'hat'], ['p1', 6, 2, 67]]);
   assert.equal(notes[2].vel, 0.5);
   const tones = plan.events.filter(e => e.kind === 'tone');
-  assert.deepEqual(tones.map(e => [e.time, e.tone]), [[0, 'soft'], [4, 'dark'], [4.2, 'soft']]);
-  assert.ok(Math.abs(tones[2].glide - 3.8) < 1e-9);
+  assert.deepEqual(tones.map(e => [e.time, e.tone, e.glide]), [[0, 'soft', 0.2], [4, 'dark', 0.2], [5, 'bright', 2]]);
   assert.ok(plan.events.every((e, i, a) => !i || a[i - 1].time <= e.time));
 });
 
@@ -46,10 +45,12 @@ test('eventsBetween takes a half-open window and wraps across the loop', () => {
   assert.equal(whole.length, 10);
 });
 
-test('toneAt reports the tone mid-cue, and where a sweep is headed', () => {
+test('toneAt reports the tone set last, and a glide still under way', () => {
   const plan = planScore(SCORE, TL);
-  assert.deepEqual(toneAt(plan, 1), { from: 'soft', to: 'soft', remaining: 3 });
-  assert.deepEqual(toneAt(plan, 13), { from: 'dark', to: 'soft', remaining: 3 });
+  assert.deepEqual(toneAt(plan, 1), { from: 'soft', to: 'soft', remaining: 0 });
+  assert.deepEqual(toneAt(plan, 4.5), { from: 'dark', to: 'dark', remaining: 0 });
+  assert.deepEqual(toneAt(plan, 14), { from: 'dark', to: 'bright', remaining: 1 });
+  assert.deepEqual(toneAt(plan, 7.5), { from: 'bright', to: 'bright', remaining: 0 });
 });
 
 test('slip measures the short way round the loop', () => {

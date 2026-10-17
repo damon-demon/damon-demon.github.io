@@ -67,7 +67,7 @@ The two dive outfits swim: the body lies flat and flutter-kicks, fins trailing, 
 
 ## Storyboard
 
-The full loop runs about 66 s, and the timings below are targets. The caption is the place name and fades in at the top left whenever it changes.
+The full loop runs about 71 s, and the timings below are targets. The caption is the place name and fades in at the top left whenever it changes.
 
 ### 1 · Sheffield → Europe (~15.7 s). Caption: `Sheffield`, switching to `Europe` when the train leaves
 
@@ -100,7 +100,7 @@ The full loop runs about 66 s, and the timings below are targets. The caption is
 5. Back on the Low Library steps in spring, in the Columbia-blue gown. Everyone hops and throws their caps. A puppy trots along College Walk, Yimeng's cap comes down on its head, and a heart pops up. From here on the dog walks along.
 6. Transition: the caps falling from the sky turn into snowflakes, and the snow thickens towards white.
 
-### 3 · Michigan (~13.5 s). Caption: `Michigan`, then `Graduation Road Trip` for the drive. Grey, low-saturation palette: the sets are painted in muted colours, and Yimeng and the dog are drawn in a muted version of their palettes.
+### 3 · Michigan (~18.1 s, with a 9.6 s road trip; lengthened for the reel's sound, see `2026-10-17-reel-sound-design.md`). Caption: `Michigan`, then `Graduation Road Trip` for the drive. Grey, low-saturation palette: the sets are painted in muted colours, and Yimeng and the dog are drawn in a muted version of their palettes.
 
 1. Snow, flat land and Beaumont Tower. The white of the cap toss clears off a snowfield under a low grey sky, with bare trees and Michigan State's brick carillon tower, snow on its ledges. Yimeng walks on in the green puffer, the puppy trotting ahead, leaving footprints.
 2. A time-lapse of five years, 2021 to 2025, each a little quicker than the last, in one living room seen from a camera that never moves. The home gym is on the left: a pull-up stand, a bench, dumbbells and floor mats. The computer desk is on the right, with the dog's bed between them and a sofa beyond where the screen is wide enough. As in a time-lapse film, Yimeng appears at the desk and then in the gym each year, leaving a faint ghost for a moment.

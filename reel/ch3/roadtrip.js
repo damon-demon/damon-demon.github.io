@@ -10,8 +10,10 @@ import { art, label } from '../kit.js';
 const S = 8, LON0 = -160, LAT0 = 51, KX = Math.cos(38 * Math.PI / 180) * S;      // px per degree of latitude, of longitude
 export const toMap = ([lon, lat]) => [(lon - LON0) * KX, (LAT0 - lat) * S];
 const MAP_W = Math.round((-40 - LON0) * KX), MAP_H = Math.round((LAT0 - 26) * S);
-export const LEGS = { east: [0.15, 2.45], west: [2.55, 4.6] };       // when the car drives each loop
-const FLOOD = [0.15, 0.95];                                           // the colour floods out as the car sets off
+// When the car drives each loop, on the music's bars (150 BPM, 1.6 s a bar): it sets off in bar 1,
+// is home just before bar 4, and reaches Santa Clara on the downbeat of bar 6.
+export const LEGS = { east: [0.2, 4.6], west: [4.8, 8] };
+const FLOOD = [0.2, 1.6];                                             // the colour floods out as the car sets off, through bar 1
 
 // The drive, as [lon, lat] waypoints along the roads it took.
 const EAST = [[-84.48, 42.73], [-83.05, 42.33], [-81.25, 42.98], [-79.07, 43.09], [-77.6, 43.16], [-76.15, 43.05],
@@ -257,6 +259,13 @@ function reachAt(pt, leg) {
 const WEST_KEYS = new Set(['chicago', 'arch', 'vegas', 'bridge']);
 for (const [key, icon] of Object.entries(ICONS)) { icon.leg = WEST_KEYS.has(key) ? 1 : 0; icon.d = reachAt(icon.at, icon.leg); }
 const SPOTS = PLACES.map(([name, pt, leg]) => ({ name, pt, leg, d: name === 'EAST LANSING' ? -1 : reachAt(pt, leg) }));
+
+// When each landmark pops up (shot seconds), in the order they appear, for the music to ping on.
+export function landmarkTimes() {
+  return Object.entries(ICONS)
+    .map(([key, icon]) => { const [a, b] = icon.leg ? LEGS.west : LEGS.east, rt = icon.leg ? R_WEST : R_EAST; return { key, t: a + (b - a) * icon.d / rt.len }; })
+    .sort((p, q) => p.t - q.t);
+}
 
 export function buildRoadtrip(W, H = 96) {
   const colour = colourMap();

@@ -24,6 +24,7 @@ const VEL = 0.8;                      // a note's velocity when the score gives 
 export const HITS = {
   kick: { gain: 0.3 },
   snare: { type: 'bandpass', freq: 2400, q: 0.6, gain: 0.1, attack: 0.008, decay: 0.16 },
+  clap: { type: 'bandpass', freq: 1400, q: 1.1, gain: 0.12, attack: 0.002, decay: 0.1 },
   shaker: { type: 'highpass', freq: 6500, q: 0.7, gain: 0.045, attack: 0.012, decay: 0.05 },
   rain: { type: 'bandpass', freq: 3000, q: 0.4, gain: 0.035, hold: true },
   vinyl: { type: 'highpass', freq: 900, q: 0.5, gain: 0.3, hold: true, crackle: true },
@@ -84,39 +85,41 @@ export function createSynth(ctx, destination = ctx.destination) {
     return mod;
   };
 
-  // How each pitched voice is built: its sources, all feeding `g`, and its envelope.
+  // How each pitched voice is built: its sources, all feeding `g`, and its envelope. A note that is
+  // `cut` (by a break in the music) stops dead: no pedal, and a quick release.
+  const DEAD = 0.06;
   const BUILD = {
     // Electric piano: a bright, bell-like strike that mellows as it rings, held a little like a pedal.
-    keys(f, when, dur, vel, g) {
+    keys(f, when, dur, vel, g, cut) {
       const car = osc('sine', f);
       const srcs = [car, fm(car, f, 1, 0.8 + 1.6 * vel, 0.15, when, 0.3), fm(car, f, 14, 0.6 * vel, 0, when, 0.015)];
       car.connect(g);
-      return { srcs, end: env(g.gain, when, when + dur + 0.25, VOICES.keys.gain * vel, { a: 0.004, tc: 1.1, r: 0.35 }) };
+      return { srcs, end: env(g.gain, when, when + dur + (cut ? 0 : 0.25), VOICES.keys.gain * vel, { a: 0.004, tc: 1.1, r: cut ? DEAD : 0.35 }) };
     },
     // Music box: a glassy ping that settles into a near-pure tone and dies away.
-    box(f, when, dur, vel, g) {
+    box(f, when, dur, vel, g, cut) {
       const car = osc('sine', f);
       const srcs = [car, fm(car, f, 3.5, 1.2 * vel, 0.05, when, 0.08)];
       car.connect(g);
-      return { srcs, end: env(g.gain, when, when + dur + 0.4, VOICES.box.gain * vel, { a: 0.002, tc: 0.55, r: 0.3 }) };
+      return { srcs, end: env(g.gain, when, when + dur + (cut ? 0 : 0.4), VOICES.box.gain * vel, { a: 0.002, tc: 0.55, r: cut ? DEAD : 0.3 }) };
     },
     // Pad: two detuned saws, darkened, swelling in slowly.
-    pad(f, when, dur, vel, g) {
+    pad(f, when, dur, vel, g, cut) {
       const lp = ctx.createBiquadFilter();
       lp.type = 'lowpass';
       lp.frequency.value = 1100;
       lp.Q.value = 0.3;
       lp.connect(g);
       const srcs = [-8, 8].map(c => { const o = osc('sawtooth', f); o.detune.value = c; o.connect(lp); return o; });
-      return { srcs, end: env(g.gain, when, when + dur, VOICES.pad.gain * vel, { a: 0.7, tc: 0.6, s: 0.8, r: 1 }) };
+      return { srcs, end: env(g.gain, when, when + dur, VOICES.pad.gain * vel, { a: 0.7, tc: 0.6, s: 0.8, r: cut ? DEAD : 1 }) };
     },
     // Bass: a round sine with a touch of its octave.
-    bass(f, when, dur, vel, g) {
+    bass(f, when, dur, vel, g, cut) {
       const a = osc('sine', f), b = osc('sine', f * 2), bg = ctx.createGain();
       bg.gain.value = 0.25;
       a.connect(g);
       b.connect(bg).connect(g);
-      return { srcs: [a, b], end: env(g.gain, when, when + dur, VOICES.bass.gain * vel, { a: 0.012, tc: 0.5, s: 0.45, r: 0.12 }) };
+      return { srcs: [a, b], end: env(g.gain, when, when + dur, VOICES.bass.gain * vel, { a: 0.012, tc: 0.5, s: 0.45, r: cut ? DEAD : 0.12 }) };
     },
   };
 
@@ -153,7 +156,7 @@ export function createSynth(ctx, destination = ctx.destination) {
     else {
       const build = BUILD[ev.voice];
       if (!build) throw new Error(`no voice ${ev.voice}`);
-      note = build(440 * 2 ** ((ev.pitch - 69) / 12), when, ev.dur, vel, g);
+      note = build(440 * 2 ** ((ev.pitch - 69) / 12), when, ev.dur, vel, g, ev.cut);
     }
     for (const s of note.srcs) { s.start(when); s.stop(note.end); }
     return {

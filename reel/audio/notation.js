@@ -111,6 +111,17 @@ export function comp(chords, rhythm, { lo = 53 } = {}) {
   }));
 }
 
+// A break: notes starting in [from, to) are dropped, and notes still sounding at `from` stop there,
+// marked `cut` so they stop dead rather than ring on.
+export function hole(line, from, to) {
+  return {
+    beats: line.beats,
+    notes: line.notes
+      .filter(n => n.beat < from || n.beat >= to)
+      .map(n => (n.beat < from && n.beat + n.len >= from - 1e-9 ? { ...n, len: from - n.beat, cut: true } : n)),
+  };
+}
+
 // A player's touch: every note a little early or late (up to `time` beats) and a little softer or
 // harder (up to `vel`), the same way on every play.
 export function human(line, { time = 0.03, vel = 0.12, seed = 1 } = {}) {

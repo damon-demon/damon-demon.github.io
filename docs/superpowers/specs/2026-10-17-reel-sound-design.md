@@ -12,7 +12,7 @@ Give the life reel a soundtrack: one theme for Yimeng, varied through the five c
 |---|---|
 | Scope | The reel only, not the whole page. Music plus sound effects (option C). |
 | Source | Synthesised live with the Web Audio API. No audio files. |
-| Why not files | A 66 s loop as a file is 1–2 MB, has to match the reel to the millisecond, drifts after a jump, and must be re-exported every time a shot is retimed. Synthesised from the reel's own clock, it is a few KB, stays in sync, and follows any retiming automatically. |
+| Why not files | A 71 s loop as a file is 1–2 MB, has to match the reel to the millisecond, drifts after a jump, and must be re-exported every time a shot is retimed. Synthesised from the reel's own clock, it is a few KB, stays in sync, and follows any retiming automatically. |
 | Sound | Lo-fi music box and electric piano, like *Stardew Valley*'s indoor tunes or a Ghibli piano piece. Revised after the first listen: the chiptune draft sounded too much like an arcade. There are no chiptune voices. Big moments open the filter and fill out the band instead. |
 | Structure | One 8-bar theme, a question and an answer, over seventh and ninth chords. Each chapter varies its instruments, chords, tempo and filter. A 3-note music-box call for the dog, heard first at the 2019 cap toss. |
 | Default | Muted. Browsers block sound before a user gesture, and visitors often open the page at work. |
@@ -44,7 +44,7 @@ The tone stage has four settings:
 - **dark:** Michigan's grey, 1.6 kHz, 0.3.
 - **water:** underwater, 700 Hz, 0.45.
 
-Cues name a tone, and the filter glides between tones over 0.2 s, or over a whole cue if the cue sets `sweep`.
+Each cue names a starting tone, which the filter reaches within 0.2 s. A cue can also change tone partway through: `tones: [[beat, tone, glideBeats]]`.
 
 ### Cues
 
@@ -64,7 +64,7 @@ The music is a list of **cues**. Each cue spans one or more consecutive shots, n
 | 3 | Snow | The theme in the minor, sparse | dark |
 | | Time-lapse | A clock-tick ostinato that speeds up with each year, in step with the picture | dark |
 | | Hooding | The theme slowed into a chorale, with applause on the noise voice | dark |
-| | Road trip | The filter opens as the colour floods back, and a road-trip groove builds | dark → soft (sweep) |
+| **Road trip** | Its own cue, the most upbeat in the film. The shot is lengthened from 5 s to 9.6 s, six bars at 150 BPM, and the car's legs fall on the bars. Bar 1: the filter opens as the colour floods out, with a rising music-box run and a snare roll. Bars 2–3: the drive East, with a four-on-the-floor kick, claps, an eighth-note bass and the question at double speed. The band stops for the half beat the car is home in East Lansing. Bars 4–5: West, a tone higher (D), with the answer doubled by the music box. A music-box ping, climbing, sounds as each landmark pops up, at the times `landmarkTimes()` gives. Bar 6: a hit on arriving at the Golden Gate, then the tone settles back for California. | dark → bright → soft |
 | 4 | Arrive, office | A bright major groove, with a rising blip for every new candle | soft |
 | | Ranch | Chase energy, then the music drops to a low drone when the rifle comes up. In the scope view there is one heartbeat, then the hard cut. No shot is fired and there is no gunshot. | soft |
 | | Forest, fishing, tide | A light pizzicato feel. Each chanterelle into the basket is a rising note. A "plop" when the float ducks under, and comic "boing"s for the urchin and the innkeeper worm. | soft |

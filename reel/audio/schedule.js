@@ -17,10 +17,10 @@ export function planScore(score, tl) {
   const events = [];
   for (const { cue, start, end, spb } of cues) {
     events.push({ kind: 'tone', time: start, tone: cue.tone, glide: GLIDE });
-    if (cue.sweep) events.push({ kind: 'tone', time: start + GLIDE, tone: cue.sweep, glide: end - start - GLIDE });
+    for (const [beat, tone, beats] of cue.tones ?? []) events.push({ kind: 'tone', time: start + beat * spb, tone, glide: beats * spb });
     for (const [voice, line] of cue.voices) {
       for (const n of line.notes) {
-        events.push({ kind: 'note', voice, time: start + n.beat * spb, dur: n.len * spb, pitch: n.pitch, hit: n.hit, vel: n.vel });
+        events.push({ kind: 'note', voice, time: start + n.beat * spb, dur: n.len * spb, pitch: n.pitch, hit: n.hit, vel: n.vel, cut: n.cut });
       }
     }
   }
@@ -40,12 +40,15 @@ export function eventsBetween(plan, t0, t1) {
   return out;
 }
 
-// The tone stage at time u, for starting mid-cue: the cue's tone, and for a sweep, where it is headed
-// and how long it has left.
+// The tone stage at time u, for starting mid-cue: the tone set last and, if it is still gliding
+// there, the tone it came from and how long the glide has left.
 export function toneAt(plan, u) {
   const D = plan.duration, tt = ((u % D) + D) % D;
-  const c = plan.cues.find(c => tt >= c.start && tt < c.end) ?? plan.cues.at(-1);
-  return { from: c.cue.tone, to: c.cue.sweep ?? c.cue.tone, remaining: c.end - tt };
+  const tones = plan.events.filter(e => e.kind === 'tone');
+  let i = tones.findLastIndex(e => e.time <= tt);
+  if (i < 0) i = tones.length - 1;
+  const e = tones[i], prev = tones.at(i - 1), left = e.time + e.glide - tt;
+  return left > GLIDE ? { from: prev.tone, to: e.tone, remaining: left } : { from: e.tone, to: e.tone, remaining: 0 };
 }
 
 // How far the reel's time t is ahead of u, taking the short way round a loop of length D.
