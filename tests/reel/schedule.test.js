@@ -9,7 +9,7 @@ const TL = buildTimeline([{ name: 'A', shots: [shot('a', 2), shot('b', 2)] }, { 
 const SCORE = {
   cues: [
     { id: 'one', shots: ['a', 'b'], beats: 8, tone: 'soft', voices: [['p1', seq('C4:4 D4:4')]] },
-    { id: 'two', shots: ['c'], beats: 4, tone: 'dark', sweep: 'soft', duty: { p1: 0.5 }, voices: [['p1', seq('E4 - G4:2')], ['noise', seq('hat')]] },
+    { id: 'two', shots: ['c'], beats: 4, tone: 'dark', sweep: 'soft', voices: [['p1', seq('E4@.5 - G4:2')], ['noise', seq('hat')]] },
   ],
 };
 
@@ -23,7 +23,7 @@ test('planScore turns notes and tones into sorted, timed events', () => {
   const plan = planScore(SCORE, TL);
   const notes = plan.events.filter(e => e.kind === 'note');
   assert.deepEqual(notes.map(e => [e.voice, e.time, e.dur, e.pitch ?? e.hit]), [['p1', 0, 2, 60], ['p1', 2, 2, 62], ['p1', 4, 1, 64], ['noise', 4, 1, 'hat'], ['p1', 6, 2, 67]]);
-  assert.equal(notes[2].duty, 0.5);
+  assert.equal(notes[2].vel, 0.5);
   const tones = plan.events.filter(e => e.kind === 'tone');
   assert.deepEqual(tones.map(e => [e.time, e.tone]), [[0, 'soft'], [4, 'dark'], [4.2, 'soft']]);
   assert.ok(Math.abs(tones[2].glide - 3.8) < 1e-9);

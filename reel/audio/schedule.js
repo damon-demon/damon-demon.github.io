@@ -20,7 +20,7 @@ export function planScore(score, tl) {
     if (cue.sweep) events.push({ kind: 'tone', time: start + GLIDE, tone: cue.sweep, glide: end - start - GLIDE });
     for (const [voice, line] of cue.voices) {
       for (const n of line.notes) {
-        events.push({ kind: 'note', voice, time: start + n.beat * spb, dur: n.len * spb, pitch: n.pitch, hit: n.hit, duty: cue.duty?.[voice] });
+        events.push({ kind: 'note', voice, time: start + n.beat * spb, dur: n.len * spb, pitch: n.pitch, hit: n.hit, vel: n.vel });
       }
     }
   }

@@ -13,8 +13,8 @@ Give the life reel a soundtrack: one theme for Yimeng, varied through the five c
 | Scope | The reel only, not the whole page. Music plus sound effects (option C). |
 | Source | Synthesised live with the Web Audio API. No audio files. |
 | Why not files | A 66 s loop as a file is 1–2 MB, has to match the reel to the millisecond, drifts after a jump, and must be re-exported every time a shot is retimed. Synthesised from the reel's own clock, it is a few KB, stays in sync, and follows any retiming automatically. |
-| Sound | Soft, lo-fi chiptune (option B): NES-style voices through a low-pass filter and a little reverb, like *Celeste* or *Stardew Valley*. A few high-energy moments open up into the bright, hard NES sound (option A). |
-| Structure | One 4-bar theme, varied by key, tempo, voicing and filter in each chapter. A 3–4 note dog motif, heard first at the 2019 cap toss. |
+| Sound | Lo-fi music box and electric piano, like *Stardew Valley*'s indoor tunes or a Ghibli piano piece. Revised after the first listen: the chiptune draft sounded too much like an arcade. There are no chiptune voices. Big moments open the filter and fill out the band instead. |
+| Structure | One 8-bar theme, a question and an answer, over seventh and ninth chords. Each chapter varies its instruments, chords, tempo and filter. A 3-note music-box call for the dog, heard first at the 2019 cap toss. |
 | Default | Muted. Browsers block sound before a user gesture, and visitors often open the page at work. |
 | Persistence | None. Every visit starts muted. |
 
@@ -22,21 +22,27 @@ Give the life reel a soundtrack: one theme for Yimeng, varied through the five c
 
 ### Voices
 
-Four NES-style voices, as on the original console:
+All voices are synthesised with Web Audio. There are no samples.
 
-- **Pulse 1:** melody. A pulse wave with 12.5%, 25% or 50% duty, built with `PeriodicWave`.
-- **Pulse 2:** harmony and counter-melody.
-- **Triangle:** bass.
-- **Noise:** drums, rain, the train, the engine, applause and bubbles. Looped white noise through a band-pass filter.
+- **keys:** an electric piano. FM synthesis (a 1:1 modulator whose depth falls as the note rings, plus a brief 14:1 "tine" at the strike), a long natural decay, and a little extra ring, as if the sustain pedal were down.
+- **box:** a music box. FM with a 3.5:1 modulator for a glassy strike that settles into a near-pure tone.
+- **pad:** two sawtooth waves detuned ±8 cents, through a 1.1 kHz low-pass, with a slow swell.
+- **bass:** a sine with a quarter of its octave added.
+- **noise:**
+  - soft lo-fi drums: a falling-sine kick, a brush snare, a shaker;
+  - textures: rain, and vinyl crackle;
+  - later, the sound effects.
 
-Each note has an attack/decay/sustain/release envelope. All four voices go through one tone stage: a low-pass filter plus a send to a short reverb, a generated noise-decay impulse in a `ConvolverNode`. Then come a master gain and a limiter (`DynamicsCompressorNode`).
+A slow 0.55 Hz LFO detunes every pitched carrier by up to 6 cents, like old tape. Notes carry a velocity. The score's `human()` helper nudges every note's timing and velocity a little, the same way on every play.
+
+All voices go through one tone stage: a low-pass filter plus a send to a reverb, a generated 2.4 s noise-decay impulse in a `ConvolverNode`, darkened at 4.5 kHz. Then come a master gain and a limiter (`DynamicsCompressorNode`).
 
 The tone stage has four settings:
 
-- **soft** (option B): cutoff about 2.5 kHz, reverb on. This is the default.
-- **bright** (option A): filter open, no reverb.
-- **dark**: Michigan's grey, cutoff about 900 Hz.
-- **water**: underwater, cutoff about 500 Hz, more reverb.
+- **soft:** cutoff 5.2 kHz, reverb 0.22. This is the default.
+- **bright:** 14 kHz, 0.14.
+- **dark:** Michigan's grey, 1.6 kHz, 0.3.
+- **water:** underwater, 700 Hz, 0.45.
 
 Cues name a tone, and the filter glides between tones over 0.2 s, or over a whole cue if the cue sets `sweep`.
 
