@@ -12,7 +12,7 @@ const BASE = process.argv[2] || 'http://127.0.0.1:8000/';
 const CHROME = process.env.CHROME || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const PORT = 9600 + Math.floor(Math.random() * 90);
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
-const chrome = spawn(CHROME, ['--headless=new', '--disable-gpu', '--hide-scrollbars', `--remote-debugging-port=${PORT}`, `--user-data-dir=${mkdtempSync(join(tmpdir(), 'reel-qa-'))}`, 'about:blank'], { stdio: 'ignore' });
+const chrome = spawn(CHROME, ['--headless=new', '--disable-gpu', '--hide-scrollbars', '--autoplay-policy=no-user-gesture-required', `--remote-debugging-port=${PORT}`, `--user-data-dir=${mkdtempSync(join(tmpdir(), 'reel-qa-'))}`, 'about:blank'], { stdio: 'ignore' });
 let failed = 0;
 const report = (ok, name, detail = '') => { console.log(`${ok ? 'ok  ' : 'FAIL'} - ${name}${ok || !detail ? '' : ': ' + detail}`); if (!ok) failed = 1; };
 
@@ -59,6 +59,17 @@ try {
   await open(BASE, 1440); await sleep(1500);
   const shift = await value("({ before: Math.round(window.__aboutAt), after: Math.round(document.querySelector('#about').getBoundingClientRect().top), buttons: document.querySelectorAll('.reel-ch').length })");
   report(shift.before === shift.after && shift.buttons === 5, 'the page does not shift when the reel mounts', JSON.stringify(shift));
+
+  // sound: no AudioContext until the visitor asks for one; then every chapter plays without an error
+  await send('Page.addScriptToEvaluateOnNewDocument', { source: "window.__audio = 0; { const A = window.AudioContext; window.AudioContext = class extends A { constructor(...a) { super(...a); window.__audio++; } }; }" });
+  await open(`${BASE}?qa=sound#reel`, 1440); await sleep(1500);   // a new URL: a bare #reel would not reload
+  const silent = await value("({ button: Boolean(document.querySelector('.reel-sound')), audio: window.__audio })");
+  report(silent.button && silent.audio === 0, 'the sound button is there, and no AudioContext exists before it is pressed', JSON.stringify(silent));
+  const quiet = errors.length;
+  await value("document.querySelector('.reel-sound').click()");
+  for (let n = 0; n < 5; n++) { await value(`document.querySelectorAll('.reel-ch')[${n}].click()`); await sleep(1200); }
+  const loud = await value("({ audio: window.__audio, pressed: document.querySelector('.reel-sound').getAttribute('aria-pressed') })");
+  report(loud.audio === 1 && loud.pressed === 'true' && errors.length === quiet, 'with sound on, every chapter plays without a console error', JSON.stringify(loud) + ' ' + errors.slice(quiet).join(' | '));
   ws.close();
 } finally {
   chrome.kill();

@@ -989,7 +989,7 @@ In the mobile block, replace `.reel-nav .reel-pause { width: 24px; height: 24px;
 ```js
   // sound: no AudioContext until the visitor asks for one; then every chapter plays without an error
   await send('Page.addScriptToEvaluateOnNewDocument', { source: "window.__audio = 0; { const A = window.AudioContext; window.AudioContext = class extends A { constructor(...a) { super(...a); window.__audio++; } }; }" });
-  await open(`${BASE}#reel`, 1440); await sleep(1500);
+  await open(`${BASE}?qa=sound#reel`, 1440); await sleep(1500);   // a new URL: a bare #reel would not reload
   const silent = await value("({ button: Boolean(document.querySelector('.reel-sound')), audio: window.__audio })");
   report(silent.button && silent.audio === 0, 'the sound button is there, and no AudioContext exists before it is pressed', JSON.stringify(silent));
   const quiet = errors.length;

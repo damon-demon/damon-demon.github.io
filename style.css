@@ -155,12 +155,12 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-
 }
 .reel-nav button:hover, .reel-nav button[aria-current="true"] { color: var(--accent); }
 .reel-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
-.reel-nav .reel-pause {
+.reel-nav .reel-pause, .reel-nav .reel-sound {
   display: grid; place-items: center; width: 28px; height: 28px; padding: 0; margin-left: 8px;
   border: 1px solid rgba(233, 230, 223, .22); border-radius: 50%; color: var(--text);
 }
-.reel-nav .reel-pause:hover { border-color: var(--accent); color: var(--accent); }
-.reel-pause svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.reel-nav .reel-pause:hover, .reel-nav .reel-sound:hover, .reel-nav .reel-sound[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+.reel-pause svg, .reel-sound svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
 /* ---------- Sections ---------- */
 main { max-width: calc(var(--wrap) + 2 * var(--gutter)); margin: 0 auto; padding: 0 var(--gutter); }
@@ -344,7 +344,7 @@ main { max-width: calc(var(--wrap) + 2 * var(--gutter)); margin: 0 auto; padding
   .reel-ui { padding: 12px 18px 0; }
   .reel-caption { font-size: 10px; letter-spacing: .2em; }
   .reel-nav button { padding: 5px 4px; font-size: 10px; }
-  .reel-nav .reel-pause { width: 24px; height: 24px; margin-left: 4px; }
+  .reel-nav .reel-pause, .reel-nav .reel-sound { width: 24px; height: 24px; margin-left: 4px; }
   .nav-anchor { display: none; }
   .hero {
     background:

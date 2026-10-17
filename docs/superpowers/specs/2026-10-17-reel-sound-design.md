@@ -87,7 +87,7 @@ There are about 15–20 effects, each on a key moment: no footsteps or other eve
 
 ## Page integration
 
-- **Sound button:** a 28 px round button before the pause button, in the same style. It uses a speaker icon, with a slash through it when muted. Its `aria-label` is "Sound on" when muted and "Sound off" when on, and it sets `aria-pressed`. On phones it is 24 px, like the pause button.
+- **Sound button:** a 28 px round button before the pause button, in the same style. It uses a speaker icon, with a slash through it when muted. Its `aria-label` is always "Sound", and `aria-pressed` gives its state. (A toggle that also changed its label would be announced twice.) On phones it is 24 px, like the pause button.
 - **No Web Audio:** the button is not added.
 - **Reduced motion:** sound follows playback, so with no autoplay it stays silent until the visitor presses play.
 - **Volume:** master gain about 0.25, with the limiter so stacked voices never clip.

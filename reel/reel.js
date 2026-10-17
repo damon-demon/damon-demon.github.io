@@ -6,12 +6,15 @@ import { dogSprite } from './dog.js';
 import { painterCanvas, spriteCanvases, gridCanvas } from './sprites.js';
 import { mute, pencil } from './pixels.js';
 import { CHAPTERS, POSTER } from './story.js';
+import { createSound } from './audio/sound.js';
 
 const H = 96;                         // native height; the width follows the stage
 const FRAME_MS = 1000 / 30;           // redraw cap
 const ICON = {
   pause: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg>',
   play: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>',
+  sound: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>',
+  muted: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>',
 };
 
 const MUTE = 0.6;                     // how grey the cast goes in Michigan's 'muted' tone
@@ -42,11 +45,12 @@ export function mountReel(section, chapters, poster) {
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const full = buildTimeline(chapters);
+  const sound = createSound(full);
   let tl = full;
-  let soloChapter = null;             // ?reel=<shot-id>: loop one shot, report its real chapter
+  let soloChapter = null, soloStart = 0; // ?reel=<shot-id>: loop one shot, report its real chapter and place
   if (debug && debug.shot) {
     const hit = full.shots.find(e => e.shot.id === debug.shot);
-    if (hit) { tl = buildTimeline([{ name: chapters[hit.chapter].name, shots: [hit.shot] }]); soloChapter = hit.chapter; }
+    if (hit) { tl = buildTimeline([{ name: chapters[hit.chapter].name, shots: [hit.shot] }]); soloChapter = hit.chapter; soloStart = hit.start; }
   }
 
   let t = debug && debug.time !== undefined ? debug.time : 0;
@@ -55,6 +59,7 @@ export function mountReel(section, chapters, poster) {
   let inView = Boolean(debug && debug.shot);
   let W = 0, scale = 0, raf = 0, last = null, lastDraw = -Infinity;
   let shownCaption = null, shownChapter = -1;
+  let playingNow = false;
 
   const heroFrames = memo(id => { const [key, pose, tone] = id.split(':'); return spriteCanvases(toned(heroSprite(key, pose), tone)); });
   const dogFrames = memo(id => { const [key, pose, tone] = id.split(':'); return spriteCanvases(toned(dogSprite(key, pose), tone)); });
@@ -143,12 +148,15 @@ export function mountReel(section, chapters, poster) {
   function tick(now) {
     raf = requestAnimationFrame(tick);
     if (last !== null) t = (t + (now - last) / 1000) % tl.duration;
+    sound.update(soloStart + t, true);
     last = now;
     if (now - lastDraw >= FRAME_MS - 1) { lastDraw = now; draw(); }
   }
 
   function sync() {
     const playing = !userPaused && inView && !document.hidden;
+    playingNow = playing;
+    sound.update(soloStart + t, playing);
     section.dataset.state = playing ? 'playing' : 'paused';
     if (playing && !raf) { last = null; raf = requestAnimationFrame(tick); }
     if (!playing && raf) { cancelAnimationFrame(raf); raf = 0; }
@@ -162,7 +170,7 @@ export function mountReel(section, chapters, poster) {
   }
 
   function jump(n) {
-    tl = full; soloChapter = null; showingPoster = false;
+    tl = full; soloChapter = null; soloStart = 0; showingPoster = false;
     t = chapterStart(full, n);
     draw();
   }
@@ -176,6 +184,16 @@ export function mountReel(section, chapters, poster) {
     b.addEventListener('click', () => jump(i));
     nav.insertBefore(b, pauseBtn);
   });
+  if (sound.supported) {
+    const soundBtn = document.createElement('button');
+    soundBtn.type = 'button';
+    soundBtn.className = 'reel-sound';
+    soundBtn.setAttribute('aria-label', 'Sound');
+    const showSound = () => { soundBtn.setAttribute('aria-pressed', String(sound.on)); soundBtn.innerHTML = sound.on ? ICON.sound : ICON.muted; };
+    soundBtn.addEventListener('click', () => { sound.toggle(); showSound(); sound.update(soloStart + t, playingNow); });
+    showSound();
+    nav.insertBefore(soundBtn, pauseBtn);
+  }
   pauseBtn.addEventListener('click', () => {
     if (userPaused && showingPoster) { showingPoster = false; t = 0; draw(); }
     setPaused(!userPaused);
