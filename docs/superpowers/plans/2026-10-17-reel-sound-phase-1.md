@@ -291,7 +291,7 @@ test('toneAt reports the tone mid-cue, and where a sweep is headed', () => {
 });
 
 test('slip measures the short way round the loop', () => {
-  assert.equal(slip(5, 4.9, 66), 0.09999999999999964);
+  assert.ok(Math.abs(slip(5, 4.9, 66) - 0.1) < 1e-9);
   assert.ok(Math.abs(slip(0.02, 65.98, 66) - 0.04) < 1e-9);
   assert.ok(Math.abs(slip(65.98, 0.02, 66) + 0.04) < 1e-9);
   assert.equal(slip(30, 10, 66), 20);
