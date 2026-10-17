@@ -10,10 +10,10 @@ import { art, label } from '../kit.js';
 const S = 8, LON0 = -160, LAT0 = 51, KX = Math.cos(38 * Math.PI / 180) * S;      // px per degree of latitude, of longitude
 export const toMap = ([lon, lat]) => [(lon - LON0) * KX, (LAT0 - lat) * S];
 const MAP_W = Math.round((-40 - LON0) * KX), MAP_H = Math.round((LAT0 - 26) * S);
-// When the car drives each loop, on the music's bars (150 BPM, 1.6 s a bar): it sets off in bar 1,
-// is home just before bar 4, and reaches Santa Clara on the downbeat of bar 6.
-export const LEGS = { east: [0.2, 4.6], west: [4.8, 8] };
-const FLOOD = [0.2, 1.6];                                             // the colour floods out as the car sets off, through bar 1
+// When the car drives each loop, on the music's bars (120 BPM, 2 s a bar): it sets off in bar 1,
+// is home half a beat before bar 4, and reaches Santa Clara on the downbeat of bar 6.
+export const LEGS = { east: [0.25, 5.75], west: [6, 10] };
+const FLOOD = [0.25, 2];                                              // the colour floods out as the car sets off, through bar 1
 
 // The drive, as [lon, lat] waypoints along the roads it took.
 const EAST = [[-84.48, 42.73], [-83.05, 42.33], [-81.25, 42.98], [-79.07, 43.09], [-77.6, 43.16], [-76.15, 43.05],

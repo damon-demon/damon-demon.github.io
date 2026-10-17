@@ -10,6 +10,6 @@ export const CHAPTER_3 = {
     { id: 'ch3-snow', scene: snow, caption: 'Michigan', duration: 2 },
     { id: 'ch3-timelapse', scene: timelapse, caption: 'Michigan', duration: 4.5, fadeIn: 0.1 },
     { id: 'ch3-hooding', scene: hooding, caption: 'Michigan', duration: 2, fadeIn: 0.15, fadeOut: 0.15 },
-    { id: 'ch3-roadtrip', scene: roadtrip, caption: 'Graduation Road Trip', duration: 9.6, fadeIn: 0.2 },
+    { id: 'ch3-roadtrip', scene: roadtrip, caption: 'Graduation Road Trip', duration: 12, fadeIn: 0.2 },
   ],
 };

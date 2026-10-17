@@ -4,7 +4,7 @@ import { createHash } from 'node:crypto';
 import { sceneContract, frameAt } from './fake-canvas.js';
 import { roadtrip, tripAt, floodAt, toMap, LEGS, landmarkTimes } from '../../reel/ch3/roadtrip.js';
 
-sceneContract('ch3 roadtrip', roadtrip, 9.6);
+sceneContract('ch3 roadtrip', roadtrip, 12);
 
 // When, on one leg, the car comes closest to a place, and how close it gets (px on the map).
 function passes(leg, lonLat) {
@@ -30,8 +30,8 @@ test('road trip: then it turns west, by Chicago, Denver and Las Vegas to Santa C
   const stops = [[-87.63, 41.88], [-104.99, 39.74], [-115.14, 36.17]].map(p => passes('west', p));
   assert.ok(stops.every(s => s.d < 2));
   assert.ok(inOrder(stops));
-  assert.ok(gap(tripAt(9.6), [-121.95, 37.35]) < 1);
-  assert.equal(tripAt(6.5).dir, -1, 'facing west');
+  assert.ok(gap(tripAt(12), [-121.95, 37.35]) < 1);
+  assert.equal(tripAt(8).dir, -1, 'facing west');
 });
 
 test('road trip: the map comes up grey, and as the car sets off the colour floods out from East Lansing, ahead of it', () => {
@@ -42,7 +42,7 @@ test('road trip: the map comes up grey, and as the car sets off the colour flood
     const [x, y] = toMap(place), [hx, hy] = toMap([-84.48, 42.73]);
     assert.ok(floodAt(passes('east', place).t) > Math.hypot(x - hx, y - hy), 'Maine and New York are in colour before the car gets there');
   }
-  assert.ok(floodAt(1.6) >= 2000, 'and then the whole map');
+  assert.ok(floodAt(2) >= 2000, 'and then the whole map');
 });
 
 test('road trip: the grey map alone at first, the colour clipped over it while it floods, then the colour alone', () => {
@@ -63,8 +63,8 @@ test('road trip: the map is painted exactly as approved, pixel for pixel', () =>
   assert.deepEqual([sha(s.layers.colour), sha(s.layers.grey)], ['7bf1e42f20b08159', '8ced6214334516e9']);
 });
 
-test('road trip: the legs fall on the bars of the music (150 BPM, 1.6 s a bar): home at 4.6 s, off west at 4.8, Santa Clara at 8.0', () => {
-  assert.deepEqual(LEGS, { east: [0.2, 4.6], west: [4.8, 8] });
+test('road trip: the legs fall on the bars of the music (120 BPM, 2 s a bar): home at 5.75 s, off west at 6, Santa Clara at 10', () => {
+  assert.deepEqual(LEGS, { east: [0.25, 5.75], west: [6, 10] });
 });
 
 test('road trip: landmarkTimes says when each landmark pops up, in order, east then west', () => {

@@ -37,5 +37,6 @@ test('on the road trip, the music box pings as each landmark pops up', () => {
   const c = plan.cues.find(c => c.cue.id === 'road-trip');
   const shot = tl.shots.find(e => e.shot.id === 'ch3-roadtrip');
   assert.equal(c.start, shot.start);
-  landmarkTimes().forEach((l, i) => assert.ok(Math.abs(ROAD_PINGS[i] * c.spb - l.t) <= c.spb / 8, `${l.key} at ${l.t.toFixed(2)} s`));
+  const at = Object.fromEntries(landmarkTimes().map(l => [l.key, l.t]));
+  for (const [beat, key] of ROAD_PINGS) assert.ok(Math.abs(beat * c.spb - at[key]) <= c.spb / 8, `${key} at ${at[key].toFixed(2)} s`);
 });
